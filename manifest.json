@@ -1,0 +1,61 @@
+{
+  "name": "PK Explorer — Memórias de Presidente Dutra",
+  "short_name": "PK Explorer",
+  "description": "Explore e mapeie a história da sua cidade",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F1E8",
+  "theme_color": "#2D5A3D",
+  "orientation": "portrait",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Tela principal do PK Explorer"
+    }
+  ],
+  "categories": ["education", "maps"],
+  "shortcuts": [
+    {
+      "name": "Cadastrar Ponto",
+      "short_name": "Cadastrar",
+      "description": "Cadastrar novo ponto histórico",
+      "url": "/?action=register",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Ver Mapa",
+      "short_name": "Mapa",
+      "description": "Visualizar mapa de pontos",
+      "url": "/?action=map",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

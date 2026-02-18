@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#2D5A3D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="PK Explorer">
+    <meta name="description" content="Explore e mapeie a história de Presidente Dutra">
+    <title>PK Explorer — Sistema Completo</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+    <style>
+        /* ==================== RESET & VARS ==================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --primary: #2D5A3D;
+            --gold: #C4A35A;
+            --gold-light: #E8C97A;
+            --paper: #F5F1E8;
+            --paper-dark: #EAE4D4;
+            --ink: #1A1A2E;
+            --white: #FFFEF9;
+            --red: #8B1A1A;
+            --orange: #D4700A;
+            --blue: #1A4A6B;
+            --green: #10B981;
+            --gray: #6B7280;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Crimson Text', serif;
+            background: var(--paper);
+            color: var(--ink);
+        }
+
+        /* ==================== APP SHELL ==================== */
+        .app-shell {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh;
+        }
+
+        /* ==================== TOP NAVBAR ==================== */
+        .topbar {
+            background: var(--primary);
+            border-bottom: 3px solid var(--gold);
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            z-index: 50;
+        }
+
+        .topbar-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--gold);
+            letter-spacing: 0.5px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .topbar-xp {
+            background: rgba(196,163,90,0.2);
+            border: 1px solid var(--gold);
+            color: var(--gold-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .topbar-avatar {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: 2px solid var(--gold-light);
+        }
+
+        /* ==================== SCREEN CONTAINER ==================== */
+        .screens {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen {
+            position: absolute;
+            inset: 0;
+            overflow-y: auto;
+            display: none;
+            background: var(--paper);
+            animation: screenIn 0.25s ease-out;
+        }
+
+        .screen.active { display: block; }
+
+        @keyframes screenIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== BOTTOM NAV ==================== */
+        .bottom-nav {
+            background: var(--white);
+            border-top: 3px solid var(--gold);
+            display: flex;
+            flex-shrink: 0;
+            padding-bottom: var(--safe-bottom);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--gray);
+            position: relative;
+            border: none;
+            background: none;
+            font-family: 'Crimson Text', serif;
+        }
+
+        .nav-item:hover { color: var(--primary); }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 15%; right: 15%;
+            height: 3px;
+            background: var(--gold);
+            border-radius: 0 0 4px 4px;
+        }
+
+        .nav-icon {
+            font-size: 1.4rem;
+            margin-bottom: 0.15rem;
+            transition: transform 0.2s;
+        }
+
+        .nav-item.active .nav-icon { transform: scale(1.1); }
+
+        .nav-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-badge {
+            position: absolute;
+            top: 0.4rem; right: calc(50% - 18px);
+            background: var(--red);
+            color: var(--white);
+            font-size: 0.6rem;
+            font-weight: 700;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ==================== AUTH SCREEN ==================== */
+        #screen-auth {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+            padding: 2rem 1rem;
+        }
+
+        .auth-card {
+            background: var(--white);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-logo-icon { font-size: 4rem; display: block; margin-bottom: 0.5rem; }
+
+        .auth-logo-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .auth-logo-sub {
+            color: var(--gold);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Crimson Text', serif;
+            font-size: 1rem;
+            transition: all 0.2s;
+            border: none;
+            background: var(--white);
+            color: var(--gray);
+        }
+
+        .auth-tab.active { background: var(--primary); color: var(--white); }
+
+        .form-group { margin-bottom: 1rem; }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            font-family: 'Crimson Text', serif;
+            font-size: 1rem;
+            background: var(--white);
+            color: var(--ink);
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-error {
+            color: var(--red);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .btn-full:hover { background: #1d3d28; transform: translateY(-2px); }
+
+        .btn-full.btn-gold { background: var(--gold); color: var(--primary); }
+        .btn-full.btn-gold:hover { background: var(--gold-light); }
+
+        .auth-divider {
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.875rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .auth-divider::before, .auth-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: var(--paper-dark);
+        }
+
+        .auth-divider::before { left: 0; }
+        .auth-divider::after { right: 0; }
+
+        /* ==================== MAP SCREEN ==================== */
+        #map { width: 100%; height: 100%; }
+
+        .map-wrapper { position: relative; height: 100%; }
+
+        .map-fab {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--white);
+            border: 3px solid var(--gold);
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .map-fab:hover { transform: scale(1.1); background: #1d3d28; }
+
+        .map-filters {
+            position: absolute;
+            top: 1rem; left: 1rem; right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .map-filter-btn {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            border: 2px solid var(--gold);
+            background: var(--white);
+            color: var(--primary);
+            font-family: 'Crimson Text', serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .map-filter-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .map-offline-banner {
+            position: absolute;
+            top: 4rem; left: 1rem; right: 1rem;
+            background: var(--orange);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            z-index: 10;
+            display: none;
+        }
+
+        /* ==================== SECTION SCREENS ==================== */
+        .screen-content { padding: 1.25rem; }
+
+        .screen-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .screen-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        /* ==================== HOME/DASHBOARD ==================== */
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--primary), #1d3d28);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 1.5rem;
+            color: var(--white);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::after {
+            content: '🗺️';
+            position: absolute;
+            right: 1rem; top: 50%;
+            transform: translateY(-50%);
+            font-size: 4rem;
+            opacity: 0.2;
+        }
+
+        .welcome-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--gold-light);
+            margin-bottom: 0.25rem;
+        }
+
+        .welcome-sub { font-size: 0.9rem; opacity: 0.8; }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-stat {
+            background: var(--white);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 1rem 0.75rem;
+            text-align: center;
+        }
+
+        .quick-stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .quick-stat-label { font-size: 0.7rem; color: var(--gray); }
+
+        .section-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-action {
+            background: var(--white);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 1.25rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .quick-action:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(45,90,61,0.15);
+        }
+
+        .quick-action-icon { font-size: 1.75rem; }
+        .quick-action-label { font-size: 0.85rem; font-weight: 600; color: var(--primary); text-align: center; }
+
+        .active-mission {
+            background: var(--white);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .active-mission:hover { border-color: var(--primary); }
+
+        .mission-icon-wrap {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            background: rgba(45,90,61,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .mission-info { flex: 1; }
+        .mission-name { font-weight: 600; color: var(--primary); font-size: 0.95rem; }
+        .mission-xp { font-size: 0.8rem; color: var(--gold); }
+
+        .mission-progress-mini {
+            height: 6px;
+            background: var(--paper-dark);
+            border-radius: 3px;
+            margin-top: 0.35rem;
+            overflow: hidden;
+        }
+
+        .mission-progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--gold)); border-radius: 3px; }
+
+        /* ==================== MODAL ==================== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 1000;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-sheet {
+            background: var(--white);
+            border-radius: 20px 20px 0 0;
+            border-top: 3px solid var(--gold);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: sheetUp 0.3s ease-out;
+            padding-bottom: var(--safe-bottom);
+        }
+
+        @keyframes sheetUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-handle {
+            width: 40px; height: 4px;
+            background: var(--paper-dark);
+            border-radius: 2px;
+            margin: 0.75rem auto 0;
+        }
+
+        .modal-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid var(--paper-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .modal-close {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: var(--paper-dark);
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body { padding: 1.5rem; }
+
+        /* ==================== REGISTRATION WIZARD ==================== */
+        .wizard-steps {
+            display: flex;
+            gap: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .wizard-step {
+            flex: 1;
+            text-align: center;
+            padding: 0.5rem;
+            position: relative;
+        }
+
+        .wizard-step::after {
+            content: '';
+            position: absolute;
+            top: 16px; left: 50%;
+            width: 100%; height: 2px;
+            background: var(--paper-dark);
+            z-index: 0;
+        }
+
+        .wizard-step:last-child::after { display: none; }
+        .wizard-step.done::after { background: var(--gold); }
+
+        .wizard-dot {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: var(--paper-dark);
+            border: 2px solid var(--paper-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 auto 0.25rem;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s;
+        }
+
+        .wizard-step.active .wizard-dot { background: var(--primary); color: var(--white); border-color: var(--primary); }
+        .wizard-step.done .wizard-dot { background: var(--gold); color: var(--primary); border-color: var(--gold); }
+
+        .wizard-step-label { font-size: 0.65rem; color: var(--gray); }
+
+        .wizard-page { display: none; }
+        .wizard-page.active { display: block; }
+
+        .location-card {
+            background: var(--paper);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .location-icon { font-size: 1.5rem; }
+
+        .location-info { flex: 1; }
+        .location-coords { font-size: 0.8rem; color: var(--gray); }
+        .location-address { font-weight: 600; color: var(--primary); font-size: 0.9rem; }
+
+        .char-counter { font-size: 0.75rem; color: var(--gray); text-align: right; margin-top: 0.25rem; }
+
+        .media-upload {
+            border: 2px dashed var(--gold);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.75rem;
+        }
+
+        .media-upload:hover { border-color: var(--primary); background: rgba(45,90,61,0.03); }
+        .media-upload.has-file { border-style: solid; border-color: var(--green); background: rgba(16,185,129,0.05); }
+
+        .media-preview { max-width: 100%; max-height: 160px; border-radius: 8px; }
+
+        textarea.form-input { min-height: 100px; resize: vertical; }
+
+        .wizard-footer {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-top: 2px solid var(--paper-dark);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: 'Crimson Text', serif;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary { background: var(--primary); color: var(--white); flex: 1; }
+        .btn-primary:hover { background: #1d3d28; }
+        .btn-secondary { background: var(--paper-dark); color: var(--primary); }
+        .btn-secondary:hover { background: var(--paper); }
+
+        /* ==================== PROFILE SCREEN ==================== */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary), #1d3d28);
+            padding: 2rem 1.25rem;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .profile-avatar-big {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+            border: 4px solid var(--gold-light);
+        }
+
+        .profile-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--gold-light);
+        }
+
+        .profile-role {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+
+        .profile-level {
+            background: rgba(196,163,90,0.2);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 0.35rem 1.25rem;
+            display: inline-block;
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--gold-light);
+        }
+
+        .profile-xp-bar {
+            margin: 1rem auto;
+            max-width: 260px;
+        }
+
+        .profile-xp-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-bottom: 0.35rem;
+        }
+
+        .profile-xp-track {
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .profile-xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light));
+            border-radius: 4px;
+        }
+
+        .profile-section { padding: 1.25rem; }
+
+        .profile-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.9rem 0;
+            border-bottom: 1px solid var(--paper-dark);
+        }
+
+        .profile-row:last-child { border-bottom: none; }
+        .profile-row-label { color: var(--gray); font-size: 0.9rem; }
+        .profile-row-value { font-weight: 600; color: var(--primary); }
+
+        .btn-logout {
+            width: calc(100% - 2.5rem);
+            margin: 0 1.25rem 1.25rem;
+            padding: 0.875rem;
+            background: var(--red);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-family: 'Crimson Text', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover { background: #6b1313; }
+
+        /* ==================== NOTIFICATIONS ==================== */
+        .toast-container {
+            position: fixed;
+            top: 70px; right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 300px;
+        }
+
+        .toast {
+            background: var(--white);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            animation: toastIn 0.3s ease-out;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .toast-icon { font-size: 1.25rem; }
+        .toast-title { font-weight: 600; font-size: 0.875rem; color: var(--primary); }
+        .toast-body { font-size: 0.8rem; color: var(--gray); }
+
+        /* ==================== UTILITIES ==================== */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .empty-state-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+        .empty-state-title { font-family: 'Playfair Display', serif; color: var(--primary); margin-bottom: 0.5rem; }
+        .empty-state-text { font-size: 0.875rem; color: var(--gray); }
+
+        .alert-strip {
+            background: rgba(196,163,90,0.15);
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            padding: 0.875rem 1rem;
+            font-size: 0.875rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .app-shell { max-width: 480px; margin: 0 auto; box-shadow: 0 0 80px rgba(0,0,0,0.15); }
+            html { background: var(--paper-dark); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- MODAL: REGISTER POINT -->
+<div class="modal-overlay" id="registerModal">
+    <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+            <div class="modal-title">📍 Cadastrar Ponto</div>
+            <button class="modal-close" onclick="closeRegisterModal()">×</button>
+        </div>
+
+        <!-- Wizard Steps -->
+        <div style="padding: 1rem 1.5rem 0;">
+            <div class="wizard-steps" id="wizardSteps">
+                <div class="wizard-step active" id="wstep-0">
+                    <div class="wizard-dot">1</div>
+                    <div class="wizard-step-label">Info</div>
+                </div>
+                <div class="wizard-step" id="wstep-1">
+                    <div class="wizard-dot">2</div>
+                    <div class="wizard-step-label">Mídia</div>
+                </div>
+                <div class="wizard-step" id="wstep-2">
+                    <div class="wizard-dot">3</div>
+                    <div class="wizard-step-label">Fontes</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <!-- Step 1: Info -->
+            <div class="wizard-page active" id="wpage-0">
+                <div class="location-card" id="locationCard">
+                    <div class="location-icon">📡</div>
+                    <div class="location-info">
+                        <div class="location-address" id="locationAddress">Obtendo localização...</div>
+                        <div class="location-coords" id="locationCoords">Aguarde...</div>
+                    </div>
+                    <button onclick="refreshLocation()" style="background: none; border: none; cursor: pointer; font-size: 1.1rem;">🔄</button>
+                </div>
+
+                <div id="duplicateWarning"></div>
+
+                <div class="form-group">
+                    <label class="form-label">Nome do Local *</label>
+                    <input type="text" class="form-input" id="pointName" placeholder="Ex: Igreja Matriz São Sebastião">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Categoria *</label>
+                    <select class="form-select" id="pointCategory">
+                        <option value="">Selecione...</option>
+                        <option value="igreja">⛪ Igreja / Capela</option>
+                        <option value="praca">🌳 Praça / Parque</option>
+                        <option value="escola">🏫 Escola / Educação</option>
+                        <option value="comercio">🏪 Comércio Histórico</option>
+                        <option value="residencia">🏠 Residência</option>
+                        <option value="patrimonio">🏛️ Patrimônio Cultural</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descrição Histórica * <span style="color: var(--gray); font-weight: 400;">(mín. 100 caracteres)</span></label>
+                    <textarea class="form-input" id="pointDesc" placeholder="Conte a história deste local: quando foi construído, quem fundou, o que representou para a cidade..." oninput="updateCharCount()"></textarea>
+                    <div class="char-counter"><span id="charCount">0</span>/100 caracteres mínimos</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Período Histórico</label>
+                    <select class="form-select" id="pointEra">
+                        <option value="antes1960">📜 Antes de 1960</option>
+                        <option value="1960-1990">🕰️ 1960 - 1990</option>
+                        <option value="1990-2010">📷 1990 - 2010</option>
+                        <option value="2010+">📱 2010 em diante</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Step 2: Media -->
+            <div class="wizard-page" id="wpage-1">
+                <p style="font-size: 0.875rem; color: var(--gray); margin-bottom: 1rem;">📸 A foto é obrigatória. Áudio e vídeo são opcionais mas muito valorizados!</p>
+
+                <label class="form-label">📷 Foto Principal *</label>
+                <div class="media-upload" id="mainPhotoUpload" onclick="document.getElementById('mainPhotoInput').click()">
+                    <div id="mainPhotoPreviewWrap">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📷</div>
+                        <div style="font-weight: 600; color: var(--primary);">Tirar foto ou escolher arquivo</div>
+                        <div style="font-size: 0.8rem; color: var(--gray);">JPEG, PNG — máx. 10MB (comprimido automaticamente)</div>
+                    </div>
+                </div>
+                <input type="file" id="mainPhotoInput" accept="image/*" capture="environment" class="hidden" onchange="handlePhoto(this, 'main')">
+
+                <label class="form-label mt-2">🕰️ Foto Antiga (opcional)</label>
+                <div class="media-upload" onclick="document.getElementById('beforePhotoInput').click()">
+                    <div id="beforePhotoPreviewWrap">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.35rem;">🖼️</div>
+                        <div style="font-size: 0.875rem; color: var(--gray);">Foto de como era antes (digitalizada)</div>
+                    </div>
+                </div>
+                <input type="file" id="beforePhotoInput" accept="image/*" class="hidden" onchange="handlePhoto(this, 'before')">
+
+                <label class="form-label mt-2">🎙️ Áudio / Entrevista (opcional)</label>
+                <div class="media-upload" onclick="document.getElementById('audioInput').click()">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.35rem;">🎙️</div>
+                    <div id="audioLabel" style="font-size: 0.875rem; color: var(--gray);">Grave ou envie entrevista com morador</div>
+                </div>
+                <input type="file" id="audioInput" accept="audio/*" class="hidden" onchange="handleAudio(this)">
+            </div>
+
+            <!-- Step 3: Sources -->
+            <div class="wizard-page" id="wpage-2">
+                <div class="alert-strip">
+                    <span>📚</span>
+                    <div>Informe as fontes que usou na pesquisa — livros, entrevistas, sites, documentos históricos.</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Fontes Bibliográficas</label>
+                    <textarea class="form-input" id="pointSources" placeholder="Ex: Livro 'História de Presidente Dutra' (1995); Entrevista com Sr. José (80 anos)..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nome do Entrevistado (se houver)</label>
+                    <input type="text" class="form-input" id="pointInterviewee" placeholder="Ex: Dona Maria da Conceição, 75 anos">
+                </div>
+
+                <div style="background: var(--paper-dark); border-radius: 10px; padding: 1rem; margin-top: 1rem;">
+                    <label style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer;">
+                        <input type="checkbox" id="termsCheck" style="width: 18px; height: 18px; margin-top: 3px; accent-color: var(--primary);">
+                        <span style="font-size: 0.875rem; color: var(--primary);">
+                            Declaro que as informações são verdadeiras, obtidas com responsabilidade, e que tenho autorização para publicar as mídias enviadas.
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="wizard-footer">
+            <button class="btn btn-secondary" id="wizardBackBtn" onclick="wizardPrev()" style="display:none;">← Voltar</button>
+            <button class="btn btn-primary" id="wizardNextBtn" onclick="wizardNext()">Próximo →</button>
+        </div>
+    </div>
+</div>
+
+<!-- APP SHELL -->
+<div class="app-shell" id="appShell" style="display:none;">
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="topbar-logo">🗺️ PK Explorer</div>
+        <div class="topbar-right">
+            <div class="topbar-xp" id="topbarXP">⭐ 350 XP</div>
+            <div class="topbar-avatar" id="topbarAvatar" onclick="navigateTo('profile')">M</div>
+        </div>
+    </div>
+
+    <!-- SCREENS -->
+    <div class="screens">
+
+        <!-- HOME -->
+        <div class="screen active" id="screen-home">
+            <div class="screen-content">
+                <div class="welcome-banner">
+                    <div class="welcome-name" id="welcomeName">Olá, Maria! 👋</div>
+                    <div class="welcome-sub">Continue explorando a história da cidade</div>
+                </div>
+
+                <div class="quick-stats">
+                    <div class="quick-stat">
+                        <div class="quick-stat-value" id="statPointsHome">7</div>
+                        <div class="quick-stat-label">Pontos</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="quick-stat-value" id="statXpHome">350</div>
+                        <div class="quick-stat-label">XP Total</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="quick-stat-value">#4</div>
+                        <div class="quick-stat-label">Ranking</div>
+                    </div>
+                </div>
+
+                <div class="section-label">⚡ Acesso Rápido</div>
+                <div class="quick-actions">
+                    <div class="quick-action" onclick="navigateTo('map')">
+                        <div class="quick-action-icon">🗺️</div>
+                        <div class="quick-action-label">Ver Mapa</div>
+                    </div>
+                    <div class="quick-action" onclick="openRegisterModal()">
+                        <div class="quick-action-icon">📍</div>
+                        <div class="quick-action-label">Cadastrar Ponto</div>
+                    </div>
+                    <div class="quick-action" onclick="navigateTo('missions')">
+                        <div class="quick-action-icon">🎯</div>
+                        <div class="quick-action-label">Missões</div>
+                    </div>
+                    <div class="quick-action" onclick="navigateTo('feed')">
+                        <div class="quick-action-icon">📰</div>
+                        <div class="quick-action-label">Descobertas</div>
+                    </div>
+                </div>
+
+                <div class="section-label">🎯 Missões Ativas</div>
+
+                <div class="active-mission" onclick="navigateTo('missions')">
+                    <div class="mission-icon-wrap">⚡</div>
+                    <div class="mission-info">
+                        <div class="mission-name">Missão do Dia: Explorador</div>
+                        <div class="mission-xp">+50 XP · Hoje</div>
+                        <div class="mission-progress-mini"><div class="mission-progress-fill" style="width:0%"></div></div>
+                    </div>
+                    <span style="color: var(--gold);">›</span>
+                </div>
+
+                <div class="active-mission" onclick="navigateTo('missions')">
+                    <div class="mission-icon-wrap">🎙️</div>
+                    <div class="mission-info">
+                        <div class="mission-name">Vozes do Passado</div>
+                        <div class="mission-xp">+200 XP · 1/3 completo</div>
+                        <div class="mission-progress-mini"><div class="mission-progress-fill" style="width:33%"></div></div>
+                    </div>
+                    <span style="color: var(--gold);">›</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAP -->
+        <div class="screen" id="screen-map">
+            <div class="map-wrapper">
+                <div class="map-filters">
+                    <button class="map-filter-btn active" onclick="filterMap('all', this)">🗺️ Todos</button>
+                    <button class="map-filter-btn" onclick="filterMap('pending', this)">⏳ Pendentes</button>
+                    <button class="map-filter-btn" onclick="filterMap('approved', this)">✅ Aprovados</button>
+                    <button class="map-filter-btn" onclick="filterMap('igreja', this)">⛪ Igrejas</button>
+                </div>
+                <div class="map-offline-banner" id="mapOfflineBanner">✈️ Modo offline — tiles do cache</div>
+                <div id="map"></div>
+                <button class="map-fab" onclick="openRegisterModal()" title="Cadastrar novo ponto">📍</button>
+            </div>
+        </div>
+
+        <!-- MISSIONS -->
+        <div class="screen" id="screen-missions">
+            <div class="screen-content">
+                <div class="screen-header">
+                    <span style="font-size:1.5rem">🎯</span>
+                    <div class="screen-title">Missões</div>
+                </div>
+
+                <div id="missionsContent">
+                    <!-- Missions rendered by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- FEED -->
+        <div class="screen" id="screen-feed">
+            <div class="screen-content">
+                <div class="screen-header">
+                    <span style="font-size:1.5rem">📰</span>
+                    <div class="screen-title">Descobertas</div>
+                </div>
+                <div id="feedContent"></div>
+            </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div class="screen" id="screen-profile">
+            <div class="profile-header">
+                <div class="profile-avatar-big" id="profileAvatarBig">M</div>
+                <div class="profile-name" id="profileName">Maria Santos</div>
+                <div class="profile-role" id="profileRole">Aluna · Turma 6ºA</div>
+                <div class="profile-level" id="profileLevel">⭐ Exploradora</div>
+                <div class="profile-xp-bar">
+                    <div class="profile-xp-label">
+                        <span>350 XP</span>
+                        <span>500 XP</span>
+                    </div>
+                    <div class="profile-xp-track">
+                        <div class="profile-xp-fill" style="width:70%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <div class="profile-row">
+                    <div class="profile-row-label">📍 Pontos cadastrados</div>
+                    <div class="profile-row-value" id="profileStatPoints">7</div>
+                </div>
+                <div class="profile-row">
+                    <div class="profile-row-label">✅ Aprovados</div>
+                    <div class="profile-row-value">5</div>
+                </div>
+                <div class="profile-row">
+                    <div class="profile-row-label">🏆 Badges conquistados</div>
+                    <div class="profile-row-value">3</div>
+                </div>
+                <div class="profile-row">
+                    <div class="profile-row-label">📊 Posição no ranking</div>
+                    <div class="profile-row-value">#4 · Turma 6ºA</div>
+                </div>
+                <div class="profile-row">
+                    <div class="profile-row-label">🎓 Turma</div>
+                    <div class="profile-row-value" id="profileTurma">6º Ano A</div>
+                </div>
+            </div>
+
+            <div style="padding: 0 1.25rem; margin-bottom: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <button class="btn btn-primary" onclick="navigateTo('missions')">🎯 Missões</button>
+                <button class="btn" style="background: var(--paper-dark); color: var(--primary);" onclick="showToast('🔭', 'Em breve', 'Modo AR disponível na Parte 8!')">🔭 Modo AR</button>
+            </div>
+
+            <button class="btn-logout" onclick="logout()">🚪 Sair da conta</button>
+        </div>
+
+    </div><!-- /screens -->
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="navigateTo('home')" id="nav-home">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">Início</div>
+        </button>
+        <button class="nav-item" onclick="navigateTo('map')" id="nav-map">
+            <div class="nav-icon">🗺️</div>
+            <div class="nav-label">Mapa</div>
+        </button>
+        <button class="nav-item" onclick="navigateTo('missions')" id="nav-missions">
+            <div class="nav-icon">🎯</div>
+            <div class="nav-label">Missões</div>
+        </button>
+        <button class="nav-item" onclick="navigateTo('feed')" id="nav-feed">
+            <div class="nav-icon">📰</div>
+            <div class="nav-label">Descobertas</div>
+        </button>
+        <button class="nav-item" onclick="navigateTo('profile')" id="nav-profile">
+            <div class="nav-icon">👤</div>
+            <div class="nav-label">Perfil</div>
+        </button>
+    </nav>
+</div>
+
+<!-- AUTH SCREEN -->
+<div id="authScreen">
+    <div class="screen-content" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem;">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <span class="auth-logo-icon">🗺️</span>
+                <div class="auth-logo-title">PK Explorer</div>
+                <div class="auth-logo-sub">✦ Memórias de Presidente Dutra ✦</div>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login', this)">Entrar</button>
+                <button class="auth-tab" onclick="switchAuthTab('register', this)">Criar Conta</button>
+            </div>
+
+            <!-- LOGIN -->
+            <div id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">E-mail</label>
+                    <input type="email" class="form-input" id="loginEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" class="form-input" id="loginPassword" placeholder="••••••">
+                </div>
+                <div id="loginError" class="form-error hidden"></div>
+                <button class="btn-full" onclick="login()">Entrar →</button>
+                <div class="auth-divider">ou</div>
+                <button class="btn-full btn-gold" onclick="quickLogin()">⚡ Acesso Rápido (Demo)</button>
+            </div>
+
+            <!-- REGISTER -->
+            <div id="registerForm" style="display:none;">
+                <div class="form-group">
+                    <label class="form-label">Nome Completo</label>
+                    <input type="text" class="form-input" id="regName" placeholder="Seu nome">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">E-mail</label>
+                    <input type="email" class="form-input" id="regEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" class="form-input" id="regPassword" placeholder="Mínimo 6 caracteres">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Você é:</label>
+                    <select class="form-select" id="regRole" onchange="toggleTurma()">
+                        <option value="aluno">👨‍🎓 Aluno</option>
+                        <option value="professor">👨‍🏫 Professor</option>
+                    </select>
+                </div>
+                <div class="form-group" id="turmaGroup">
+                    <label class="form-label">Turma</label>
+                    <select class="form-select" id="regTurma">
+                        <option value="6ANOA">6º Ano A</option>
+                        <option value="6ANOB">6º Ano B</option>
+                        <option value="7ANOA">7º Ano A</option>
+                        <option value="7ANOB">7º Ano B</option>
+                        <option value="8ANOA">8º Ano A</option>
+                        <option value="8ANOB">8º Ano B</option>
+                        <option value="9ANO">9º Ano</option>
+                    </select>
+                </div>
+                <div id="regError" class="form-error hidden"></div>
+                <button class="btn-full" onclick="register()">Criar Conta →</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+'use strict';
+
+// =================================================================
+// AUTH SYSTEM
+// =================================================================
+const Auth = {
+    getUsers: () => JSON.parse(localStorage.getItem('pk_users') || '[]'),
+    saveUsers: (u) => localStorage.setItem('pk_users', JSON.stringify(u)),
+    getCurrent: () => JSON.parse(localStorage.getItem('pk_current_user') || 'null'),
+    setCurrent: (u) => localStorage.setItem('pk_current_user', JSON.stringify(u)),
+    clear: () => localStorage.removeItem('pk_current_user'),
+
+    login(email, password) {
+        const users = this.getUsers();
+        const user = users.find(u => u.email === email && u.password === password);
+        if (!user) return { error: 'E-mail ou senha incorretos' };
+        this.setCurrent(user);
+        return { user };
+    },
+
+    register(data) {
+        const users = this.getUsers();
+        if (users.find(u => u.email === data.email)) return { error: 'E-mail já cadastrado' };
+        const user = { ...data, id: Date.now().toString(), xp: 0, points: 0, badges: [] };
+        users.push(user);
+        this.saveUsers(users);
+        this.setCurrent(user);
+        return { user };
+    }
+};
+
+// =================================================================
+// STATE
+// =================================================================
+let AppState = {
+    user: null,
+    currentScreen: 'home',
+    map: null,
+    markers: [],
+    wizardStep: 0,
+    location: null,
+    mainPhoto: null,
+    beforePhoto: null
+};
+
+// =================================================================
+// INIT
+// =================================================================
+window.addEventListener('load', () => {
+    const user = Auth.getCurrent();
+    if (user) {
+        AppState.user = user;
+        showApp();
+    } else {
+        document.getElementById('authScreen').style.display = 'block';
+    }
+
+    // Online/offline
+    window.addEventListener('offline', () => {
+        document.getElementById('mapOfflineBanner').style.display = 'block';
+        showToast('✈️', 'Modo offline', 'Usando dados do cache');
+    });
+    window.addEventListener('online', () => {
+        document.getElementById('mapOfflineBanner').style.display = 'none';
+        showToast('🌐', 'Online', 'Conexão restaurada!');
+    });
+});
+
+// =================================================================
+// AUTH FUNCTIONS
+// =================================================================
+function switchAuthTab(tab, el) {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+}
+
+function toggleTurma() {
+    const role = document.getElementById('regRole').value;
+    document.getElementById('turmaGroup').style.display = role === 'aluno' ? 'block' : 'none';
+}
+
+function login() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const errEl = document.getElementById('loginError');
+
+    if (!email || !password) {
+        errEl.textContent = 'Preencha e-mail e senha';
+        errEl.classList.remove('hidden');
+        return;
+    }
+
+    const result = Auth.login(email, password);
+    if (result.error) {
+        errEl.textContent = result.error;
+        errEl.classList.remove('hidden');
+        return;
+    }
+
+    AppState.user = result.user;
+    document.getElementById('authScreen').style.display = 'none';
+    showApp();
+}
+
+function register() {
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const role = document.getElementById('regRole').value;
+    const turma = role === 'aluno' ? document.getElementById('regTurma').value : null;
+    const errEl = document.getElementById('regError');
+
+    if (!name || !email || !password) {
+        errEl.textContent = 'Preencha todos os campos';
+        errEl.classList.remove('hidden');
+        return;
+    }
+
+    if (password.length < 6) {
+        errEl.textContent = 'Senha deve ter pelo menos 6 caracteres';
+        errEl.classList.remove('hidden');
+        return;
+    }
+
+    const result = Auth.register({ name, email, password, role, turma });
+    if (result.error) {
+        errEl.textContent = result.error;
+        errEl.classList.remove('hidden');
+        return;
+    }
+
+    AppState.user = result.user;
+    document.getElementById('authScreen').style.display = 'none';
+    showApp();
+    showToast('🎉', 'Conta criada!', `Bem-vindo ao PK Explorer, ${name}!`);
+}
+
+function quickLogin() {
+    const users = Auth.getUsers();
+    let demo = users.find(u => u.email === 'demo@pkexplorer.com');
+    if (!demo) {
+        Auth.register({ name: 'Maria Santos', email: 'demo@pkexplorer.com', password: '123456', role: 'aluno', turma: '6ANOA', xp: 350, points: 7 });
+        demo = Auth.getCurrent();
+    } else {
+        Auth.setCurrent(demo);
+    }
+    AppState.user = demo;
+    document.getElementById('authScreen').style.display = 'none';
+    showApp();
+    showToast('⚡', 'Acesso rápido!', 'Bem-vindo, Maria Santos');
+}
+
+function logout() {
+    if (!confirm('Deseja sair da sua conta?')) return;
+    Auth.clear();
+    AppState.user = null;
+    AppState.map = null;
+    location.reload();
+}
+
+// =================================================================
+// APP SHELL
+// =================================================================
+function showApp() {
+    const u = AppState.user;
+    document.getElementById('appShell').style.display = 'flex';
+    document.getElementById('authScreen').style.display = 'none';
+
+    // Update UI with user data
+    const initial = u.name.charAt(0).toUpperCase();
+    document.getElementById('topbarAvatar').textContent = initial;
+    document.getElementById('topbarXP').textContent = `⭐ ${u.xp || 350} XP`;
+    document.getElementById('welcomeName').textContent = `Olá, ${u.name.split(' ')[0]}! 👋`;
+    document.getElementById('profileAvatarBig').textContent = initial;
+    document.getElementById('profileName').textContent = u.name;
+    document.getElementById('profileRole').textContent = u.role === 'professor' ? '👨‍🏫 Professor' : `👨‍🎓 Aluno · Turma ${formatTurma(u.turma)}`;
+    document.getElementById('profileTurma').textContent = formatTurma(u.turma) || '—';
+
+    navigateTo('home');
+
+    setTimeout(() => {
+        renderMissions();
+        renderFeed();
+        initMap();
+    }, 100);
+}
+
+function formatTurma(t) {
+    if (!t) return '';
+    const map = { '6ANOA': '6º Ano A', '6ANOB': '6º Ano B', '7ANOA': '7º Ano A', '7ANOB': '7º Ano B', '8ANOA': '8º Ano A', '8ANOB': '8º Ano B', '9ANO': '9º Ano' };
+    return map[t] || t;
+}
+
+// =================================================================
+// NAVIGATION
+// =================================================================
+function navigateTo(screen) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    document.getElementById('screen-' + screen)?.classList.add('active');
+    document.getElementById('nav-' + screen)?.classList.add('active');
+
+    AppState.currentScreen = screen;
+
+    if (screen === 'map' && AppState.map) {
+        setTimeout(() => AppState.map.resize(), 50);
+    }
+}
+
+// =================================================================
+// MAP
+// =================================================================
+function initMap() {
+    if (AppState.map) return;
+
+    AppState.map = new maplibregl.Map({
+        container: 'map',
+        style: {
+            version: 8,
+            sources: { osm: { type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© OpenStreetMap' } },
+            layers: [{ id: 'osm', type: 'raster', source: 'osm' }]
+        },
+        center: [-44.493456, -5.291234],
+        zoom: 14
+    });
+
+    AppState.map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
+    AppState.map.addControl(new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: true }), 'bottom-right');
+
+    const samplePoints = [
+        { name: 'Igreja Matriz', lat: -5.291234, lng: -44.493456, status: 'approved', category: 'igreja' },
+        { name: 'Praça Central', lat: -5.292000, lng: -44.494000, status: 'approved', category: 'praca' },
+        { name: 'Estação Ferroviária', lat: -5.290000, lng: -44.495000, status: 'pending', category: 'patrimonio' },
+        { name: 'Mercado Municipal', lat: -5.293000, lng: -44.492000, status: 'approved', category: 'comercio' },
+        { name: 'Casa da Cultura', lat: -5.291800, lng: -44.492800, status: 'pending', category: 'patrimonio' }
+    ];
+
+    samplePoints.forEach(p => addMapMarker(p));
+}
+
+function addMapMarker(point) {
+    const colors = { approved: '#10B981', pending: '#FF8C00', rejected: '#8B1A1A' };
+    const el = document.createElement('div');
+    el.style.cssText = `width:24px;height:24px;border-radius:50%;background:${colors[point.status] || '#FF8C00'};border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);cursor:pointer;transition:transform 0.2s;`;
+    el.onmouseenter = () => el.style.transform = 'scale(1.3)';
+    el.onmouseleave = () => el.style.transform = 'scale(1)';
+
+    const statusLabel = { approved: '✅ Aprovado', pending: '⏳ Pendente', rejected: '❌ Rejeitado' };
+
+    const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([point.lng, point.lat])
+        .setPopup(new maplibregl.Popup({ offset: 16, closeButton: false }).setHTML(`
+            <div style="font-family:'Crimson Text',serif;padding:0.25rem;">
+                <strong style="color:#2D5A3D;">${point.name}</strong><br>
+                <span style="font-size:0.8rem;color:#6B7280;">${statusLabel[point.status]}</span>
+            </div>
+        `))
+        .addTo(AppState.map);
+
+    AppState.markers.push({ marker, point });
+}
+
+function filterMap(filter, el) {
+    document.querySelectorAll('.map-filter-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    AppState.markers.forEach(({ marker, point }) => {
+        const visible = filter === 'all' || point.status === filter || point.category === filter;
+        marker.getElement().style.display = visible ? 'block' : 'none';
+    });
+}
+
+// =================================================================
+// REGISTER WIZARD
+// =================================================================
+function openRegisterModal() {
+    AppState.wizardStep = 0;
+    AppState.mainPhoto = null;
+    AppState.beforePhoto = null;
+    document.getElementById('pointName').value = '';
+    document.getElementById('pointCategory').value = '';
+    document.getElementById('pointDesc').value = '';
+    document.getElementById('charCount').textContent = '0';
+    document.getElementById('termsCheck').checked = false;
+    document.getElementById('duplicateWarning').innerHTML = '';
+    updateWizardUI();
+    getLocation();
+    document.getElementById('registerModal').classList.add('active');
+}
+
+function closeRegisterModal() {
+    document.getElementById('registerModal').classList.remove('active');
+}
+
+function wizardNext() {
+    if (!validateWizardStep()) return;
+    if (AppState.wizardStep < 2) {
+        AppState.wizardStep++;
+        updateWizardUI();
+    } else {
+        submitPoint();
+    }
+}
+
+function wizardPrev() {
+    if (AppState.wizardStep > 0) {
+        AppState.wizardStep--;
+        updateWizardUI();
+    }
+}
+
+function updateWizardUI() {
+    const step = AppState.wizardStep;
+    document.querySelectorAll('.wizard-page').forEach((p, i) => p.classList.toggle('active', i === step));
+    document.querySelectorAll('.wizard-step').forEach((s, i) => {
+        s.className = 'wizard-step' + (i === step ? ' active' : i < step ? ' done' : '');
+    });
+    document.getElementById('wizardBackBtn').style.display = step > 0 ? 'block' : 'none';
+    document.getElementById('wizardNextBtn').textContent = step === 2 ? '✓ Enviar' : 'Próximo →';
+}
+
+function validateWizardStep() {
+    const step = AppState.wizardStep;
+    if (step === 0) {
+        if (!document.getElementById('pointName').value.trim()) { showToast('⚠️', 'Campo obrigatório', 'Digite o nome do local'); return false; }
+        if (!document.getElementById('pointCategory').value) { showToast('⚠️', 'Campo obrigatório', 'Selecione uma categoria'); return false; }
+        if (document.getElementById('pointDesc').value.length < 100) { showToast('⚠️', 'Descrição curta', 'Escreva pelo menos 100 caracteres'); return false; }
+    }
+    if (step === 1) {
+        if (!AppState.mainPhoto) { showToast('📷', 'Foto necessária', 'Tire ou selecione uma foto do local'); return false; }
+    }
+    if (step === 2) {
+        if (!document.getElementById('termsCheck').checked) { showToast('⚠️', 'Aceite os termos', 'Confirme as declarações para prosseguir'); return false; }
+    }
+    return true;
+}
+
+async function submitPoint() {
+    const point = {
+        id: Date.now().toString(),
+        name: document.getElementById('pointName').value.trim(),
+        category: document.getElementById('pointCategory').value,
+        description: document.getElementById('pointDesc').value.trim(),
+        era: document.getElementById('pointEra').value,
+        sources: document.getElementById('pointSources').value.trim(),
+        interviewee: document.getElementById('pointInterviewee').value.trim(),
+        lat: AppState.location?.lat || -5.291234,
+        lng: AppState.location?.lng || -44.493456,
+        authorId: AppState.user?.id,
+        turma: AppState.user?.turma,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+    };
+
+    // Save to IndexedDB
+    await savePointToDB(point);
+
+    // Add to map
+    addMapMarker({ ...point, name: point.name });
+
+    // Award XP
+    if (AppState.user) {
+        AppState.user.xp = (AppState.user.xp || 0) + 75;
+        AppState.user.points = (AppState.user.points || 0) + 1;
+        Auth.setCurrent(AppState.user);
+        document.getElementById('topbarXP').textContent = `⭐ ${AppState.user.xp} XP`;
+    }
+
+    closeRegisterModal();
+    showToast('🎉', 'Ponto cadastrado!', `"${point.name}" enviado para aprovação. +75 XP!`);
+    navigateTo('map');
+}
+
+// =================================================================
+// INDEXEDDB
+// =================================================================
+let db = null;
+
+async function getDB() {
+    if (db) return db;
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open('pk_explorer', 1);
+        req.onupgradeneeded = e => e.target.result.createObjectStore('points', { keyPath: 'id' });
+        req.onsuccess = e => { db = e.target.result; resolve(db); };
+        req.onerror = reject;
+    });
+}
+
+async function savePointToDB(point) {
+    const database = await getDB();
+    return new Promise((resolve, reject) => {
+        const tx = database.transaction('points', 'readwrite');
+        tx.objectStore('points').put(point);
+        tx.oncomplete = resolve;
+        tx.onerror = reject;
+    });
+}
+
+// =================================================================
+// LOCATION
+// =================================================================
+function getLocation() {
+    if (!navigator.geolocation) {
+        document.getElementById('locationAddress').textContent = 'GPS não disponível';
+        return;
+    }
+    document.getElementById('locationAddress').textContent = 'Obtendo localização...';
+    navigator.geolocation.getCurrentPosition(pos => {
+        AppState.location = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        document.getElementById('locationCoords').textContent = `${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`;
+        document.getElementById('locationAddress').textContent = '✅ Localização obtida';
+    }, () => {
+        document.getElementById('locationAddress').textContent = '⚠️ GPS negado — usando localização padrão';
+    });
+}
+
+function refreshLocation() { getLocation(); }
+
+function updateCharCount() {
+    const len = document.getElementById('pointDesc').value.length;
+    const el = document.getElementById('charCount');
+    el.textContent = len;
+    el.style.color = len >= 100 ? 'var(--green)' : 'var(--gray)';
+}
+
+// =================================================================
+// MEDIA UPLOAD
+// =================================================================
+async function handlePhoto(input, type) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const wrapId = type === 'main' ? 'mainPhotoPreviewWrap' : 'beforePhotoPreviewWrap';
+    const uploadId = type === 'main' ? 'mainPhotoUpload' : null;
+
+    try {
+        const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true };
+        const compressed = await imageCompression(file, options);
+        const url = URL.createObjectURL(compressed);
+        if (type === 'main') AppState.mainPhoto = compressed;
+        else AppState.beforePhoto = compressed;
+
+        document.getElementById(wrapId).innerHTML = `<img src="${url}" class="media-preview">`;
+        if (uploadId) document.getElementById(uploadId).classList.add('has-file');
+        showToast('🗜️', 'Foto comprimida!', `${(file.size/1024).toFixed(0)}KB → ${(compressed.size/1024).toFixed(0)}KB`);
+    } catch (e) {
+        showToast('❌', 'Erro', 'Não foi possível processar a foto');
+    }
+}
+
+function handleAudio(input) {
+    const file = input.files[0];
+    if (!file) return;
+    document.getElementById('audioLabel').textContent = `✅ ${file.name}`;
+    showToast('🎙️', 'Áudio adicionado!', file.name);
+}
+
+// =================================================================
+// MISSIONS RENDER
+// =================================================================
+function renderMissions() {
+    const missions = [
+        { icon: '⚡', name: 'Missão do Dia', type: 'Diária', xp: 50, progress: 0, total: 1, tag: 'daily' },
+        { icon: '🏛️', name: 'O Marco Zero', type: 'Exploração', xp: 100, progress: 1, total: 1, tag: 'main', done: true },
+        { icon: '🎙️', name: 'Vozes do Passado', type: 'Entrevista', xp: 200, progress: 1, total: 3, tag: 'main' },
+        { icon: '📽️', name: 'Documentarista da Semana', type: 'Semanal', xp: 300, progress: 2, total: 5, tag: 'weekly' }
+    ];
+
+    document.getElementById('missionsContent').innerHTML = missions.map(m => {
+        const pct = Math.round((m.progress / m.total) * 100);
+        const tagColors = { daily: 'var(--orange)', weekly: 'var(--blue)', main: 'var(--primary)' };
+        return `
+            <div style="background:var(--white);border:2px solid var(--gold);border-radius:12px;padding:1.25rem;margin-bottom:0.75rem;${m.done ? 'opacity:0.7;' : ''}">
+                <div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:0.75rem;">
+                    <div style="font-size:2rem;">${m.icon}</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:700;color:var(--primary);font-size:1rem;">${m.name}</div>
+                        <div style="display:flex;gap:0.5rem;margin-top:0.25rem;flex-wrap:wrap;">
+                            <span style="background:${tagColors[m.tag]}20;color:${tagColors[m.tag]};padding:0.2rem 0.6rem;border-radius:10px;font-size:0.7rem;font-weight:700;">${m.tag === 'daily' ? '⚡ Diária' : m.tag === 'weekly' ? '📅 Semanal' : '🎯 Principal'}</span>
+                            <span style="background:rgba(196,163,90,0.2);color:var(--gold);padding:0.2rem 0.6rem;border-radius:10px;font-size:0.7rem;font-weight:700;">+${m.xp} XP</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="height:6px;background:var(--paper-dark);border-radius:3px;overflow:hidden;margin-bottom:0.5rem;">
+                    <div style="height:100%;background:linear-gradient(90deg,var(--primary),var(--gold));border-radius:3px;width:${pct}%;transition:width 0.8s;"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:0.8rem;color:var(--gray);">${m.progress}/${m.total} ${m.done ? '✅' : ''}</span>
+                    ${!m.done ? `<button onclick="completeMission('${m.name}', ${m.xp})" style="padding:0.4rem 1rem;background:var(--primary);color:white;border:none;border-radius:20px;cursor:pointer;font-family:'Crimson Text',serif;font-size:0.875rem;font-weight:600;">Iniciar →</button>` : '<span style="color:var(--green);font-size:0.875rem;font-weight:600;">Concluída!</span>'}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function completeMission(name, xp) {
+    if (AppState.user) {
+        AppState.user.xp = (AppState.user.xp || 0) + xp;
+        Auth.setCurrent(AppState.user);
+        document.getElementById('topbarXP').textContent = `⭐ ${AppState.user.xp} XP`;
+    }
+    showToast('🎉', 'Missão iniciada!', `${name} — Boa sorte! +${xp} XP ao completar`);
+}
+
+// =================================================================
+// FEED RENDER
+// =================================================================
+function renderFeed() {
+    const points = [
+        { title: 'Igreja Matriz São Sebastião', author: 'Maria S.', turma: '6ºA', category: '⛪ Igreja', date: 'Hoje', likes: 24, img: 'https://images.unsplash.com/photo-1548625149-fc4a29cf7092?w=400&h=220&fit=crop' },
+        { title: 'Praça Central São Sebastião', author: 'João P.', turma: '7ºA', category: '🌳 Praça', date: 'Hoje', likes: 18, img: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=220&fit=crop' },
+        { title: 'Antiga Estação Ferroviária', author: 'Ana C.', turma: '8ºA', category: '🚂 Patrimônio', date: 'Ontem', likes: 31, img: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=220&fit=crop' }
+    ];
+
+    document.getElementById('feedContent').innerHTML = points.map((p, i) => `
+        <div style="background:var(--white);border:2px solid var(--gold);border-radius:14px;overflow:hidden;margin-bottom:1rem;">
+            <img src="${p.img}" style="width:100%;height:180px;object-fit:cover;" alt="${p.title}">
+            <div style="padding:1rem;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+                    <span style="background:rgba(45,90,61,0.1);color:var(--primary);padding:0.2rem 0.6rem;border-radius:10px;font-size:0.75rem;font-weight:600;">${p.category}</span>
+                    <span style="font-size:0.75rem;color:var(--gold);font-style:italic;">${p.date}</span>
+                </div>
+                <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--primary);margin-bottom:0.5rem;">${p.title}</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding-top:0.75rem;border-top:1px solid var(--paper-dark);">
+                    <span style="font-size:0.8rem;color:var(--gray);">👤 ${p.author} · Turma ${p.turma}</span>
+                    <button onclick="this.textContent=this.textContent.includes('🤍')?'❤️ '+(${p.likes}+1):'🤍 ${p.likes}'" style="background:none;border:none;cursor:pointer;font-size:0.875rem;color:var(--gray);">🤍 ${p.likes}</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// =================================================================
+// TOAST NOTIFICATIONS
+// =================================================================
+function showToast(icon, title, body) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div>
+            <div class="toast-title">${title}</div>
+            <div class="toast-body">${body}</div>
+        </div>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.transition = 'all 0.3s';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+}
+</script>
+</body>
+</html>
