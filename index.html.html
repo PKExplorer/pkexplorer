@@ -1506,8 +1506,8 @@
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
                         <button onclick="viewPointLocation(1)" class="btn btn-secondary" style="font-size:0.85rem;">🗺️ Ver</button>
-                        <button onclick="rejectPointSimple(1)" class="btn" style="background:white;border:2px solid var(--red);color:var(--red);font-size:0.85rem;">❌ Rejeitar</button>
-                        <button onclick="approvePointSimple(1)" class="btn" style="background:var(--green);color:white;font-size:0.85rem;">✅ Aprovar</button>
+                        <button onclick="rejectPointSimple(1, event)" class="btn" style="background:white;border:2px solid var(--red);color:var(--red);font-size:0.85rem;">❌ Rejeitar</button>
+                        <button onclick="approvePointSimple(1, event)" class="btn" style="background:var(--green);color:white;font-size:0.85rem;">✅ Aprovar</button>
                     </div>
                 </div>
                 
@@ -1525,8 +1525,8 @@
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
                         <button onclick="viewPointLocation(2)" class="btn btn-secondary" style="font-size:0.85rem;">🗺️ Ver</button>
-                        <button onclick="rejectPointSimple(2)" class="btn" style="background:white;border:2px solid var(--red);color:var(--red);font-size:0.85rem;">❌ Rejeitar</button>
-                        <button onclick="approvePointSimple(2)" class="btn" style="background:var(--green);color:white;font-size:0.85rem;">✅ Aprovar</button>
+                        <button onclick="rejectPointSimple(2, event)" class="btn" style="background:white;border:2px solid var(--red);color:var(--red);font-size:0.85rem;">❌ Rejeitar</button>
+                        <button onclick="approvePointSimple(2, event)" class="btn" style="background:var(--green);color:white;font-size:0.85rem;">✅ Aprovar</button>
                     </div>
                 </div>
                 
@@ -1544,8 +1544,8 @@
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
                         <button onclick="viewPointLocation(3)" class="btn btn-secondary" style="font-size:0.85rem;">🗺️ Ver</button>
-                        <button onclick="rejectPointSimple(3)" class="btn" style="background:white;border:2px solid var(--red);color:var(--red);font-size:0.85rem;">❌ Rejeitar</button>
-                        <button onclick="approvePointSimple(3)" class="btn" style="background:var(--green);color:white;font-size:0.85rem;">✅ Aprovar</button>
+                        <button onclick="rejectPointSimple(3, event)" class="btn" style="background:white;border:2px solid var(--red);color:var(--red);font-size:0.85rem;">❌ Rejeitar</button>
+                        <button onclick="approvePointSimple(3, event)" class="btn" style="background:var(--green);color:white;font-size:0.85rem;">✅ Aprovar</button>
                     </div>
                 </div>
             </div>
@@ -2137,10 +2137,12 @@ const MAP_LAYERS = {
                 type: 'raster', 
                 tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], 
                 tileSize: 256,
+                minzoom: 0,
+                maxzoom: 19,
                 attribution: '© OpenStreetMap'
             } 
         },
-        layers: [{ id: 'osm', type: 'raster', source: 'osm' }]
+        layers: [{ id: 'osm', type: 'raster', source: 'osm', minzoom: 0, maxzoom: 22 }]
     },
     topo: {
         version: 8,
@@ -2149,10 +2151,12 @@ const MAP_LAYERS = {
                 type: 'raster',
                 tiles: ['https://a.tile.opentopomap.org/{z}/{x}/{y}.png'],
                 tileSize: 256,
+                minzoom: 0,
+                maxzoom: 17,
                 attribution: '© OpenTopoMap'
             }
         },
-        layers: [{ id: 'topo', type: 'raster', source: 'topo' }]
+        layers: [{ id: 'topo', type: 'raster', source: 'topo', minzoom: 0, maxzoom: 22 }]
     },
     satellite: {
         version: 8,
@@ -2161,10 +2165,12 @@ const MAP_LAYERS = {
                 type: 'raster',
                 tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
                 tileSize: 256,
+                minzoom: 0,
+                maxzoom: 19,
                 attribution: '© Esri'
             }
         },
-        layers: [{ id: 'satellite', type: 'raster', source: 'satellite' }]
+        layers: [{ id: 'satellite', type: 'raster', source: 'satellite', minzoom: 0, maxzoom: 22 }]
     }
 };
 
@@ -2178,6 +2184,8 @@ function initMap() {
         style: MAP_LAYERS.streets,
         center: [-44.493456, -5.291234],
         zoom: 14,
+        minZoom: 3,
+        maxZoom: 22,
         pitch: 0,
         bearing: 0
     });
@@ -3143,26 +3151,72 @@ function createConfetti() {
 }
 
 // Simple teacher panel functions
-function approvePointSimple(pointId) {
+function approvePointSimple(pointId, event) {
     if (!confirm('Aprovar este ponto?')) return;
     createConfetti();
     showToast('✅', 'Ponto Aprovado!', 'Aluno será notificado');
-    // Hide the approved card
-    event.target.closest('.card').style.opacity = '0.5';
-    setTimeout(() => {
-        event.target.closest('.card').remove();
-    }, 500);
+    
+    // Find and remove the card
+    const button = event.target;
+    const card = button.closest('.card');
+    
+    if (card) {
+        card.style.transition = 'all 0.5s';
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(100px)';
+        setTimeout(() => {
+            card.remove();
+            // Check if no more cards
+            const remainingCards = document.querySelectorAll('#teacherPanel .card').length;
+            if (remainingCards <= 1) { // Only header card left
+                document.querySelector('#teacherPanel').innerHTML = `
+                    <div class="screen-header">
+                        <span style="font-size:1.5rem">👨‍🏫</span>
+                        <div class="screen-title">Painel do Professor</div>
+                    </div>
+                    <div class="card" style="background:rgba(16,185,129,0.1);border:2px solid var(--green);text-align:center;padding:3rem 2rem;">
+                        <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
+                        <div style="font-size:1.3rem;font-weight:700;color:var(--green);margin-bottom:0.5rem;">Tudo aprovado!</div>
+                        <div style="font-size:0.95rem;color:var(--gray);">Não há pontos pendentes no momento</div>
+                    </div>
+                `;
+            }
+        }, 500);
+    }
 }
 
-function rejectPointSimple(pointId) {
+function rejectPointSimple(pointId, event) {
     const reason = prompt('Motivo da rejeição (será enviado ao aluno):');
     if (!reason || reason.trim() === '') return;
     showToast('❌', 'Ponto Rejeitado', 'Aluno receberá o feedback');
-    // Hide the rejected card
-    event.target.closest('.card').style.opacity = '0.5';
-    setTimeout(() => {
-        event.target.closest('.card').remove();
-    }, 500);
+    
+    // Find and remove the card
+    const button = event.target;
+    const card = button.closest('.card');
+    
+    if (card) {
+        card.style.transition = 'all 0.5s';
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(-100px)';
+        setTimeout(() => {
+            card.remove();
+            // Check if no more cards
+            const remainingCards = document.querySelectorAll('#teacherPanel .card').length;
+            if (remainingCards <= 1) { // Only header card left
+                document.querySelector('#teacherPanel').innerHTML = `
+                    <div class="screen-header">
+                        <span style="font-size:1.5rem">👨‍🏫</span>
+                        <div class="screen-title">Painel do Professor</div>
+                    </div>
+                    <div class="card" style="background:rgba(16,185,129,0.1);border:2px solid var(--green);text-align:center;padding:3rem 2rem;">
+                        <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
+                        <div style="font-size:1.3rem;font-weight:700;color:var(--green);margin-bottom:0.5rem;">Tudo em dia!</div>
+                        <div style="font-size:0.95rem;color:var(--gray);">Todos os pontos foram revisados</div>
+                    </div>
+                `;
+            }
+        }, 500);
+    }
 }
 
 function viewPointLocation(pointId) {
