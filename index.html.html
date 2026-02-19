@@ -360,6 +360,66 @@
 
         .map-fab:hover { transform: scale(1.1); background: #1d3d28; }
 
+        .map-layer-btn {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--white);
+            color: var(--primary);
+            border: 2px solid var(--gold);
+            font-size: 1.35rem;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .map-layer-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .map-layer-panel {
+            position: absolute;
+            bottom: 5rem;
+            left: 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            z-index: 15;
+            min-width: 200px;
+        }
+
+        .layer-option {
+            padding: 0.6rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin-bottom: 0.35rem;
+            font-size: 0.9rem;
+        }
+
+        .layer-option:hover {
+            background: var(--paper-dark);
+        }
+
+        .layer-option input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+        }
+
         .map-filters {
             position: absolute;
             top: 1rem; left: 1rem; right: 1rem;
@@ -988,6 +1048,8 @@
                         <option value="comercio">🏪 Comércio Histórico</option>
                         <option value="residencia">🏠 Residência</option>
                         <option value="patrimonio">🏛️ Patrimônio Cultural</option>
+                        <option value="marco-geo">🗻 Marco Geográfico</option>
+                        <option value="curiosidade">💡 Curiosidade Local</option>
                     </select>
                 </div>
 
@@ -1166,6 +1228,28 @@
                 </div>
                 <div class="map-offline-banner" id="mapOfflineBanner">✈️ Modo offline — tiles do cache</div>
                 <div id="map"></div>
+                
+                <!-- Layer Selector -->
+                <button class="map-layer-btn" id="layerToggle" onclick="toggleLayerPanel()" title="Camadas do Mapa">
+                    🗺️
+                </button>
+                
+                <div class="map-layer-panel" id="layerPanel" style="display:none;">
+                    <div style="font-weight:700;margin-bottom:0.75rem;color:var(--primary);font-size:0.9rem;">📍 Camadas do Mapa</div>
+                    <div class="layer-option" onclick="changeMapLayer('streets', this)">
+                        <input type="radio" name="layer" checked> 
+                        <span>🗺️ Mapa de Ruas</span>
+                    </div>
+                    <div class="layer-option" onclick="changeMapLayer('topo', this)">
+                        <input type="radio" name="layer"> 
+                        <span>⛰️ Topográfico</span>
+                    </div>
+                    <div class="layer-option" onclick="changeMapLayer('satellite', this)">
+                        <input type="radio" name="layer"> 
+                        <span>🛰️ Satélite</span>
+                    </div>
+                </div>
+                
                 <button class="map-fab" onclick="openRegisterModal()" title="Cadastrar novo ponto">📍</button>
             </div>
         </div>
@@ -1558,22 +1642,88 @@ function navigateTo(screen) {
 // =================================================================
 // MAP
 // =================================================================
+// Map layer styles
+const MAP_LAYERS = {
+    streets: {
+        version: 8,
+        sources: { 
+            osm: { 
+                type: 'raster', 
+                tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], 
+                tileSize: 256,
+                attribution: '© OpenStreetMap'
+            } 
+        },
+        layers: [{ id: 'osm', type: 'raster', source: 'osm' }]
+    },
+    topo: {
+        version: 8,
+        sources: {
+            topo: {
+                type: 'raster',
+                tiles: ['https://a.tile.opentopomap.org/{z}/{x}/{y}.png'],
+                tileSize: 256,
+                attribution: '© OpenTopoMap'
+            }
+        },
+        layers: [{ id: 'topo', type: 'raster', source: 'topo' }]
+    },
+    satellite: {
+        version: 8,
+        sources: {
+            satellite: {
+                type: 'raster',
+                tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+                tileSize: 256,
+                attribution: '© Esri'
+            }
+        },
+        layers: [{ id: 'satellite', type: 'raster', source: 'satellite' }]
+    }
+};
+
+let currentLayer = 'streets';
+
 function initMap() {
     if (AppState.map) return;
 
     AppState.map = new maplibregl.Map({
         container: 'map',
-        style: {
-            version: 8,
-            sources: { osm: { type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© OpenStreetMap' } },
-            layers: [{ id: 'osm', type: 'raster', source: 'osm' }]
-        },
+        style: MAP_LAYERS.streets,
         center: [-44.493456, -5.291234],
-        zoom: 14
+        zoom: 14,
+        pitch: 0,
+        bearing: 0
     });
 
     AppState.map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
-    AppState.map.addControl(new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: true }), 'bottom-right');
+    
+    // Enhanced GPS with tracking and rotation
+    const geolocate = new maplibregl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true,
+            timeout: 6000
+        },
+        trackUserLocation: true,
+        showUserHeading: true,
+        showAccuracyCircle: true
+    });
+    
+    AppState.map.addControl(geolocate, 'bottom-right');
+    
+    // Auto-activate GPS on map load
+    AppState.map.on('load', () => {
+        geolocate.trigger();
+    });
+
+    // Track user orientation on mobile
+    if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
+        window.addEventListener('deviceorientation', (e) => {
+            if (e.alpha !== null && AppState.map) {
+                AppState.map.setBearing(-e.alpha);
+            }
+        });
+    }
 
     const samplePoints = [
         { name: 'Igreja Matriz', lat: -5.291234, lng: -44.493456, status: 'approved', category: 'igreja' },
@@ -1586,6 +1736,66 @@ function initMap() {
     samplePoints.forEach(p => addMapMarker(p));
 }
 
+function toggleLayerPanel() {
+    const panel = document.getElementById('layerPanel');
+    const isVisible = panel.style.display !== 'none';
+    panel.style.display = isVisible ? 'none' : 'block';
+}
+
+function changeMapLayer(layerType, element) {
+    if (layerType === currentLayer) return;
+    
+    // Update radio buttons
+    document.querySelectorAll('.layer-option input[type="radio"]').forEach(r => r.checked = false);
+    element.querySelector('input[type="radio"]').checked = true;
+    
+    // Save current view
+    const center = AppState.map.getCenter();
+    const zoom = AppState.map.getZoom();
+    const bearing = AppState.map.getBearing();
+    const pitch = AppState.map.getPitch();
+    
+    // Save markers
+    const markers = AppState.markers.slice();
+    
+    // Change style
+    AppState.map.setStyle(MAP_LAYERS[layerType]);
+    currentLayer = layerType;
+    
+    // Restore view and markers after style loads
+    AppState.map.once('styledata', () => {
+        AppState.map.setCenter(center);
+        AppState.map.setZoom(zoom);
+        AppState.map.setBearing(bearing);
+        AppState.map.setPitch(pitch);
+        
+        // Re-add markers
+        markers.forEach(({ point }) => {
+            // Remove old marker
+            const oldMarker = AppState.markers.find(m => m.point.name === point.name);
+            if (oldMarker) {
+                oldMarker.marker.remove();
+            }
+        });
+        
+        // Clear markers array
+        AppState.markers = [];
+        
+        // Re-add all markers
+        const samplePoints = [
+            { name: 'Igreja Matriz', lat: -5.291234, lng: -44.493456, status: 'approved', category: 'igreja' },
+            { name: 'Praça Central', lat: -5.292000, lng: -44.494000, status: 'approved', category: 'praca' },
+            { name: 'Estação Ferroviária', lat: -5.290000, lng: -44.495000, status: 'pending', category: 'patrimonio' },
+            { name: 'Mercado Municipal', lat: -5.293000, lng: -44.492000, status: 'approved', category: 'comercio' },
+            { name: 'Casa da Cultura', lat: -5.291800, lng: -44.492800, status: 'pending', category: 'patrimonio' }
+        ];
+        samplePoints.forEach(p => addMapMarker(p));
+    });
+    
+    showToast('🗺️', 'Camada alterada', `Visualizando: ${layerType === 'streets' ? 'Mapa de Ruas' : layerType === 'topo' ? 'Topográfico' : 'Satélite'}`);
+    toggleLayerPanel();
+}
+
 function addMapMarker(point) {
     const colors = { approved: '#10B981', pending: '#FF8C00', rejected: '#8B1A1A' };
     const icons = { 
@@ -1594,7 +1804,9 @@ function addMapMarker(point) {
         patrimonio: '🏛️', 
         comercio: '🏪', 
         escola: '🏫',
-        residencia: '🏠'
+        residencia: '🏠',
+        'marco-geo': '🗻',
+        'curiosidade': '💡'
     };
     
     // Create custom marker element with icon
