@@ -1166,7 +1166,7 @@
             
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
                 <button class="btn btn-primary" onclick="closePointDetail()">✓ Fechar</button>
-                <button class="btn btn-secondary" onclick="showToast('📍', 'Ver no mapa', 'Funcionalidade em breve!')">🗺️ Ver no Mapa</button>
+                <button class="btn btn-secondary" onclick="viewPointOnMapFromDetail()">🗺️ Ver no Mapa</button>
             </div>
             
             <button class="btn btn-full" style="background:var(--gradient-cool);background:linear-gradient(135deg,#06B6D4,#7C3AED);color:white;display:flex;align-items:center;justify-content:center;gap:0.5rem;" onclick="sharePoint()">
@@ -1455,9 +1455,99 @@
 
         <!-- MISSIONS -->
         <!-- PROGRESSO -->
+        <!-- PROGRESSO / PAINEL -->
         <div class="screen" id="screen-missions">
-            <div class="screen-content" id="progressContainer">
-                <!-- Content rendered by JS based on user role -->
+            
+            <!-- VERSÃO ALUNO -->
+            <div class="screen-content" id="studentProgress">
+                <div class="screen-header">
+                    <span style="font-size:1.5rem">📊</span>
+                    <div class="screen-title">Meu Progresso</div>
+                </div>
+                
+                <div class="card">
+                    <div style="font-weight:700;color:var(--primary);margin-bottom:1rem;">📝 Meu Trabalho</div>
+                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;">
+                        <div style="background:var(--paper-dark);padding:1rem;border-radius:10px;text-align:center;">
+                            <div style="font-size:2rem;font-weight:700;color:var(--primary);">7</div>
+                            <div style="font-size:0.8rem;color:var(--gray);">Pontos Cadastrados</div>
+                        </div>
+                        <div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;text-align:center;">
+                            <div style="font-size:2rem;font-weight:700;color:var(--green);">5</div>
+                            <div style="font-size:0.8rem;color:var(--gray);">✅ Aprovados</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- VERSÃO PROFESSOR -->
+            <div class="screen-content" id="teacherPanel" style="display:none;">
+                <div class="screen-header">
+                    <span style="font-size:1.5rem">👨‍🏫</span>
+                    <div class="screen-title">Painel do Professor</div>
+                </div>
+                
+                <div class="card" style="background:rgba(255,140,0,0.1);border:2px solid var(--orange);">
+                    <div style="font-size:1.3rem;font-weight:700;color:var(--orange);margin-bottom:0.5rem;">⏳ 3 pontos aguardando aprovação</div>
+                    <div style="font-size:0.9rem;color:var(--gray);">Revise as informações e aprove ou rejeite</div>
+                </div>
+                
+                <!-- Ponto 1 -->
+                <div class="card">
+                    <div style="display:flex;gap:1rem;margin-bottom:1rem;">
+                        <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=120&h=120&fit=crop" style="width:100px;height:100px;border-radius:10px;object-fit:cover;">
+                        <div style="flex:1;">
+                            <div style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:0.25rem;">Casa Antiga Dona Maria</div>
+                            <div style="font-size:0.85rem;color:var(--gray);">👤 Pedro Santos · 7ºB<br>📅 Há 2 dias</div>
+                        </div>
+                    </div>
+                    <div style="background:var(--paper-dark);padding:0.875rem;border-radius:8px;margin-bottom:1rem;font-size:0.9rem;">
+                        Casa centenária com arquitetura colonial preservada.
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
+                        <button onclick="viewPointLocation(1)" class="btn btn-secondary" style="font-size:0.85rem;">🗺️ Ver</button>
+                        <button onclick="rejectPointSimple(1)" class="btn" style="background:white;border:2px solid var(--red);color:var(--red);font-size:0.85rem;">❌ Rejeitar</button>
+                        <button onclick="approvePointSimple(1)" class="btn" style="background:var(--green);color:white;font-size:0.85rem;">✅ Aprovar</button>
+                    </div>
+                </div>
+                
+                <!-- Ponto 2 -->
+                <div class="card">
+                    <div style="display:flex;gap:1rem;margin-bottom:1rem;">
+                        <img src="https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=120&h=120&fit=crop" style="width:100px;height:100px;border-radius:10px;object-fit:cover;">
+                        <div style="flex:1;">
+                            <div style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:0.25rem;">Fonte do Centro</div>
+                            <div style="font-size:0.85rem;color:var(--gray);">👤 Ana Clara · 6ºA<br>📅 Ontem</div>
+                        </div>
+                    </div>
+                    <div style="background:var(--paper-dark);padding:0.875rem;border-radius:8px;margin-bottom:1rem;font-size:0.9rem;">
+                        Fonte histórica que abastecia a população no início do século XX.
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
+                        <button onclick="viewPointLocation(2)" class="btn btn-secondary" style="font-size:0.85rem;">🗺️ Ver</button>
+                        <button onclick="rejectPointSimple(2)" class="btn" style="background:white;border:2px solid var(--red);color:var(--red);font-size:0.85rem;">❌ Rejeitar</button>
+                        <button onclick="approvePointSimple(2)" class="btn" style="background:var(--green);color:white;font-size:0.85rem;">✅ Aprovar</button>
+                    </div>
+                </div>
+                
+                <!-- Ponto 3 -->
+                <div class="card">
+                    <div style="display:flex;gap:1rem;margin-bottom:1rem;">
+                        <img src="https://images.unsplash.com/photo-1519491050282-cf00c82424b4?w=120&h=120&fit=crop" style="width:100px;height:100px;border-radius:10px;object-fit:cover;">
+                        <div style="flex:1;">
+                            <div style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:0.25rem;">Capela São José</div>
+                            <div style="font-size:0.85rem;color:var(--gray);">👤 Lucas Oliveira · 8ºA<br>📅 Há 3 dias</div>
+                        </div>
+                    </div>
+                    <div style="background:var(--paper-dark);padding:0.875rem;border-radius:8px;margin-bottom:1rem;font-size:0.9rem;">
+                        Capela construída em 1955 pelos moradores do bairro.
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
+                        <button onclick="viewPointLocation(3)" class="btn btn-secondary" style="font-size:0.85rem;">🗺️ Ver</button>
+                        <button onclick="rejectPointSimple(3)" class="btn" style="background:white;border:2px solid var(--red);color:var(--red);font-size:0.85rem;">❌ Rejeitar</button>
+                        <button onclick="approvePointSimple(3)" class="btn" style="background:var(--green);color:white;font-size:0.85rem;">✅ Aprovar</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1846,22 +1936,19 @@ function showApp() {
     document.getElementById('profileRole').textContent = u.role === 'professor' ? '👨‍🏫 Professor' : `👨‍🎓 Aluno · Turma ${formatTurma(u.turma)}`;
     document.getElementById('profileTurma').textContent = formatTurma(u.turma) || '—';
 
-    // Update nav label for teacher
+    // Toggle student/teacher screens
     if (u.role === 'professor') {
+        document.getElementById('studentProgress').style.display = 'none';
+        document.getElementById('teacherPanel').style.display = 'block';
         document.getElementById('nav-missions').querySelector('.nav-label').textContent = 'Painel';
         document.getElementById('nav-missions').querySelector('.nav-icon').textContent = '👨‍🏫';
+    } else {
+        document.getElementById('studentProgress').style.display = 'block';
+        document.getElementById('teacherPanel').style.display = 'none';
     }
     
     // Update notification badge
     updateNotificationBadge();
-    
-    // Check for pending approvals notification
-    const pendingCount = getPendingPointsCount();
-    if (u.role === 'aluno' && pendingCount > 0) {
-        setTimeout(() => {
-            showToast('⏳', 'Pontos em análise', `Você tem ${pendingCount} ${pendingCount === 1 ? 'ponto aguardando' : 'pontos aguardando'} aprovação`);
-        }, 1500);
-    }
 
     navigateTo('home');
 
@@ -2974,6 +3061,71 @@ function createConfetti() {
         
         setTimeout(() => confetti.remove(), 2000);
     }
+}
+
+// Simple teacher panel functions
+function approvePointSimple(pointId) {
+    if (!confirm('Aprovar este ponto?')) return;
+    createConfetti();
+    showToast('✅', 'Ponto Aprovado!', 'Aluno será notificado');
+    // Hide the approved card
+    event.target.closest('.card').style.opacity = '0.5';
+    setTimeout(() => {
+        event.target.closest('.card').remove();
+    }, 500);
+}
+
+function rejectPointSimple(pointId) {
+    const reason = prompt('Motivo da rejeição (será enviado ao aluno):');
+    if (!reason || reason.trim() === '') return;
+    showToast('❌', 'Ponto Rejeitado', 'Aluno receberá o feedback');
+    // Hide the rejected card
+    event.target.closest('.card').style.opacity = '0.5';
+    setTimeout(() => {
+        event.target.closest('.card').remove();
+    }, 500);
+}
+
+function viewPointLocation(pointId) {
+    // Sample coordinates for the 3 points
+    const coords = {
+        1: [-44.493800, -5.291500],
+        2: [-44.494200, -5.292200],
+        3: [-44.495500, -5.290500]
+    };
+    
+    navigateTo('map');
+    
+    setTimeout(() => {
+        if (AppState.map && coords[pointId]) {
+            AppState.map.flyTo({
+                center: coords[pointId],
+                zoom: 17,
+                duration: 2000
+            });
+            showToast('🗺️', 'Visualizando', 'Ponto localizado no mapa');
+        }
+    }, 300);
+}
+
+function viewPointOnMapFromDetail() {
+    // Get coordinates from current point details
+    if (!currentPointId || !POINT_DETAILS[currentPointId]) return;
+    
+    const point = POINT_DETAILS[currentPointId];
+    closePointDetail();
+    navigateTo('map');
+    
+    setTimeout(() => {
+        if (AppState.map && point.lng && point.lat) {
+            AppState.map.flyTo({
+                center: [point.lng, point.lat],
+                zoom: 17,
+                duration: 2000
+            });
+            showToast('🗺️', 'Visualizando', `"${point.title}" no mapa`);
+        }
+    }, 300);
 }
 
 function renderFeed() {
