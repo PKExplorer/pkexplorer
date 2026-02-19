@@ -71,6 +71,37 @@
             flex-shrink: 0;
             z-index: 50;
         }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .topbar-back {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .topbar-back:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+        
+        .topbar-back:active {
+            transform: scale(0.95);
+        }
 
         .topbar-logo {
             font-family: 'Playfair Display', serif;
@@ -83,6 +114,51 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+        }
+        
+        .topbar-notification {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .topbar-notification:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--red);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            border: 2px solid var(--primary);
+            animation: badgePulse 2s infinite;
+        }
+        
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         .topbar-xp {
@@ -130,6 +206,34 @@
         @keyframes screenIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-200px) rotate(360deg); opacity: 0; }
+        }
+        
+        .card {
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
         }
 
         /* ==================== BOTTOM NAV ==================== */
@@ -1220,8 +1324,17 @@
 <div class="app-shell" id="appShell" style="display:none;">
     <!-- TOP BAR -->
     <div class="topbar">
-        <div class="topbar-logo">🗺️ PK Explorer</div>
+        <div class="topbar-left">
+            <button class="topbar-back" id="topbarBack" onclick="goBack()" style="display:none;">
+                ← 
+            </button>
+            <div class="topbar-logo" id="topbarLogo">🗺️ PK Explorer</div>
+        </div>
         <div class="topbar-right">
+            <button class="topbar-notification" id="topbarNotification" onclick="openNotifications()" style="display:none;">
+                🔔
+                <span class="notification-badge" id="notificationBadge">0</span>
+            </button>
             <div class="topbar-xp" id="topbarXP">⭐ 350 XP</div>
             <div class="topbar-avatar" id="topbarAvatar" onclick="navigateTo('profile')">M</div>
         </div>
@@ -1538,6 +1651,19 @@
                 </div>
                 
                 <div id="feedContent"></div>
+            </div>
+        </div>
+
+        <!-- NOTIFICATIONS -->
+        <div class="screen" id="screen-notifications" style="display:none;">
+            <div class="screen-content">
+                <div class="screen-header">
+                    <span style="font-size:1.5rem">🔔</span>
+                    <div class="screen-title">Notificações</div>
+                </div>
+                <div id="notificationsContent">
+                    <!-- Notifications rendered by JS -->
+                </div>
             </div>
         </div>
 
@@ -1876,6 +2002,9 @@ function showApp() {
         document.getElementById('nav-missions').querySelector('.nav-icon').textContent = '👨‍🏫';
     }
     
+    // Update notification badge
+    updateNotificationBadge();
+    
     // Check for pending approvals notification
     const pendingCount = getPendingPointsCount();
     if (u.role === 'aluno' && pendingCount > 0) {
@@ -1901,7 +2030,17 @@ function formatTurma(t) {
 // =================================================================
 // NAVIGATION
 // =================================================================
+// Navigation history
+let navigationHistory = [];
+
 function navigateTo(screen) {
+    const currentScreen = AppState.currentScreen;
+    
+    // Add to history if not going back
+    if (currentScreen && currentScreen !== screen) {
+        navigationHistory.push(currentScreen);
+    }
+    
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
@@ -1909,7 +2048,53 @@ function navigateTo(screen) {
     document.getElementById('nav-' + screen)?.classList.add('active');
 
     AppState.currentScreen = screen;
+    
+    // Show/hide back button
+    const backBtn = document.getElementById('topbarBack');
+    const logo = document.getElementById('topbarLogo');
+    if (screen === 'home') {
+        backBtn.style.display = 'none';
+        logo.style.display = 'block';
+        navigationHistory = []; // Clear history when home
+    } else {
+        backBtn.style.display = 'flex';
+        logo.style.display = 'none';
+    }
 
+    if (screen === 'map' && AppState.map) {
+        setTimeout(() => AppState.map.resize(), 50);
+    }
+}
+
+function goBack() {
+    if (navigationHistory.length > 0) {
+        const previousScreen = navigationHistory.pop();
+        navigateToWithoutHistory(previousScreen);
+    } else {
+        navigateToWithoutHistory('home');
+    }
+}
+
+function navigateToWithoutHistory(screen) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    document.getElementById('screen-' + screen)?.classList.add('active');
+    document.getElementById('nav-' + screen)?.classList.add('active');
+
+    AppState.currentScreen = screen;
+    
+    // Update back button visibility
+    const backBtn = document.getElementById('topbarBack');
+    const logo = document.getElementById('topbarLogo');
+    if (screen === 'home') {
+        backBtn.style.display = 'none';
+        logo.style.display = 'block';
+    } else {
+        backBtn.style.display = 'flex';
+        logo.style.display = 'none';
+    }
+    
     if (screen === 'map' && AppState.map) {
         setTimeout(() => AppState.map.resize(), 50);
     }
@@ -2624,6 +2809,9 @@ function approvePoint(pointId, authorName) {
     // Save approval notification for student
     saveNotificationForStudent(authorName, 'approved', pointId);
     
+    // Confetti celebration! 🎉
+    createConfetti();
+    
     showToast('✅', 'Ponto aprovado!', `${authorName} será notificado`);
 }
 
@@ -2657,6 +2845,122 @@ function saveNotificationForStudent(studentName, action, pointId, reason = '') {
         read: false
     });
     localStorage.setItem('pk_notifications', JSON.stringify(notifications));
+    updateNotificationBadge();
+}
+
+function updateNotificationBadge() {
+    const notifications = JSON.parse(localStorage.getItem('pk_notifications') || '[]');
+    const unreadCount = notifications.filter(n => !n.read).length;
+    const badge = document.getElementById('notificationBadge');
+    const button = document.getElementById('topbarNotification');
+    
+    if (unreadCount > 0) {
+        badge.textContent = unreadCount;
+        badge.style.display = 'flex';
+        button.style.display = 'flex';
+    } else {
+        badge.style.display = 'none';
+        button.style.display = 'none';
+    }
+}
+
+function openNotifications() {
+    navigateTo('notifications');
+    renderNotifications();
+    
+    // Mark all as read
+    const notifications = JSON.parse(localStorage.getItem('pk_notifications') || '[]');
+    notifications.forEach(n => n.read = true);
+    localStorage.setItem('pk_notifications', JSON.stringify(notifications));
+    updateNotificationBadge();
+}
+
+function renderNotifications() {
+    const notifications = JSON.parse(localStorage.getItem('pk_notifications') || '[]')
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    if (notifications.length === 0) {
+        document.getElementById('notificationsContent').innerHTML = `
+            <div style="text-align:center;padding:4rem 2rem;color:var(--gray);">
+                <div style="font-size:4rem;margin-bottom:1rem;">🔕</div>
+                <div style="font-weight:700;font-size:1.1rem;margin-bottom:0.5rem;color:var(--ink);">Nenhuma notificação</div>
+                <div style="font-size:0.9rem;">Você será avisado quando seus pontos forem aprovados</div>
+            </div>
+        `;
+        return;
+    }
+    
+    document.getElementById('notificationsContent').innerHTML = notifications.map(n => {
+        const timeAgo = getTimeAgo(n.timestamp);
+        const isApproved = n.action === 'approved';
+        
+        return `
+            <div class="card" style="border-left:4px solid ${isApproved ? 'var(--green)' : 'var(--red)'};">
+                <div style="display:flex;gap:1rem;align-items:start;">
+                    <div style="font-size:2rem;flex-shrink:0;">
+                        ${isApproved ? '✅' : '❌'}
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-weight:700;color:${isApproved ? 'var(--green)' : 'var(--red)'};margin-bottom:0.35rem;">
+                            Ponto ${isApproved ? 'Aprovado' : 'Rejeitado'}!
+                        </div>
+                        <div style="font-size:0.9rem;color:var(--ink);margin-bottom:0.5rem;">
+                            Seu ponto cadastrado foi ${isApproved ? 'aprovado pelo professor' : 'rejeitado'}
+                        </div>
+                        ${!isApproved && n.reason ? `
+                            <div style="background:rgba(139,26,26,0.1);padding:0.75rem;border-radius:8px;margin-bottom:0.5rem;">
+                                <div style="font-size:0.8rem;font-weight:600;color:var(--red);margin-bottom:0.25rem;">📝 Motivo:</div>
+                                <div style="font-size:0.85rem;color:var(--ink);">${n.reason}</div>
+                            </div>
+                        ` : ''}
+                        <div style="font-size:0.75rem;color:var(--gray);">
+                            🕐 ${timeAgo}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function getTimeAgo(timestamp) {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diffMs = now - time;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 1) return 'Agora mesmo';
+    if (diffMins < 60) return `Há ${diffMins} minuto${diffMins > 1 ? 's' : ''}`;
+    if (diffHours < 24) return `Há ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
+    if (diffDays === 1) return 'Ontem';
+    if (diffDays < 7) return `Há ${diffDays} dias`;
+    return time.toLocaleDateString('pt-BR');
+}
+
+function createConfetti() {
+    const colors = ['#10B981', '#C4A35A', '#2D5A3D', '#F97316'];
+    const confettiCount = 50;
+    
+    for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.style.cssText = `
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            left: ${Math.random() * 100}%;
+            top: 50%;
+            opacity: 1;
+            z-index: 9999;
+            animation: confetti ${1 + Math.random()}s ease-out forwards;
+            animation-delay: ${Math.random() * 0.3}s;
+        `;
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => confetti.remove(), 2000);
+    }
 }
 
 function renderFeed() {
