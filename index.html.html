@@ -49,6 +49,7 @@
             font-family: 'Crimson Text', serif;
             background: var(--paper);
             color: var(--ink);
+            font-size: 17px; /* Aumentado para melhor legibilidade no celular */
         }
 
         /* ==================== APP SHELL ==================== */
@@ -2059,12 +2060,39 @@ async function handlePhoto(input, type) {
         if (type === 'main') AppState.mainPhoto = compressed;
         else AppState.beforePhoto = compressed;
 
-        document.getElementById(wrapId).innerHTML = `<img src="${url}" class="media-preview">`;
+        // Enhanced preview with remove button
+        document.getElementById(wrapId).innerHTML = `
+            <div style="position:relative;">
+                <img src="${url}" class="media-preview">
+                <button onclick="removePhoto('${type}')" style="position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:var(--red);color:white;border:2px solid white;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.3);">×</button>
+                <div style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.7);color:white;padding:0.35rem 0.75rem;border-radius:12px;font-size:0.75rem;backdrop-filter:blur(4px);">
+                    ✅ ${(compressed.size/1024).toFixed(0)}KB
+                </div>
+            </div>
+        `;
         if (uploadId) document.getElementById(uploadId).classList.add('has-file');
-        showToast('🗜️', 'Foto comprimida!', `${(file.size/1024).toFixed(0)}KB → ${(compressed.size/1024).toFixed(0)}KB`);
+        showToast('✅', 'Foto carregada!', `Comprimida de ${(file.size/1024).toFixed(0)}KB para ${(compressed.size/1024).toFixed(0)}KB`);
     } catch (e) {
         showToast('❌', 'Erro', 'Não foi possível processar a foto');
     }
+}
+
+function removePhoto(type) {
+    const wrapId = type === 'main' ? 'mainPhotoPreviewWrap' : 'beforePhotoPreviewWrap';
+    const uploadId = type === 'main' ? 'mainPhotoUpload' : null;
+    const inputId = type === 'main' ? 'mainPhotoInput' : 'beforePhotoInput';
+    
+    if (type === 'main') AppState.mainPhoto = null;
+    else AppState.beforePhoto = null;
+    
+    document.getElementById(wrapId).innerHTML = type === 'main' 
+        ? '<div style="font-size: 2rem; margin-bottom: 0.5rem;">📷</div><div style="font-weight: 600; color: var(--primary);">Tirar foto ou escolher arquivo</div><div style="font-size: 0.8rem; color: var(--gray);">JPEG, PNG — máx. 10MB</div>'
+        : '<div style="font-size: 1.5rem; margin-bottom: 0.35rem;">🖼️</div><div style="font-size: 0.875rem; color: var(--gray);">Foto de como era antes (digitalizada)</div>';
+    
+    if (uploadId) document.getElementById(uploadId).classList.remove('has-file');
+    document.getElementById(inputId).value = '';
+    
+    showToast('🗑️', 'Foto removida', 'Escolha outra foto se desejar');
 }
 
 function handleAudio(input) {
@@ -2079,33 +2107,71 @@ function handleAudio(input) {
 // =================================================================
 function renderMissions() {
     const missions = [
-        { icon: '⚡', name: 'Missão do Dia', type: 'Diária', xp: 50, progress: 0, total: 1, tag: 'daily' },
-        { icon: '🏛️', name: 'O Marco Zero', type: 'Exploração', xp: 100, progress: 1, total: 1, tag: 'main', done: true },
-        { icon: '🎙️', name: 'Vozes do Passado', type: 'Entrevista', xp: 200, progress: 1, total: 3, tag: 'main' },
-        { icon: '📽️', name: 'Documentarista da Semana', type: 'Semanal', xp: 300, progress: 2, total: 5, tag: 'weekly' }
+        { 
+            icon: '⚡', 
+            name: 'Explorador Diário', 
+            description: 'Cadastre 1 ponto histórico hoje',
+            type: 'Diária', 
+            xp: 50, 
+            progress: 0, 
+            total: 1, 
+            tag: 'daily' 
+        },
+        { 
+            icon: '📸', 
+            name: 'Primeiro Registro', 
+            description: 'Cadastre seu primeiro ponto no mapa',
+            type: 'Exploração', 
+            xp: 100, 
+            progress: 1, 
+            total: 1, 
+            tag: 'main', 
+            done: true 
+        },
+        { 
+            icon: '🎙️', 
+            name: 'Memórias Vivas', 
+            description: 'Grave entrevistas com 3 moradores antigos',
+            type: 'Entrevista', 
+            xp: 200, 
+            progress: 1, 
+            total: 3, 
+            tag: 'main' 
+        },
+        { 
+            icon: '🗺️', 
+            name: 'Explorador da Semana', 
+            description: 'Cadastre 5 pontos diferentes esta semana',
+            type: 'Semanal', 
+            xp: 300, 
+            progress: 2, 
+            total: 5, 
+            tag: 'weekly' 
+        }
     ];
 
     document.getElementById('missionsContent').innerHTML = missions.map(m => {
         const pct = Math.round((m.progress / m.total) * 100);
         const tagColors = { daily: 'var(--orange)', weekly: 'var(--blue)', main: 'var(--primary)' };
         return `
-            <div style="background:var(--white);border:2px solid var(--gold);border-radius:12px;padding:1.25rem;margin-bottom:0.75rem;${m.done ? 'opacity:0.7;' : ''}">
+            <div style="background:var(--white);border:2px solid var(--gold);border-radius:12px;padding:1.25rem;margin-bottom:0.75rem;${m.done ? 'opacity:0.6;' : ''}">
                 <div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:0.75rem;">
                     <div style="font-size:2rem;">${m.icon}</div>
                     <div style="flex:1;">
-                        <div style="font-weight:700;color:var(--primary);font-size:1rem;">${m.name}</div>
-                        <div style="display:flex;gap:0.5rem;margin-top:0.25rem;flex-wrap:wrap;">
-                            <span style="background:${tagColors[m.tag]}20;color:${tagColors[m.tag]};padding:0.2rem 0.6rem;border-radius:10px;font-size:0.7rem;font-weight:700;">${m.tag === 'daily' ? '⚡ Diária' : m.tag === 'weekly' ? '📅 Semanal' : '🎯 Principal'}</span>
-                            <span style="background:rgba(196,163,90,0.2);color:var(--gold);padding:0.2rem 0.6rem;border-radius:10px;font-size:0.7rem;font-weight:700;">+${m.xp} XP</span>
+                        <div style="font-weight:700;color:var(--primary);font-size:1.05rem;margin-bottom:0.25rem;">${m.name}</div>
+                        <div style="font-size:0.9rem;color:var(--gray);margin-bottom:0.5rem;">${m.description}</div>
+                        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                            <span style="background:${tagColors[m.tag]}20;color:${tagColors[m.tag]};padding:0.25rem 0.7rem;border-radius:10px;font-size:0.75rem;font-weight:700;">${m.tag === 'daily' ? '⚡ Diária' : m.tag === 'weekly' ? '📅 Semanal' : '🎯 Principal'}</span>
+                            <span style="background:rgba(196,163,90,0.2);color:var(--gold);padding:0.25rem 0.7rem;border-radius:10px;font-size:0.75rem;font-weight:700;">+${m.xp} XP</span>
                         </div>
                     </div>
                 </div>
-                <div style="height:6px;background:var(--paper-dark);border-radius:3px;overflow:hidden;margin-bottom:0.5rem;">
-                    <div style="height:100%;background:linear-gradient(90deg,var(--primary),var(--gold));border-radius:3px;width:${pct}%;transition:width 0.8s;"></div>
+                <div style="height:8px;background:var(--paper-dark);border-radius:4px;overflow:hidden;margin-bottom:0.65rem;">
+                    <div style="height:100%;background:linear-gradient(90deg,var(--primary),var(--gold));border-radius:4px;width:${pct}%;transition:width 0.8s;"></div>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:0.8rem;color:var(--gray);">${m.progress}/${m.total} ${m.done ? '✅' : ''}</span>
-                    ${!m.done ? `<button onclick="completeMission('${m.name}', ${m.xp})" style="padding:0.4rem 1rem;background:var(--primary);color:white;border:none;border-radius:20px;cursor:pointer;font-family:'Crimson Text',serif;font-size:0.875rem;font-weight:600;">Iniciar →</button>` : '<span style="color:var(--green);font-size:0.875rem;font-weight:600;">Concluída!</span>'}
+                    <span style="font-size:0.85rem;color:var(--gray);font-weight:600;">${m.progress}/${m.total} completo ${m.done ? '✅' : ''}</span>
+                    ${!m.done ? `<button onclick="completeMission('${m.name}', ${m.xp})" style="padding:0.5rem 1.25rem;background:var(--primary);color:white;border:none;border-radius:20px;cursor:pointer;font-family:'Crimson Text',serif;font-size:0.9rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.background='#1d3d28'" onmouseout="this.style.background='var(--primary)'">Começar →</button>` : '<span style="color:var(--green);font-size:0.9rem;font-weight:700;">✓ Concluída!</span>'}
                 </div>
             </div>
         `;
