@@ -1376,9 +1376,9 @@
                         <div class="quick-action-icon">📍</div>
                         <div class="quick-action-label">Cadastrar Ponto</div>
                     </div>
-                    <div class="quick-action" onclick="navigateTo('missions')">
-                        <div class="quick-action-icon">📊</div>
-                        <div class="quick-action-label">Progresso</div>
+                    <div class="quick-action" onclick="toggleARMode()" id="arModeButton" style="background:var(--primary);">
+                        <div class="quick-action-icon">📱</div>
+                        <div class="quick-action-label">Modo AR</div>
                     </div>
                     <div class="quick-action" onclick="navigateTo('feed')">
                         <div class="quick-action-icon">📰</div>
@@ -1611,7 +1611,13 @@
         <!-- PROFILE -->
         <div class="screen" id="screen-profile">
             <div class="profile-header">
-                <div class="profile-avatar-big" id="profileAvatarBig">M</div>
+                <div style="position:relative;display:inline-block;">
+                    <div class="profile-avatar-big" id="profileAvatarBig">M</div>
+                    <button onclick="document.getElementById('profilePhotoInput').click()" style="position:absolute;bottom:0;right:0;width:40px;height:40px;border-radius:50%;background:var(--primary);color:white;border:3px solid var(--paper);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;box-shadow:0 4px 12px rgba(0,0,0,0.3);transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        📷
+                    </button>
+                    <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;" onchange="updateProfilePhoto(this)">
+                </div>
                 <div class="profile-name" id="profileName">Maria Santos</div>
                 <div class="profile-role" id="profileRole">Aluna · Turma 6ºA</div>
                 <div class="profile-level" id="profileLevel">⭐ Exploradora</div>
@@ -1916,6 +1922,79 @@ function logout() {
     AppState.user = null;
     AppState.map = null;
     location.reload();
+}
+
+// Profile photo update
+async function updateProfilePhoto(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    try {
+        // Compress image
+        const options = { maxSizeMB: 0.5, maxWidthOrHeight: 400, useWebWorker: true };
+        const compressed = await imageCompression(file, options);
+        
+        // Convert to base64
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const photoUrl = e.target.result;
+            
+            // Update avatar displays
+            document.getElementById('profileAvatarBig').style.backgroundImage = `url(${photoUrl})`;
+            document.getElementById('profileAvatarBig').style.backgroundSize = 'cover';
+            document.getElementById('profileAvatarBig').style.backgroundPosition = 'center';
+            document.getElementById('profileAvatarBig').textContent = '';
+            
+            document.getElementById('topbarAvatar').style.backgroundImage = `url(${photoUrl})`;
+            document.getElementById('topbarAvatar').style.backgroundSize = 'cover';
+            document.getElementById('topbarAvatar').style.backgroundPosition = 'center';
+            document.getElementById('topbarAvatar').textContent = '';
+            
+            // Save to localStorage
+            if (AppState.user) {
+                AppState.user.photo = photoUrl;
+                Auth.setCurrent(AppState.user);
+            }
+            
+            showToast('✅', 'Foto atualizada!', 'Sua foto de perfil foi alterada');
+        };
+        reader.readAsDataURL(compressed);
+    } catch (e) {
+        showToast('❌', 'Erro', 'Não foi possível processar a foto');
+    }
+}
+
+// AR Mode toggle
+let arModeActive = false;
+
+function toggleARMode() {
+    arModeActive = !arModeActive;
+    
+    if (arModeActive) {
+        startARMode();
+    } else {
+        stopARMode();
+    }
+}
+
+function startARMode() {
+    showToast('📱', 'Modo AR Ativado', 'Aponte a câmera para locais históricos');
+    // In production, this would start camera and AR overlay
+    // For now, just show a message
+    const arButton = document.getElementById('arModeButton');
+    if (arButton) {
+        arButton.textContent = '📱 AR: ON';
+        arButton.style.background = 'var(--green)';
+    }
+}
+
+function stopARMode() {
+    showToast('📱', 'Modo AR Desativado', '');
+    const arButton = document.getElementById('arModeButton');
+    if (arButton) {
+        arButton.textContent = '📱 Modo AR';
+        arButton.style.background = 'var(--primary)';
+    }
 }
 
 // =================================================================
@@ -3219,6 +3298,10 @@ function openPointDetail(id) {
     
     // Show modal
     document.getElementById('pointDetailModal').classList.add('active');
+}
+
+function closePointDetail() {
+    document.getElementById('pointDetailModal').classList.remove('active');
 }
 
 async function sharePoint() {
