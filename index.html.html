@@ -423,12 +423,58 @@
 
         .map-filters {
             position: absolute;
-            top: 1rem; left: 1rem; right: 1rem;
+            top: 4.5rem; left: 1rem; right: 1rem;
             display: flex;
             gap: 0.5rem;
             z-index: 10;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+        }
+        
+        .map-search-bar {
+            position: absolute;
+            top: 1rem; left: 1rem; right: 1rem;
+            z-index: 10;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .map-search-bar input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 25px;
+            border: 2px solid var(--gold);
+            background: var(--white);
+            font-family: 'Crimson Text', serif;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .map-search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 4px 16px rgba(45,90,61,0.3);
+        }
+        
+        .map-search-bar button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            background: var(--white);
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.2s;
+        }
+        
+        .map-search-bar button:hover {
+            background: var(--red);
+            color: white;
         }
 
         .map-filter-btn {
@@ -926,6 +972,35 @@
 
         /* ==================== UTILITIES ==================== */
         .hidden { display: none !important; }
+        
+        /* Feed Filters */
+        .feed-filter, .feed-filter-cat {
+            padding: 0.45rem 1rem;
+            border-radius: 20px;
+            border: 2px solid var(--gold);
+            background: var(--white);
+            color: var(--primary);
+            font-family: 'Crimson Text', serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .feed-filter:hover, .feed-filter-cat:hover {
+            background: var(--paper-dark);
+        }
+        
+        .feed-filter.active, .feed-filter-cat.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .feed-filter-cat {
+            font-size: 1.1rem;
+            padding: 0.4rem 0.8rem;
+        }
         .text-center { text-align: center; }
         .mt-1 { margin-top: 0.5rem; }
         .mt-2 { margin-top: 1rem; }
@@ -985,10 +1060,14 @@
                 <div style="line-height:1.7;color:var(--ink);" id="detailModalDescription"></div>
             </div>
             
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
                 <button class="btn btn-primary" onclick="closePointDetail()">✓ Fechar</button>
                 <button class="btn btn-secondary" onclick="showToast('📍', 'Ver no mapa', 'Funcionalidade em breve!')">🗺️ Ver no Mapa</button>
             </div>
+            
+            <button class="btn btn-full" style="background:var(--gradient-cool);background:linear-gradient(135deg,#06B6D4,#7C3AED);color:white;display:flex;align-items:center;justify-content:center;gap:0.5rem;" onclick="sharePoint()">
+                📤 Compartilhar este Ponto
+            </button>
         </div>
     </div>
 </div>
@@ -1221,6 +1300,12 @@
         <!-- MAP -->
         <div class="screen" id="screen-map">
             <div class="map-wrapper">
+                <!-- Search Bar -->
+                <div class="map-search-bar">
+                    <input type="text" id="mapSearch" placeholder="🔍 Buscar ponto histórico..." onkeyup="searchMap(this.value)">
+                    <button id="clearSearch" onclick="clearMapSearch()" style="display:none;">×</button>
+                </div>
+                
                 <div class="map-filters">
                     <button class="map-filter-btn active" onclick="filterMap('all', this)">🗺️ Todos</button>
                     <button class="map-filter-btn" onclick="filterMap('pending', this)">⏳ Pendentes</button>
@@ -1419,6 +1504,39 @@
                     <span style="font-size:1.5rem">📰</span>
                     <div class="screen-title">Descobertas</div>
                 </div>
+                
+                <!-- Feed Filters -->
+                <div style="background:var(--white);border:2px solid var(--gold);border-radius:14px;padding:1rem;margin-bottom:1rem;">
+                    <div style="font-weight:700;color:var(--primary);margin-bottom:0.75rem;font-size:0.875rem;">🔍 Filtrar por:</div>
+                    
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">
+                        <button class="feed-filter active" data-filter="all" onclick="filterFeed('all', this)">
+                            Todos
+                        </button>
+                        <button class="feed-filter" data-filter="minha-turma" onclick="filterFeed('minha-turma', this)">
+                            Minha Turma
+                        </button>
+                    </div>
+                    
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                        <button class="feed-filter-cat" data-category="all" onclick="filterFeedCategory('all', this)">
+                            📍 Todas
+                        </button>
+                        <button class="feed-filter-cat" data-category="igreja" onclick="filterFeedCategory('igreja', this)">
+                            ⛪
+                        </button>
+                        <button class="feed-filter-cat" data-category="praca" onclick="filterFeedCategory('praca', this)">
+                            🌳
+                        </button>
+                        <button class="feed-filter-cat" data-category="patrimonio" onclick="filterFeedCategory('patrimonio', this)">
+                            🏛️
+                        </button>
+                        <button class="feed-filter-cat" data-category="comercio" onclick="filterFeedCategory('comercio', this)">
+                            🏪
+                        </button>
+                    </div>
+                </div>
+                
                 <div id="feedContent"></div>
             </div>
         </div>
@@ -2032,6 +2150,55 @@ function filterMap(filter, el) {
     });
 }
 
+function searchMap(query) {
+    const searchBtn = document.getElementById('clearSearch');
+    if (query.trim().length > 0) {
+        searchBtn.style.display = 'flex';
+    } else {
+        searchBtn.style.display = 'none';
+        // Show all markers
+        AppState.markers.forEach(({ marker }) => {
+            marker.getElement().style.display = 'block';
+        });
+        return;
+    }
+    
+    const lowerQuery = query.toLowerCase().trim();
+    let foundAny = false;
+    
+    AppState.markers.forEach(({ marker, point }) => {
+        const matches = 
+            point.name.toLowerCase().includes(lowerQuery) ||
+            point.category?.toLowerCase().includes(lowerQuery) ||
+            point.status?.toLowerCase().includes(lowerQuery);
+        
+        marker.getElement().style.display = matches ? 'block' : 'none';
+        
+        if (matches && !foundAny) {
+            foundAny = true;
+            // Center on first match
+            AppState.map.flyTo({
+                center: [point.lng, point.lat],
+                zoom: 16,
+                duration: 1000
+            });
+        }
+    });
+    
+    if (!foundAny) {
+        showToast('🔍', 'Nenhum ponto encontrado', `Nenhum resultado para "${query}"`);
+    }
+}
+
+function clearMapSearch() {
+    document.getElementById('mapSearch').value = '';
+    document.getElementById('clearSearch').style.display = 'none';
+    AppState.markers.forEach(({ marker }) => {
+        marker.getElement().style.display = 'block';
+    });
+    showToast('✓', 'Busca limpa', 'Mostrando todos os pontos');
+}
+
 // =================================================================
 // REGISTER WIZARD
 // =================================================================
@@ -2332,15 +2499,48 @@ function completeMission(name, xp) {
 // =================================================================
 // FEED RENDER
 // =================================================================
-function renderFeed() {
-    const points = [
-        { id: 1, title: 'Igreja Matriz São Sebastião', author: 'Maria S.', turma: '6ºA', category: '⛪ Igreja', date: 'Hoje', likes: 24, img: 'https://images.unsplash.com/photo-1548625149-fc4a29cf7092?w=400&h=220&fit=crop', description: 'Igreja católica construída em 1920, representa um dos principais marcos históricos da cidade. Sua arquitetura em estilo neogótico apresenta elementos únicos preservados desde sua fundação.' },
-        { id: 2, title: 'Praça Central São Sebastião', author: 'João P.', turma: '7ºA', category: '🌳 Praça', date: 'Hoje', likes: 18, img: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=220&fit=crop', description: 'Principal ponto de encontro da população desde 1945. A praça foi reformada em 1980 mantendo características originais como o coreto central.' },
-        { id: 3, title: 'Antiga Estação Ferroviária', author: 'Ana C.', turma: '8ºA', category: '🚂 Patrimônio', date: 'Ontem', likes: 31, img: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=220&fit=crop', description: 'Estação construída em 1935 que conectava a cidade ao interior do estado. Desativada em 1970 após a expansão rodoviária, hoje é tombada como patrimônio histórico.' }
-    ];
+// Global feed data
+let ALL_FEED_POINTS = [];
+let currentFeedFilter = 'all';
+let currentCategoryFilter = 'all';
 
-    document.getElementById('feedContent').innerHTML = points.map((p, i) => `
-        <div style="background:var(--white);border:2px solid var(--gold);border-radius:14px;overflow:hidden;margin-bottom:1rem;cursor:pointer;transition:transform 0.2s;" onclick="openPointDetail(${p.id})" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+function renderFeed() {
+    ALL_FEED_POINTS = [
+        { id: 1, title: 'Igreja Matriz São Sebastião', author: 'Maria S.', turma: '6ºA', turmaCode: '6ANOA', category: '⛪ Igreja', categoryCode: 'igreja', date: 'Hoje', likes: 24, img: 'https://images.unsplash.com/photo-1548625149-fc4a29cf7092?w=400&h=220&fit=crop', description: 'Igreja católica construída em 1920, representa um dos principais marcos históricos da cidade. Sua arquitetura em estilo neogótico apresenta elementos únicos preservados desde sua fundação.' },
+        { id: 2, title: 'Praça Central São Sebastião', author: 'João P.', turma: '7ºA', turmaCode: '7ANOA', category: '🌳 Praça', categoryCode: 'praca', date: 'Hoje', likes: 18, img: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=220&fit=crop', description: 'Principal ponto de encontro da população desde 1945. A praça foi reformada em 1980 mantendo características originais como o coreto central.' },
+        { id: 3, title: 'Antiga Estação Ferroviária', author: 'Ana C.', turma: '8ºA', turmaCode: '8ANOA', category: '🚂 Patrimônio', categoryCode: 'patrimonio', date: 'Ontem', likes: 31, img: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=220&fit=crop', description: 'Estação construída em 1935 que conectava a cidade ao interior do estado. Desativada em 1970 após a expansão rodoviária, hoje é tombada como patrimônio histórico.' },
+        { id: 4, title: 'Mercado Municipal', author: 'Carlos R.', turma: '6ºA', turmaCode: '6ANOA', category: '🏪 Comércio', categoryCode: 'comercio', date: 'Ontem', likes: 15, img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=220&fit=crop', description: 'Mercado inaugurado em 1978, principal ponto de comércio local.' }
+    ];
+    
+    updateFeedDisplay();
+}
+
+function updateFeedDisplay() {
+    let filtered = ALL_FEED_POINTS;
+    
+    // Filter by turma
+    if (currentFeedFilter === 'minha-turma' && AppState.user) {
+        filtered = filtered.filter(p => p.turmaCode === AppState.user.turma);
+    }
+    
+    // Filter by category
+    if (currentCategoryFilter !== 'all') {
+        filtered = filtered.filter(p => p.categoryCode === currentCategoryFilter);
+    }
+    
+    if (filtered.length === 0) {
+        document.getElementById('feedContent').innerHTML = `
+            <div style="text-align:center;padding:3rem 1rem;color:var(--gray);">
+                <div style="font-size:3rem;margin-bottom:0.75rem;">🔍</div>
+                <div style="font-weight:600;margin-bottom:0.35rem;">Nenhum ponto encontrado</div>
+                <div style="font-size:0.85rem;">Tente ajustar os filtros</div>
+            </div>
+        `;
+        return;
+    }
+
+    document.getElementById('feedContent').innerHTML = filtered.map((p, i) => `
+        <div class="feed-card" data-turma="${p.turmaCode}" data-category="${p.categoryCode}" style="background:var(--white);border:2px solid var(--gold);border-radius:14px;overflow:hidden;margin-bottom:1rem;cursor:pointer;transition:transform 0.2s;" onclick="openPointDetail(${p.id})" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
             <img src="${p.img}" style="width:100%;height:180px;object-fit:cover;" alt="${p.title}">
             <div style="padding:1rem;">
                 <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
@@ -2357,6 +2557,20 @@ function renderFeed() {
     `).join('');
 }
 
+function filterFeed(filter, el) {
+    document.querySelectorAll('.feed-filter').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    currentFeedFilter = filter;
+    updateFeedDisplay();
+}
+
+function filterFeedCategory(category, el) {
+    document.querySelectorAll('.feed-filter-cat').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    currentCategoryFilter = category;
+    updateFeedDisplay();
+}
+
 // Point details data
 const POINT_DETAILS = {
     1: { title: 'Igreja Matriz São Sebastião', category: '⛪ Igreja', author: 'Maria S.', turma: '6ºA', img: 'https://images.unsplash.com/photo-1548625149-fc4a29cf7092?w=800&h=400&fit=crop', description: 'Igreja católica construída em 1920, representa um dos principais marcos históricos da cidade. Sua arquitetura em estilo neogótico apresenta elementos únicos preservados desde sua fundação. O prédio passou por restauração em 1980 que manteve suas características originais. É local de festas religiosas tradicionais que reúnem toda a comunidade.', lat: -5.291234, lng: -44.493456, status: 'approved' },
@@ -2364,7 +2578,10 @@ const POINT_DETAILS = {
     3: { title: 'Antiga Estação Ferroviária', category: '🚂 Patrimônio', author: 'Ana C.', turma: '8ºA', img: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=800&h=400&fit=crop', description: 'Estação construída em 1935 que conectava a cidade ao interior do estado. Desativada em 1970 após a expansão rodoviária, hoje é tombada como patrimônio histórico municipal. O prédio original de tijolos vermelhos resistiu ao tempo e ainda guarda trilhos e plataformas originais.', lat: -5.290000, lng: -44.495000, status: 'pending' }
 };
 
+let currentPointId = null;
+
 function openPointDetail(id) {
+    currentPointId = id;
     const point = POINT_DETAILS[id];
     if (!point) return;
     
@@ -2380,8 +2597,50 @@ function openPointDetail(id) {
     document.getElementById('pointDetailModal').classList.add('active');
 }
 
-function closePointDetail() {
-    document.getElementById('pointDetailModal').classList.remove('active');
+async function sharePoint() {
+    if (!currentPointId) return;
+    
+    const point = POINT_DETAILS[currentPointId];
+    if (!point) return;
+    
+    const shareData = {
+        title: `📍 ${point.title} — PK Explorer`,
+        text: `Descobri este ponto histórico: ${point.title}\n\n${point.description.substring(0, 100)}...`,
+        url: window.location.origin + `?ponto=${currentPointId}`
+    };
+    
+    try {
+        // Try native Web Share API (works on mobile)
+        if (navigator.share) {
+            await navigator.share(shareData);
+            showToast('✅', 'Compartilhado!', 'Ponto compartilhado com sucesso');
+        } else {
+            // Fallback: Copy link to clipboard
+            const link = shareData.url;
+            await navigator.clipboard.writeText(link);
+            showToast('📋', 'Link copiado!', 'Cole o link onde quiser compartilhar');
+        }
+    } catch (err) {
+        if (err.name !== 'AbortError') {
+            // Manual fallback
+            const link = shareData.url;
+            const textArea = document.createElement('textarea');
+            textArea.value = link;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast('📋', 'Link copiado!', 'Cole onde quiser compartilhar');
+            } catch (e) {
+                showToast('❌', 'Erro', 'Não foi possível compartilhar');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+    }
 }
 
 // =================================================================
