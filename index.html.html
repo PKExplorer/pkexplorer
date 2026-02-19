@@ -1869,6 +1869,21 @@ function showApp() {
     document.getElementById('profileRole').textContent = u.role === 'professor' ? '👨‍🏫 Professor' : `👨‍🎓 Aluno · Turma ${formatTurma(u.turma)}`;
     document.getElementById('profileTurma').textContent = formatTurma(u.turma) || '—';
 
+    // Render teacher or student panel
+    if (u.role === 'professor') {
+        renderTeacherPanel();
+        document.getElementById('nav-missions').querySelector('.nav-label').textContent = 'Painel';
+        document.getElementById('nav-missions').querySelector('.nav-icon').textContent = '👨‍🏫';
+    }
+    
+    // Check for pending approvals notification
+    const pendingCount = getPendingPointsCount();
+    if (u.role === 'aluno' && pendingCount > 0) {
+        setTimeout(() => {
+            showToast('⏳', 'Pontos em análise', `Você tem ${pendingCount} ${pendingCount === 1 ? 'ponto aguardando' : 'pontos aguardando'} aprovação`);
+        }, 1500);
+    }
+
     navigateTo('home');
 
     setTimeout(() => {
@@ -2503,6 +2518,146 @@ function completeMission(name, xp) {
 let ALL_FEED_POINTS = [];
 let currentFeedFilter = 'all';
 let currentCategoryFilter = 'all';
+
+// Pending points database (simulated - would be from Supabase in production)
+let PENDING_POINTS = [
+    { id: 'p1', name: 'Casa Antiga da Dona Maria', author: 'Pedro Santos', turma: '7ºB', category: '🏠 Residência', img: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=400&h=220&fit=crop', description: 'Casa centenária com arquitetura colonial preservada.', date: 'Há 2 dias', lat: -5.291500, lng: -44.493800 },
+    { id: 'p2', name: 'Fonte do Centro', author: 'Ana Clara', turma: '6ºA', category: '💡 Curiosidade', img: 'https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400&h=220&fit=crop', description: 'Fonte histórica que abastecia a população no início do século XX.', date: 'Ontem', lat: -5.292200, lng: -44.494200 },
+    { id: 'p3', name: 'Capela São José', author: 'Lucas Oliveira', turma: '8ºA', category: '⛪ Igreja', img: 'https://images.unsplash.com/photo-1519491050282-cf00c82424b4?w=400&h=220&fit=crop', description: 'Capela construída em 1955 pelos moradores do bairro.', date: 'Há 3 dias', lat: -5.290500, lng: -44.495500 }
+];
+
+function getPendingPointsCount() {
+    return PENDING_POINTS.length;
+}
+
+function renderTeacherPanel() {
+    const pendingCount = PENDING_POINTS.length;
+    
+    document.getElementById('missionsContent').innerHTML = `
+        <div class="card" style="background:linear-gradient(135deg,rgba(45,90,61,0.05),rgba(196,163,90,0.05));">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+                <div>
+                    <div style="font-size:1.5rem;font-weight:700;font-family:'Playfair Display',serif;color:var(--primary);">Painel do Professor</div>
+                    <div style="font-size:0.9rem;color:var(--gray);margin-top:0.25rem;">Gerencie os pontos cadastrados pelos alunos</div>
+                </div>
+                <div style="background:${pendingCount > 0 ? 'var(--orange)' : 'var(--green)'};color:white;width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+                    ${pendingCount}
+                </div>
+            </div>
+            
+            ${pendingCount > 0 ? `
+                <div style="background:rgba(255,140,0,0.1);border:2px solid var(--orange);border-radius:12px;padding:1rem;margin-bottom:1rem;">
+                    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+                        <span style="font-size:1.25rem;">⏳</span>
+                        <span style="font-weight:700;color:var(--orange);">${pendingCount} ${pendingCount === 1 ? 'ponto aguardando' : 'pontos aguardando'} sua aprovação</span>
+                    </div>
+                    <div style="font-size:0.85rem;color:var(--gray);">Revise as informações e aprove ou solicite correções</div>
+                </div>
+            ` : `
+                <div style="background:rgba(16,185,129,0.1);border:2px solid var(--green);border-radius:12px;padding:1.5rem;text-align:center;">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">✅</div>
+                    <div style="font-weight:700;color:var(--green);margin-bottom:0.25rem;">Tudo em dia!</div>
+                    <div style="font-size:0.85rem;color:var(--gray);">Não há pontos pendentes no momento</div>
+                </div>
+            `}
+        </div>
+        
+        ${pendingCount > 0 ? PENDING_POINTS.map(p => `
+            <div class="card">
+                <div style="display:flex;gap:1rem;margin-bottom:1rem;">
+                    <img src="${p.img}" style="width:120px;height:120px;object-fit:cover;border-radius:12px;flex-shrink:0;" alt="${p.name}">
+                    <div style="flex:1;">
+                        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--primary);margin-bottom:0.35rem;">${p.name}</div>
+                        <div style="font-size:0.8rem;color:var(--gray);margin-bottom:0.5rem;">
+                            👤 ${p.author} · Turma ${p.turma}<br>
+                            📅 Cadastrado ${p.date}
+                        </div>
+                        <span style="background:rgba(45,90,61,0.1);color:var(--primary);padding:0.25rem 0.65rem;border-radius:10px;font-size:0.75rem;font-weight:600;">${p.category}</span>
+                    </div>
+                </div>
+                
+                <div style="background:var(--paper-dark);border-radius:10px;padding:0.875rem;margin-bottom:1rem;">
+                    <div style="font-weight:600;font-size:0.85rem;color:var(--primary);margin-bottom:0.35rem;">📖 Descrição:</div>
+                    <div style="font-size:0.9rem;line-height:1.6;color:var(--ink);">${p.description}</div>
+                </div>
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;">
+                    <button onclick="viewPointOnMap('${p.id}')" style="padding:0.75rem;background:var(--white);border:2px solid var(--primary);color:var(--primary);border-radius:10px;cursor:pointer;font-weight:600;font-size:0.85rem;font-family:'Crimson Text',serif;transition:all 0.2s;" onmouseover="this.style.background='var(--primary)';this.style.color='white'" onmouseout="this.style.background='var(--white)';this.style.color='var(--primary)'">
+                        🗺️ Ver
+                    </button>
+                    <button onclick="rejectPoint('${p.id}', '${p.author}')" style="padding:0.75rem;background:var(--white);border:2px solid var(--red);color:var(--red);border-radius:10px;cursor:pointer;font-weight:600;font-size:0.85rem;font-family:'Crimson Text',serif;transition:all 0.2s;" onmouseover="this.style.background='var(--red)';this.style.color='white'" onmouseout="this.style.background='var(--white)';this.style.color='var(--red)'">
+                        ❌ Rejeitar
+                    </button>
+                    <button onclick="approvePoint('${p.id}', '${p.author}')" style="padding:0.75rem;background:var(--green);border:2px solid var(--green);color:white;border-radius:10px;cursor:pointer;font-weight:600;font-size:0.85rem;font-family:'Crimson Text',serif;transition:all 0.2s;box-shadow:0 4px 12px rgba(16,185,129,0.3);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(16,185,129,0.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(16,185,129,0.3)'">
+                        ✅ Aprovar
+                    </button>
+                </div>
+            </div>
+        `).join('') : ''}
+    `;
+}
+
+function viewPointOnMap(pointId) {
+    const point = PENDING_POINTS.find(p => p.id === pointId);
+    if (!point || !AppState.map) return;
+    
+    navigateTo('map');
+    setTimeout(() => {
+        AppState.map.flyTo({
+            center: [point.lng, point.lat],
+            zoom: 17,
+            duration: 2000
+        });
+        showToast('🗺️', 'Visualizando', `"${point.name}" no mapa`);
+    }, 300);
+}
+
+function approvePoint(pointId, authorName) {
+    if (!confirm(`Aprovar o ponto cadastrado por ${authorName}?`)) return;
+    
+    // Remove from pending
+    PENDING_POINTS = PENDING_POINTS.filter(p => p.id !== pointId);
+    
+    // Re-render panel
+    renderTeacherPanel();
+    
+    // Save approval notification for student
+    saveNotificationForStudent(authorName, 'approved', pointId);
+    
+    showToast('✅', 'Ponto aprovado!', `${authorName} será notificado`);
+}
+
+function rejectPoint(pointId, authorName) {
+    const reason = prompt(`Por que este ponto está sendo rejeitado?\n\nMotivo (será enviado para ${authorName}):`);
+    if (!reason || reason.trim() === '') return;
+    
+    // Remove from pending
+    PENDING_POINTS = PENDING_POINTS.filter(p => p.id !== pointId);
+    
+    // Re-render panel
+    renderTeacherPanel();
+    
+    // Save rejection notification for student
+    saveNotificationForStudent(authorName, 'rejected', pointId, reason);
+    
+    showToast('❌', 'Ponto rejeitado', `${authorName} receberá o motivo`);
+}
+
+function saveNotificationForStudent(studentName, action, pointId, reason = '') {
+    // In production, this would save to Supabase
+    // For now, simulate by storing in localStorage
+    const notifications = JSON.parse(localStorage.getItem('pk_notifications') || '[]');
+    notifications.push({
+        id: Date.now(),
+        studentName,
+        action,
+        pointId,
+        reason,
+        timestamp: new Date().toISOString(),
+        read: false
+    });
+    localStorage.setItem('pk_notifications', JSON.stringify(notifications));
+}
 
 function renderFeed() {
     ALL_FEED_POINTS = [
