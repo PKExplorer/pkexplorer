@@ -18,6 +18,10 @@
     <title>PK Explorer — Sistema Completo</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
     <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
@@ -2636,12 +2640,12 @@
                 </div>
                 
                 <div class="missions-list">
-                    <div class="mission-item completed">
+                    <div class="mission-item completed" onclick="showMissionDetails('cadastrar')" style="cursor:pointer;">
                         <input type="checkbox" checked disabled>
                         <span class="mission-text">Cadastrar 1 ponto histórico</span>
                         <span class="mission-badge">✓ 7</span>
                     </div>
-                    <div class="mission-item">
+                    <div class="mission-item" onclick="showMissionDetails('visitar')" style="cursor:pointer;">
                         <input type="checkbox" disabled>
                         <span class="mission-text">Visitar 2 locais no mapa</span>
                         <div class="mission-progress-inline">
@@ -2651,7 +2655,7 @@
                             <span class="progress-text-mini">1/2</span>
                         </div>
                     </div>
-                    <div class="mission-item">
+                    <div class="mission-item" onclick="showMissionDetails('xp')" style="cursor:pointer;">
                         <input type="checkbox" disabled>
                         <span class="mission-text">Ganhar 100 XP</span>
                         <div class="mission-progress-inline">
@@ -2684,7 +2688,7 @@
                 </div>
                 
                 <div class="stats-grid">
-                    <div class="stat-box">
+                    <div class="stat-box" onclick="showPointsList()" style="cursor:pointer;">
                         <div class="stat-icon-big">📍</div>
                         <div class="stat-content">
                             <div class="stat-label">Pontos cadastrados</div>
@@ -2768,8 +2772,8 @@
                     </div>
                     <div class="personalization-preview">
                         <div class="avatar-preview">
-                            <div class="avatar-option">👨‍🎓</div>
-                            <div class="avatar-option">👩‍🎓</div>
+                            <div class="avatar-option" onclick="selectAvatar('👨‍🎓')">👨‍🎓</div>
+                            <div class="avatar-option" onclick="selectAvatar('👩‍🎓')">👩‍🎓</div>
                         </div>
                         <div class="map-preview">
                             <div class="map-option"></div>
@@ -3585,6 +3589,68 @@ function viewAllFeedback(){
 function stopARMode(){closeAR();}
 
 // =================================================================
+// MISSION DETAILS, AVATAR & POINTS LIST
+// =================================================================
+function showMissionDetails(mission){
+    const details={
+        cadastrar:{title:'📍 Cadastrar 1 ponto histórico',description:'Explore a cidade e cadastre um local histórico que você conhece ou descobre.',reward:'+50 XP por ponto cadastrado',progress:'7/1 (Completo! ✅)',status:'completed',tip:'Você já cadastrou 7 pontos! Parabéns!'},
+        visitar:{title:'🗺️ Visitar 2 locais no mapa',description:'Use o Modo AR para visitar locais históricos próximos a você.',reward:'+30 XP por local visitado',progress:'1/2 (50%)',status:'in_progress',tip:'Falta visitar mais 1 local! Ative o Modo AR e explore.'},
+        xp:{title:'⭐ Ganhar 100 XP',description:'Acumule pontos de experiência cadastrando pontos, visitando locais e dando sugestões.',reward:'Badge Explorador Ativo 🏆',progress:'50/100 XP',status:'in_progress',tip:'Você está no meio do caminho! Continue explorando.'}
+    };
+    const m=details[mission];
+    if(!m)return;
+    showModal(`<div style="background:white;padding:2rem;border-radius:16px;max-width:400px;text-align:center;"><h2 style="color:var(--primary);margin:0 0 1rem 0;font-family:'Playfair Display',serif;">${m.title}</h2><p style="color:var(--gray);margin-bottom:1.5rem;line-height:1.6;">${m.description}</p><div style="background:var(--paper);padding:1rem;border-radius:12px;margin-bottom:1rem;"><div style="font-size:0.9rem;color:var(--gray);margin-bottom:0.5rem;">Progresso:</div><div style="font-size:1.25rem;font-weight:700;color:var(--primary);">${m.progress}</div></div><div style="background:rgba(196,163,90,0.1);padding:1rem;border-radius:12px;margin-bottom:1rem;border:2px solid var(--gold);"><div style="font-size:0.9rem;color:var(--primary);margin-bottom:0.5rem;">Recompensa:</div><div style="font-size:1.1rem;font-weight:700;color:var(--gold);">${m.reward}</div></div><div style="background:var(--paper-dark);padding:1rem;border-radius:8px;margin-bottom:1.5rem;"><div style="font-size:0.85rem;color:var(--gray);">💡 ${m.tip}</div></div><button onclick="closeModal()" style="width:100%;padding:1rem;background:var(--primary);color:white;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;">Entendido!</button></div>`);
+}
+
+function selectAvatar(emoji){
+    if(!AppState.user)return;
+    AppState.user.avatar=emoji;
+    Auth.setCurrent(AppState.user);
+    const avatarEl=document.getElementById('profileAvatarBig');
+    avatarEl.textContent=emoji;
+    avatarEl.style.backgroundImage='none';
+    document.getElementById('topbarAvatar').textContent=emoji;
+    showToast('✅','Avatar atualizado!','Seu novo avatar foi salvo');
+}
+
+function showPointsList(){
+    const points=[
+        {title:'Igreja Matriz',status:'approved',category:'Religiosa',xp:50},
+        {title:'Praça Central',status:'approved',category:'Praça',xp:50},
+        {title:'Estação Ferroviária',status:'pending',category:'Patrimônio',xp:0},
+        {title:'Mercado Municipal',status:'approved',category:'Comércio',xp:50},
+        {title:'Casa da Cultura',status:'pending',category:'Patrimônio',xp:0},
+        {title:'Escola Antiga',status:'approved',category:'Educação',xp:50},
+        {title:'Coreto da Praça',status:'approved',category:'Lazer',xp:50}
+    ];
+    let html='<div style="background:white;padding:1.5rem;border-radius:16px;max-width:500px;"><h2 style="color:var(--primary);margin:0 0 1.5rem 0;font-family:\'Playfair Display\',serif;">📍 Meus Pontos Cadastrados</h2><div style="max-height:400px;overflow-y:auto;">';
+    points.forEach(p=>{
+        const sc=p.status==='approved'?'var(--green)':'var(--gold)';
+        const st=p.status==='approved'?'✅ Aprovado':'⏳ Pendente';
+        html+=`<div style="background:var(--paper);padding:1rem;border-radius:12px;margin-bottom:0.75rem;border-left:4px solid ${sc};"><div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:0.5rem;"><strong style="color:var(--primary);font-size:1rem;">${p.title}</strong><span style="color:${sc};font-size:0.85rem;font-weight:600;">${st}</span></div><div style="font-size:0.85rem;color:var(--gray);margin-bottom:0.25rem;">${p.category}</div><div style="font-size:0.9rem;color:var(--gold);font-weight:600;">${p.xp>0?'+'+p.xp+' XP':'Aguardando aprovação'}</div></div>`;
+    });
+    html+='</div><button onclick="closeModal()" style="width:100%;margin-top:1rem;padding:1rem;background:var(--primary);color:white;border:none;border-radius:12px;font-weight:700;cursor:pointer;">Fechar</button></div>';
+    showModal(html);
+}
+
+function showModal(content){
+    let modal=document.getElementById('genericModal');
+    if(!modal){
+        modal=document.createElement('div');
+        modal.id='genericModal';
+        modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+        document.body.appendChild(modal);
+    }
+    modal.innerHTML=content;
+    modal.style.display='flex';
+}
+
+function closeModal(){
+    const modal=document.getElementById('genericModal');
+    if(modal)modal.style.display='none';
+}
+
+// =================================================================
 // APP SHELL
 // =================================================================
 function showApp() {
@@ -3678,8 +3744,14 @@ function navigateTo(screen) {
         logo.style.display = 'none';
     }
 
-    if (screen === 'map' && AppState.map) {
-        setTimeout(() => AppState.map.resize(), 50);
+    if (screen === 'map') {
+        if (!AppState.map) {
+            setTimeout(() => initMap(), 100);
+        } else {
+            setTimeout(() => {
+                AppState.map.invalidateSize();
+            }, 50);
+        }
     }
 }
 
@@ -3770,56 +3842,76 @@ let currentLayer = 'streets';
 
 function initMap() {
     if (AppState.map) return;
-
-    AppState.map = new maplibregl.Map({
-        container: 'map',
-        style: MAP_LAYERS.streets,
-        center: [-44.493456, -5.291234],
-        zoom: 14,
-        minZoom: 3,
-        maxZoom: 22,
-        pitch: 0,
-        bearing: 0
-    });
-
-    AppState.map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
     
-    // Enhanced GPS with tracking and rotation
-    const geolocate = new maplibregl.GeolocateControl({
-        positionOptions: {
-            enableHighAccuracy: true,
-            timeout: 6000
-        },
-        trackUserLocation: true,
-        showUserHeading: true,
-        showAccuracyCircle: true
-    });
-    
-    AppState.map.addControl(geolocate, 'bottom-right');
-    
-    // Auto-activate GPS on map load
-    AppState.map.on('load', () => {
-        geolocate.trigger();
-    });
+    const mapEl = document.getElementById('map');
+    if (!mapEl) return;
 
-    // Track user orientation on mobile
-    if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
-        window.addEventListener('deviceorientation', (e) => {
-            if (e.alpha !== null && AppState.map) {
-                AppState.map.setBearing(-e.alpha);
+    try {
+        AppState.map = L.map('map').setView([-5.2902343, -44.4895682], 14);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(AppState.map);
+        
+        // Sample points
+        const samplePoints = [
+            { name: 'Igreja Matriz', lat: -5.2902343, lng: -44.4895682, status: 'approved', category: 'igreja' },
+            { name: 'Praça Central', lat: -5.292000, lng: -44.494000, status: 'approved', category: 'praca' },
+            { name: 'Estação Ferroviária', lat: -5.290000, lng: -44.495000, status: 'pending', category: 'patrimonio' },
+            { name: 'Mercado Municipal', lat: -5.293000, lng: -44.492000, status: 'approved', category: 'comercio' },
+            { name: 'Casa da Cultura', lat: -5.291800, lng: -44.492800, status: 'pending', category: 'patrimonio' }
+        ];
+
+        samplePoints.forEach(p => addMapMarker(p));
+        
+        // GPS location control
+        L.control.locate({
+            position: 'bottomright',
+            strings: {
+                title: "Mostrar minha localização"
             }
-        });
+        }).addTo(AppState.map);
+        
+    } catch(e) {
+        console.error('Erro ao inicializar mapa:', e);
+        showToast('❌', 'Erro no mapa', 'Verifique sua conexão');
     }
+}
 
-    const samplePoints = [
-        { name: 'Igreja Matriz', lat: -5.291234, lng: -44.493456, status: 'approved', category: 'igreja' },
-        { name: 'Praça Central', lat: -5.292000, lng: -44.494000, status: 'approved', category: 'praca' },
-        { name: 'Estação Ferroviária', lat: -5.290000, lng: -44.495000, status: 'pending', category: 'patrimonio' },
-        { name: 'Mercado Municipal', lat: -5.293000, lng: -44.492000, status: 'approved', category: 'comercio' },
-        { name: 'Casa da Cultura', lat: -5.291800, lng: -44.492800, status: 'pending', category: 'patrimonio' }
-    ];
-
-    samplePoints.forEach(p => addMapMarker(p));
+function addMapMarker(point) {
+    const colors = { approved: '#10B981', pending: '#FF8C00', rejected: '#8B1A1A' };
+    const icons = { 
+        igreja: '⛪', 
+        praca: '🌳', 
+        patrimonio: '🏛️', 
+        comercio: '🏪', 
+        escola: '🏫',
+        residencia: '🏠',
+        'marco-geo': '🗻',
+        educativo: '📚',
+        cultural: '🎭',
+        lazer: '🎪'
+    };
+    
+    const icon = L.divIcon({
+        html: `<div style="font-size:2rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))">${icons[point.category] || '📍'}</div>`,
+        className: 'custom-marker',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32]
+    });
+    
+    const marker = L.marker([point.lat, point.lng], { icon }).addTo(AppState.map);
+    
+    marker.bindPopup(`
+        <div style="font-family:'Crimson Text',serif;">
+            <strong>${point.name}</strong><br>
+            <span style="color:${colors[point.status]}">${point.status === 'approved' ? '✓ Aprovado' : '⏳ Pendente'}</span>
+        </div>
+    `);
+    
+    AppState.markers = AppState.markers || [];
+    AppState.markers.push({ marker, point });
 }
 
 function toggleLayerPanel() {
@@ -3880,90 +3972,6 @@ function changeMapLayer(layerType, element) {
     
     showToast('🗺️', 'Camada alterada', `Visualizando: ${layerType === 'streets' ? 'Mapa de Ruas' : layerType === 'topo' ? 'Topográfico' : 'Satélite'}`);
     toggleLayerPanel();
-}
-
-function addMapMarker(point) {
-    const colors = { approved: '#10B981', pending: '#FF8C00', rejected: '#8B1A1A' };
-    const icons = { 
-        igreja: '⛪', 
-        praca: '🌳', 
-        patrimonio: '🏛️', 
-        comercio: '🏪', 
-        escola: '🏫',
-        residencia: '🏠',
-        'marco-geo': '🗻',
-        'curiosidade': '💡'
-    };
-    
-    // Create custom marker element with icon
-    const el = document.createElement('div');
-    el.style.cssText = `
-        width:36px;
-        height:36px;
-        border-radius:50%;
-        background:${colors[point.status] || '#FF8C00'};
-        border:3px solid white;
-        box-shadow:0 3px 12px rgba(0,0,0,0.4);
-        cursor:pointer;
-        transition:all 0.3s;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size:18px;
-        animation:markerPulse 2s infinite;
-    `;
-    el.innerHTML = icons[point.category] || '📍';
-    
-    el.onmouseenter = () => {
-        el.style.transform = 'scale(1.4)';
-        el.style.boxShadow = '0 6px 20px rgba(0,0,0,0.5)';
-    };
-    el.onmouseleave = () => {
-        el.style.transform = 'scale(1)';
-        el.style.boxShadow = '0 3px 12px rgba(0,0,0,0.4)';
-    };
-    
-    // Add pulse animation style if not exists
-    if (!document.getElementById('markerPulseStyle')) {
-        const style = document.createElement('style');
-        style.id = 'markerPulseStyle';
-        style.textContent = `
-            @keyframes markerPulse {
-                0%, 100% { box-shadow: 0 3px 12px rgba(0,0,0,0.4); }
-                50% { box-shadow: 0 3px 20px rgba(196,163,90,0.6); }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    const statusLabel = { approved: '✅ Aprovado', pending: '⏳ Pendente', rejected: '❌ Rejeitado' };
-    
-    // Click handler to open detail
-    el.onclick = () => {
-        // Find point ID from POINT_DETAILS
-        const pointId = Object.keys(POINT_DETAILS).find(id => 
-            POINT_DETAILS[id].title === point.name || 
-            POINT_DETAILS[id].lat === point.lat
-        );
-        if (pointId) {
-            openPointDetail(parseInt(pointId));
-        } else {
-            showToast('📍', point.name, statusLabel[point.status]);
-        }
-    };
-
-    const marker = new maplibregl.Marker({ element: el })
-        .setLngLat([point.lng, point.lat])
-        .setPopup(new maplibregl.Popup({ offset: 20, closeButton: false }).setHTML(`
-            <div style="font-family:'Crimson Text',serif;padding:0.5rem;">
-                <strong style="color:#2D5A3D;font-size:0.95rem;">${point.name}</strong><br>
-                <span style="font-size:0.8rem;color:#6B7280;">${statusLabel[point.status]}</span><br>
-                <span style="font-size:0.75rem;color:#C4A35A;margin-top:0.25rem;display:block;">👆 Clique para ver detalhes</span>
-            </div>
-        `))
-        .addTo(AppState.map);
-
-    AppState.markers.push({ marker, point });
 }
 
 function filterMap(filter, el) {
