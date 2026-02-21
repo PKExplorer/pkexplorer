@@ -1042,6 +1042,760 @@
 
         .btn-logout:hover { background: #6b1313; }
 
+        /* ==================== NEW PROFILE DESIGN ==================== */
+        .profile-header-new {
+            background: linear-gradient(135deg, #1e3d28 0%, #2d5a3d 100%);
+            padding: 1.5rem 1rem 1rem;
+            color: white;
+        }
+        
+        .profile-avatar-container {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-avatar-frame {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .profile-avatar-big-new {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            border: 4px solid var(--gold-light);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 8px rgba(196,163,90,0.1);
+        }
+        
+        .profile-camera-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: 3px solid white;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        
+        .profile-camera-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .profile-info-new {
+            text-align: center;
+        }
+        
+        .profile-name-new {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            margin: 0 0 0.25rem 0;
+            color: white;
+        }
+        
+        .profile-title-new {
+            font-size: 0.95rem;
+            color: var(--gold-light);
+            margin-bottom: 1rem;
+        }
+        
+        .profile-stats-inline {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-inline {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .stat-icon {
+            font-size: 1.1rem;
+        }
+        
+        .profile-progress-new {
+            max-width: 280px;
+            margin: 0 auto 1rem;
+        }
+        
+        .progress-track-new {
+            height: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-fill-new {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+        
+        .progress-label-new {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+        }
+        
+        .btn-explore-now {
+            width: calc(100% - 2rem);
+            margin: 0 auto;
+            padding: 1rem;
+            background: var(--gold);
+            color: var(--primary);
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 16px rgba(196,163,90,0.4);
+            transition: all 0.2s;
+        }
+        
+        .btn-explore-now:active {
+            transform: scale(0.98);
+        }
+        
+        /* Missions Card */
+        .missions-card {
+            background: white;
+            margin: 1rem;
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .card-header-new {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .card-icon {
+            font-size: 1.3rem;
+        }
+        
+        .card-title {
+            flex: 1;
+        }
+        
+        .card-menu {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+        
+        .missions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mission-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--paper);
+            border-radius: 10px;
+        }
+        
+        .mission-item.completed {
+            background: rgba(45,90,61,0.1);
+        }
+        
+        .mission-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        
+        .mission-text {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+        
+        .mission-badge {
+            background: var(--green);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .mission-progress-inline {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .progress-mini {
+            width: 60px;
+            height: 6px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-mini-fill {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 3px;
+        }
+        
+        .progress-text-mini {
+            font-size: 0.75rem;
+            color: var(--gray);
+            white-space: nowrap;
+        }
+        
+        .mission-reward {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: rgba(196,163,90,0.1);
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+        }
+        
+        .reward-icon {
+            font-size: 1.5rem;
+        }
+        
+        .reward-text {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .mission-overall-progress {
+            margin-top: 0.75rem;
+        }
+        
+        .progress-track-mission {
+            height: 6px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill-mission {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+            border-radius: 3px;
+        }
+        
+        /* Stats Card */
+        .stats-card {
+            background: white;
+            margin: 1rem;
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .ranking-badge {
+            background: rgba(196,163,90,0.15);
+            color: var(--gold);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-box {
+            background: var(--paper);
+            padding: 0.75rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .stat-icon-big {
+            font-size: 2rem;
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-number {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .mini-map-container {
+            margin-top: 1rem;
+        }
+        
+        .mini-map {
+            position: relative;
+            height: 100px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+        
+        .mini-map::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+        }
+        
+        .map-pin {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: pinBounce 2s infinite;
+        }
+        
+        @keyframes pinBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .btn-view-map {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-view-map:active {
+            transform: scale(0.98);
+        }
+        
+        /* Achievement Card */
+        .achievement-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .achievement-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .achievement-icon {
+            font-size: 1.3rem;
+        }
+        
+        .achievement-title {
+            flex: 1;
+        }
+        
+        .achievement-item {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--paper);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        
+        .achievement-badge {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .achievement-info {
+            flex: 1;
+        }
+        
+        .achievement-name {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.35rem;
+        }
+        
+        .achievement-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .progress-badge {
+            flex: 1;
+            height: 6px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-badge-fill {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 3px;
+        }
+        
+        .achievement-list-compact {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .achievement-mini {
+            font-size: 0.85rem;
+            color: var(--gray);
+            padding: 0.5rem;
+            background: var(--paper);
+            border-radius: 8px;
+        }
+        
+        .achievement-mini-map {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            padding: 0.5rem;
+            background: var(--paper);
+            border-radius: 8px;
+            justify-content: center;
+        }
+        
+        /* Personalization Card */
+        .personalization-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .personalization-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .personalization-preview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        
+        .avatar-preview, .map-preview {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .avatar-option {
+            width: 50px;
+            height: 50px;
+            background: var(--paper);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .avatar-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .map-option {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .map-option:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Motivation Footer */
+        .motivation-footer {
+            text-align: center;
+            padding: 1rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* ==================== FEEDBACK SCREEN ==================== */
+        .feedback-header {
+            background: linear-gradient(135deg, #1e3d28 0%, #2d5a3d 100%);
+            padding: 2rem 1rem 1.5rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .feedback-icon {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        .feedback-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            margin: 0;
+            color: var(--gold-light);
+        }
+        
+        .feedback-content {
+            padding: 1.5rem 1rem;
+        }
+        
+        .feedback-question {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feedback-question p {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .feedback-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 2px solid var(--paper-dark);
+            border-radius: 12px;
+            font-family: 'Crimson Text', serif;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 1.5rem;
+            background: var(--paper);
+            color: var(--primary);
+        }
+        
+        .feedback-textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: white;
+        }
+        
+        .feedback-textarea::placeholder {
+            color: var(--gray);
+            opacity: 0.6;
+        }
+        
+        .feedback-section-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .feedback-categories {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feedback-category {
+            background: var(--paper);
+            border: 2px solid transparent;
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Crimson Text', serif;
+        }
+        
+        .feedback-category:hover {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .feedback-category.selected {
+            background: white;
+            border-color: var(--gold);
+            box-shadow: 0 4px 16px rgba(196,163,90,0.3);
+        }
+        
+        .category-icon {
+            font-size: 1.75rem;
+        }
+        
+        .category-text {
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-align: left;
+        }
+        
+        .feedback-rating {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .star-btn {
+            background: none;
+            border: none;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            filter: grayscale(100%);
+            opacity: 0.4;
+        }
+        
+        .star-btn.active {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        .star-btn:hover {
+            transform: scale(1.15);
+        }
+        
+        .btn-submit-feedback {
+            width: 100%;
+            padding: 1.25rem;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            box-shadow: 0 6px 20px rgba(45,90,61,0.3);
+            transition: all 0.2s;
+            font-family: 'Crimson Text', serif;
+        }
+        
+        .btn-submit-feedback:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-icon {
+            font-size: 1.5rem;
+        }
+        
+        .feedback-thanks {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-top: 1.5rem;
+        }
+        
+        .thanks-avatar {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+        }
+        
+        .thanks-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+        
+        .thanks-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .thanks-text {
+            font-size: 0.95rem;
+            color: var(--gray);
+            margin: 0;
+        }
+
         /* ==================== NOTIFICATIONS ==================== */
         .toast-container {
             position: fixed;
@@ -1604,9 +2358,9 @@
                         <div class="quick-action-icon">📱</div>
                         <div class="quick-action-label">Modo AR</div>
                     </div>
-                    <div class="quick-action" onclick="navigateTo('feed')">
-                        <div class="quick-action-icon">📰</div>
-                        <div class="quick-action-label">Descobertas</div>
+                    <div class="quick-action" onclick="navigateTo('feedback')" style="background:var(--gold);color:var(--primary);">
+                        <div class="quick-action-icon">💡</div>
+                        <div class="quick-action-label">Sugestões</div>
                     </div>
                 </div>
 
@@ -1834,57 +2588,293 @@
 
         <!-- PROFILE -->
         <div class="screen" id="screen-profile">
-            <div class="profile-header">
-                <div style="position:relative;display:inline-block;">
-                    <div class="profile-avatar-big" id="profileAvatarBig">M</div>
-                    <button onclick="document.getElementById('profilePhotoInput').click()" style="position:absolute;bottom:0;right:0;width:40px;height:40px;border-radius:50%;background:var(--primary);color:white;border:3px solid var(--paper);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;box-shadow:0 4px 12px rgba(0,0,0,0.3);transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                        📷
+            <!-- Header do Perfil -->
+            <div class="profile-header-new">
+                <div class="profile-avatar-container">
+                    <div class="profile-avatar-frame">
+                        <div class="profile-avatar-big-new" id="profileAvatarBig">M</div>
+                        <button class="profile-camera-btn" onclick="document.getElementById('profilePhotoInput').click()">📷</button>
+                        <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;" onchange="updateProfilePhoto(this)">
+                    </div>
+                </div>
+                
+                <div class="profile-info-new">
+                    <h1 class="profile-name-new" id="profileName">Maria Santos</h1>
+                    <div class="profile-title-new" id="profileTitle">🏆 Exploradora Nível 1</div>
+                    
+                    <div class="profile-stats-inline">
+                        <div class="stat-inline">
+                            <span class="stat-icon">⭐</span>
+                            <span class="stat-value" id="profileXPValue">350 XP</span>
+                        </div>
+                        <div class="stat-inline">
+                            <span class="stat-icon">🔥</span>
+                            <span class="stat-value" id="profileStreak">Sequência: 5 dias</span>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-progress-new">
+                        <div class="progress-track-new">
+                            <div class="progress-fill-new" id="profileProgressBar" style="width:70%"></div>
+                        </div>
+                        <div class="progress-label-new" id="profileProgressText">Faltam 150 XP para Investigadora</div>
+                    </div>
+                </div>
+                
+                <button class="btn-explore-now" onclick="navigateTo('map')">
+                    <span class="btn-explore-icon">🗺️</span>
+                    <span class="btn-explore-text">Explorar agora</span>
+                </button>
+            </div>
+
+            <!-- Missões da Semana -->
+            <div class="missions-card">
+                <div class="card-header-new">
+                    <span class="card-icon">📦</span>
+                    <span class="card-title">Missões da Semana</span>
+                    <button class="card-menu">⋯</button>
+                </div>
+                
+                <div class="missions-list">
+                    <div class="mission-item completed">
+                        <input type="checkbox" checked disabled>
+                        <span class="mission-text">Cadastrar 1 ponto histórico</span>
+                        <span class="mission-badge">✓ 7</span>
+                    </div>
+                    <div class="mission-item">
+                        <input type="checkbox" disabled>
+                        <span class="mission-text">Visitar 2 locais no mapa</span>
+                        <div class="mission-progress-inline">
+                            <div class="progress-mini">
+                                <div class="progress-mini-fill" style="width:50%"></div>
+                            </div>
+                            <span class="progress-text-mini">1/2</span>
+                        </div>
+                    </div>
+                    <div class="mission-item">
+                        <input type="checkbox" disabled>
+                        <span class="mission-text">Ganhar 100 XP</span>
+                        <div class="mission-progress-inline">
+                            <div class="progress-mini">
+                                <div class="progress-mini-fill" style="width:50%"></div>
+                            </div>
+                            <span class="progress-text-mini">50/100 XP</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mission-reward">
+                    <span class="reward-icon">🏆</span>
+                    <span class="reward-text">Recompensa: Badge "Explorador Ativo"</span>
+                </div>
+                
+                <div class="mission-overall-progress">
+                    <div class="progress-track-mission">
+                        <div class="progress-fill-mission" style="width:33%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estatísticas do Explorador -->
+            <div class="stats-card">
+                <div class="card-header-new">
+                    <span class="card-icon">📊</span>
+                    <span class="card-title">Estatísticas do Explorador</span>
+                    <span class="ranking-badge">#4 na turma</span>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-icon-big">📍</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Pontos cadastrados</div>
+                            <div class="stat-number">✓ 7</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-box">
+                        <div class="stat-icon-big">📱</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Territórios descobertos</div>
+                            <div class="stat-number">🗺️ 3</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-box">
+                        <div class="stat-icon-big">😊</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Aprovados</div>
+                            <div class="stat-number">✓ 5</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-box">
+                        <div class="stat-icon-big">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Badges</div>
+                            <div class="stat-number">3</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mini-map-container">
+                    <div class="mini-map">
+                        <div class="map-pin" style="left:25%;top:30%">📍</div>
+                        <div class="map-pin" style="left:60%;top:45%">📍</div>
+                        <div class="map-pin" style="left:40%;top:70%">📍</div>
+                    </div>
+                    <button class="btn-view-map" onclick="navigateTo('map')">
+                        Ver meu mapa completo
                     </button>
-                    <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;" onchange="updateProfilePhoto(this)">
                 </div>
-                <div class="profile-name" id="profileName">Maria Santos</div>
-                <div class="profile-role" id="profileRole">Aluna · Turma 6ºA</div>
-                <div class="profile-level" id="profileLevel">⭐ Exploradora</div>
-                <div class="profile-xp-bar">
-                    <div class="profile-xp-label">
-                        <span>350 XP</span>
-                        <span>500 XP</span>
+            </div>
+
+            <!-- Conquistas e Personalização -->
+            <div style="display:grid;grid-template-columns:1fr;gap:1rem;padding:0 1rem;margin-bottom:1rem;">
+                <div class="achievement-card">
+                    <div class="achievement-header">
+                        <span class="achievement-icon">🏅</span>
+                        <span class="achievement-title">Você está em #4</span>
                     </div>
-                    <div class="profile-xp-track">
-                        <div class="profile-xp-fill" style="width:70%"></div>
+                    <div class="achievement-item">
+                        <div class="achievement-badge">
+                            <span style="font-size:2rem">🏆</span>
+                        </div>
+                        <div class="achievement-info">
+                            <div class="achievement-name">Explorador Urbano</div>
+                            <div class="achievement-progress">
+                                <div class="progress-badge">
+                                    <div class="progress-badge-fill" style="width:50%"></div>
+                                </div>
+                                <span>⭐ 50 XP</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="achievement-list-compact">
+                        <div class="achievement-mini">📍 Praça Central cadastrada</div>
+                        <div class="achievement-mini">⭐ +50 XP ganho</div>
+                        <div class="achievement-mini-map">
+                            🗺️ <span style="opacity:0.7">XP</span>
+                            🎨 
+                            📱
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="personalization-card">
+                    <div class="personalization-header">
+                        <span>🎨</span>
+                        <span>Personalizar perfil</span>
+                    </div>
+                    <div class="personalization-preview">
+                        <div class="avatar-preview">
+                            <div class="avatar-option">👨‍🎓</div>
+                            <div class="avatar-option">👩‍🎓</div>
+                        </div>
+                        <div class="map-preview">
+                            <div class="map-option"></div>
+                            <div class="map-option"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="profile-section">
-                <div class="profile-row">
-                    <div class="profile-row-label">📍 Pontos cadastrados</div>
-                    <div class="profile-row-value" id="profileStatPoints">7</div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-row-label">✅ Aprovados</div>
-                    <div class="profile-row-value">5</div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-row-label">🏆 Badges conquistados</div>
-                    <div class="profile-row-value">3</div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-row-label">📊 Posição no ranking</div>
-                    <div class="profile-row-value">#4 · Turma 6ºA</div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-row-label">🎓 Turma</div>
-                    <div class="profile-row-value" id="profileTurma">6º Ano A</div>
-                </div>
+            <!-- Motivação -->
+            <div class="motivation-footer">
+                <p>Cada lugar que você descobre conta uma história.</p>
+                <p style="opacity:0.8;margin-top:0.25rem">Continue explorando.</p>
             </div>
 
-            <div style="padding: 0 1.25rem; margin-bottom: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <!-- Botões de Ação -->
+            <div style="padding:0 1rem;margin-bottom:1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
                 <button class="btn btn-primary" onclick="navigateTo('missions')">🎯 Missões</button>
-                <button class="btn" style="background: var(--paper-dark); color: var(--primary);" onclick="showToast('🔭', 'Em breve', 'Modo AR disponível na Parte 8!')">🔭 Modo AR</button>
+                <button class="btn" style="background:var(--primary);color:white;" onclick="toggleARMode()">📱 Modo AR</button>
+            </div>
+            
+            <div style="padding:0 1rem;margin-bottom:1rem;">
+                <button class="btn" style="background:var(--gold);color:var(--primary);width:100%;" onclick="navigateTo('feedback')">
+                    💡 Dar sua opinião
+                </button>
             </div>
 
             <button class="btn-logout" onclick="logout()">🚪 Sair da conta</button>
+        </div>
+
+        <!-- FEEDBACK SCREEN -->
+        <div class="screen" id="screen-feedback">
+            <div class="feedback-header">
+                <div class="feedback-icon">💡</div>
+                <h1 class="feedback-title">Sugestões dos Exploradores</h1>
+            </div>
+            
+            <div class="feedback-content">
+                <div class="feedback-question">
+                    <p>Como podemos melhorar o PK Explorer?</p>
+                </div>
+                
+                <textarea 
+                    id="feedbackText" 
+                    class="feedback-textarea" 
+                    placeholder="Escreva sua ideia..."
+                    maxlength="500"></textarea>
+                
+                <div class="feedback-section-title">Selecione o tema da sua ideia:</div>
+                
+                <div class="feedback-categories">
+                    <button class="feedback-category" data-category="jogos" onclick="selectFeedbackCategory('jogos')">
+                        <span class="category-icon">🎮</span>
+                        <span class="category-text">Jogos e desafios</span>
+                    </button>
+                    
+                    <button class="feedback-category" data-category="mapa" onclick="selectFeedbackCategory('mapa')">
+                        <span class="category-icon">🗺️</span>
+                        <span class="category-text">Melhorar o mapa</span>
+                    </button>
+                    
+                    <button class="feedback-category" data-category="pontos" onclick="selectFeedbackCategory('pontos')">
+                        <span class="category-icon">🏆</span>
+                        <span class="category-text">Pontos e ranking</span>
+                    </button>
+                    
+                    <button class="feedback-category" data-category="visual" onclick="selectFeedbackCategory('visual')">
+                        <span class="category-icon">🎨</span>
+                        <span class="category-text">Visual do app</span>
+                    </button>
+                    
+                    <button class="feedback-category" data-category="aprendizagem" onclick="selectFeedbackCategory('aprendizagem')">
+                        <span class="category-icon">📚</span>
+                        <span class="category-text">Aprendizagem</span>
+                    </button>
+                    
+                    <button class="feedback-category" data-category="problemas" onclick="selectFeedbackCategory('problemas')">
+                        <span class="category-icon">🐞</span>
+                        <span class="category-text">Problemas/erros</span>
+                    </button>
+                </div>
+                
+                <div class="feedback-section-title">O quanto você gosta do app?</div>
+                
+                <div class="feedback-rating">
+                    <button class="star-btn" data-rating="1" onclick="setFeedbackRating(1)">⭐</button>
+                    <button class="star-btn" data-rating="2" onclick="setFeedbackRating(2)">⭐</button>
+                    <button class="star-btn" data-rating="3" onclick="setFeedbackRating(3)">⭐</button>
+                    <button class="star-btn" data-rating="4" onclick="setFeedbackRating(4)">⭐</button>
+                    <button class="star-btn" data-rating="5" onclick="setFeedbackRating(5)">⭐</button>
+                </div>
+                
+                <button class="btn-submit-feedback" onclick="submitFeedback()">
+                    <span class="btn-icon">🚀</span>
+                    <span class="btn-text">Enviar sugestão</span>
+                </button>
+                
+                <div class="feedback-thanks" id="feedbackThanks" style="display:none;">
+                    <div class="thanks-avatar">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23c4a35a'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%232d5a3d'%3E😊%3C/text%3E%3C/svg%3E" alt="Explorador">
+                    </div>
+                    <p class="thanks-title">Obrigado, explorador!</p>
+                    <p class="thanks-text">Sua ideia pode aparecer na próxima atualização.</p>
+                </div>
+            </div>
         </div>
 
     </div><!-- /screens -->
@@ -2361,7 +3351,237 @@ function updateARCounter(){
     document.getElementById('arCounterText').textContent=`${count}/22 descobertos`;
 }
 
+// =================================================================
+// PROFILE LEVEL & PROGRESS SYSTEM
+// =================================================================
+function calculateLevel(xp){
+    if(xp<500)return{level:1,name:'Exploradora',next:500};
+    if(xp<1000)return{level:2,name:'Investigadora',next:1000};
+    if(xp<2000)return{level:3,name:'Historiadora',next:2000};
+    if(xp<4000)return{level:4,name:'Mestre Exploradora',next:4000};
+    return{level:5,name:'Guardiã da Memória',next:5000};
+}
+
+function updateProfileDisplay(){
+    if(!AppState.user)return;
+    
+    const xp=AppState.user.xp||0;
+    const level=calculateLevel(xp);
+    const progress=(xp/level.next)*100;
+    const remaining=level.next-xp;
+    
+    // Update name and title
+    document.getElementById('profileName').textContent=AppState.user.name;
+    document.getElementById('profileTitle').textContent=`🏆 ${level.name} Nível ${level.level}`;
+    
+    // Update XP
+    document.getElementById('profileXPValue').textContent=`${xp} XP`;
+    
+    // Update progress bar
+    const bar=document.getElementById('profileProgressBar');
+    if(bar){
+        bar.style.width=`${Math.min(progress,100)}%`;
+    }
+    
+    // Update progress text
+    const nextLevelName=level.level<5?calculateLevel(level.next).name:'Máximo';
+    document.getElementById('profileProgressText').textContent=
+        level.level<5?`Faltam ${remaining} XP para ${nextLevelName}`:'Nível Máximo Alcançado!';
+    
+    // Update streak (example - would be calculated from real data)
+    const streak=calculateStreak();
+    document.getElementById('profileStreak').textContent=`Sequência: ${streak} dias`;
+    
+    // Update avatar
+    const initial=AppState.user.name?AppState.user.name.charAt(0).toUpperCase():'U';
+    document.getElementById('profileAvatarBig').textContent=initial;
+    
+    // Update photo if exists
+    if(AppState.user.photo){
+        const avatarEl=document.getElementById('profileAvatarBig');
+        avatarEl.style.backgroundImage=`url(${AppState.user.photo})`;
+        avatarEl.style.backgroundSize='cover';
+        avatarEl.style.backgroundPosition='center';
+        avatarEl.textContent='';
+    }
+}
+
+function calculateStreak(){
+    // Simple example - in production would check daily login data
+    const lastLogin=localStorage.getItem('last_login_date');
+    const today=new Date().toDateString();
+    const streak=parseInt(localStorage.getItem('login_streak')||'1');
+    
+    if(lastLogin===today){
+        return streak;
+    }else{
+        const yesterday=new Date();
+        yesterday.setDate(yesterday.getDate()-1);
+        if(lastLogin===yesterday.toDateString()){
+            const newStreak=streak+1;
+            localStorage.setItem('login_streak',newStreak.toString());
+            localStorage.setItem('last_login_date',today);
+            return newStreak;
+        }else{
+            localStorage.setItem('login_streak','1');
+            localStorage.setItem('last_login_date',today);
+            return 1;
+        }
+    }
+}
+
 function startARMode(){toggleARMode();}
+function stopARMode(){closeAR();}
+
+// =================================================================
+// FEEDBACK SYSTEM
+// =================================================================
+let feedbackData={category:null,rating:0};
+
+function selectFeedbackCategory(category){
+    feedbackData.category=category;
+    document.querySelectorAll('.feedback-category').forEach(btn=>{
+        btn.classList.remove('selected');
+    });
+    const selected=document.querySelector(`[data-category="${category}"]`);
+    if(selected){
+        selected.classList.add('selected');
+    }
+}
+
+function setFeedbackRating(rating){
+    feedbackData.rating=rating;
+    document.querySelectorAll('.star-btn').forEach((btn,idx)=>{
+        if(idx<rating){
+            btn.classList.add('active');
+        }else{
+            btn.classList.remove('active');
+        }
+    });
+}
+
+function submitFeedback(){
+    const text=document.getElementById('feedbackText').value.trim();
+    
+    if(!text){
+        showToast('⚠️','Campo vazio','Por favor, escreva sua sugestão');
+        return;
+    }
+    
+    if(!feedbackData.category){
+        showToast('⚠️','Selecione um tema','Escolha uma categoria para sua sugestão');
+        return;
+    }
+    
+    if(feedbackData.rating===0){
+        showToast('⚠️','Avalie o app','Dê uma nota de 1 a 5 estrelas');
+        return;
+    }
+    
+    const feedback={
+        id:Date.now(),
+        user:AppState.user?AppState.user.name:'Anônimo',
+        userEmail:AppState.user?AppState.user.email:'',
+        text:text,
+        category:feedbackData.category,
+        rating:feedbackData.rating,
+        timestamp:new Date().toISOString(),
+        date:new Date().toLocaleString('pt-BR')
+    };
+    
+    let allFeedback=localStorage.getItem('pk_feedback');
+    allFeedback=allFeedback?JSON.parse(allFeedback):[];
+    allFeedback.push(feedback);
+    localStorage.setItem('pk_feedback',JSON.stringify(allFeedback));
+    
+    document.getElementById('feedbackText').value='';
+    feedbackData={category:null,rating:0};
+    document.querySelectorAll('.feedback-category').forEach(btn=>btn.classList.remove('selected'));
+    document.querySelectorAll('.star-btn').forEach(btn=>btn.classList.remove('active'));
+    
+    document.querySelector('.feedback-content > *:not(#feedbackThanks)').forEach(el=>{
+        if(el.id!=='feedbackThanks'){
+            el.style.display='none';
+        }
+    });
+    document.getElementById('feedbackThanks').style.display='block';
+    
+    setTimeout(()=>{
+        document.querySelectorAll('.feedback-content > *').forEach(el=>el.style.display='');
+        document.getElementById('feedbackThanks').style.display='none';
+        navigateTo('home');
+    },3000);
+    
+    showToast('✅','Enviado!','Obrigado pela sua sugestão');
+    
+    if(AppState.user){
+        AppState.user.xp=(AppState.user.xp||0)+10;
+        Auth.setCurrent(AppState.user);
+        document.getElementById('topbarXP').textContent=`⭐ ${AppState.user.xp} XP`;
+    }
+}
+
+function exportFeedbackData(){
+    const feedback=localStorage.getItem('pk_feedback');
+    if(!feedback||JSON.parse(feedback).length===0){
+        alert('Nenhuma sugestão recebida ainda!');
+        return;
+    }
+    
+    const data=JSON.parse(feedback);
+    let csv='Data,Usuário,Email,Categoria,Avaliação,Sugestão\n';
+    
+    data.forEach(item=>{
+        const text=item.text.replace(/"/g,'""').replace(/\n/g,' ');
+        csv+=`"${item.date}","${item.user}","${item.userEmail}","${item.category}",${item.rating},"${text}"\n`;
+    });
+    
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const link=document.createElement('a');
+    link.href=URL.createObjectURL(blob);
+    link.download=`pk-explorer-feedback-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    
+    showToast('📊','Exportado!',`${data.length} sugestões exportadas`);
+}
+
+function viewAllFeedback(){
+    const feedback=localStorage.getItem('pk_feedback');
+    if(!feedback){
+        alert('Nenhuma sugestão ainda!');
+        return;
+    }
+    
+    const data=JSON.parse(feedback);
+    let html='<!DOCTYPE html><html><head><meta charset="utf-8"><title>Sugestões PK Explorer</title>';
+    html+='<style>body{font-family:Arial;padding:2rem;background:#f5f5f5;}';
+    html+='.feedback{background:white;padding:1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);}';
+    html+='.header{display:flex;justify-content:space-between;margin-bottom:1rem;}';
+    html+='.user{font-weight:bold;color:#2d5a3d;}';
+    html+='.date{color:#666;font-size:0.9rem;}';
+    html+='.category{display:inline-block;background:#c4a35a;color:white;padding:0.25rem 0.75rem;border-radius:12px;font-size:0.85rem;margin-bottom:0.5rem;}';
+    html+='.rating{color:#c4a35a;margin-bottom:0.5rem;}';
+    html+='.text{color:#333;line-height:1.6;}</style></head><body>';
+    html+=`<h1>📊 Sugestões dos Exploradores (${data.length})</h1>`;
+    html+=`<button onclick="window.print()" style="padding:0.75rem 1.5rem;background:#2d5a3d;color:white;border:none;border-radius:8px;cursor:pointer;margin-bottom:1rem">🖨️ Imprimir</button>`;
+    
+    data.reverse().forEach(item=>{
+        const stars='⭐'.repeat(item.rating);
+        html+=`<div class="feedback">`;
+        html+=`<div class="header"><span class="user">${item.user}</span><span class="date">${item.date}</span></div>`;
+        html+=`<div class="category">${item.category}</div>`;
+        html+=`<div class="rating">${stars} (${item.rating}/5)</div>`;
+        html+=`<div class="text">${item.text}</div>`;
+        html+=`</div>`;
+    });
+    
+    html+='</body></html>';
+    
+    const win=window.open('','_blank');
+    win.document.write(html);
+    win.document.close();
+}
+
 function stopARMode(){closeAR();}
 
 // =================================================================
@@ -2439,6 +3659,11 @@ function navigateTo(screen) {
         } else {
             renderStudentProgress();
         }
+    }
+    
+    // Update profile display when navigating to profile
+    if (screen === 'profile') {
+        updateProfileDisplay();
     }
     
     // Show/hide back button
