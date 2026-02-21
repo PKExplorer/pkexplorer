@@ -1134,6 +1134,230 @@
             .app-shell { max-width: 480px; margin: 0 auto; box-shadow: 0 0 80px rgba(0,0,0,0.15); }
             html { background: var(--paper-dark); }
         }
+        /* ========================================
+           AR MODE STYLES
+           ======================================== */
+        
+        .ar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 10000;
+        }
+        
+        .ar-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 10;
+        }
+        
+        .ar-close {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            font-size: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .ar-close:active {
+            transform: scale(0.95);
+        }
+        
+        .ar-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        #arCamera {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        #arCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .ar-photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        
+        #arHistoricalPhoto {
+            max-width: 90%;
+            max-height: 60%;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            transition: opacity 0.3s;
+            object-fit: contain;
+        }
+        
+        .ar-slider-container {
+            position: absolute;
+            bottom: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 400px;
+            background: rgba(0,0,0,0.8);
+            padding: 1rem;
+            border-radius: 16px;
+            pointer-events: all;
+        }
+        
+        .ar-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.3);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .ar-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .ar-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .ar-slider-label {
+            text-align: center;
+            color: white;
+            font-size: 14px;
+            margin-top: 0.5rem;
+        }
+        
+        .ar-info {
+            position: absolute;
+            bottom: 20px;
+            left: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.9);
+            padding: 1rem;
+            border-radius: 16px;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            pointer-events: all;
+        }
+        
+        .ar-info-icon {
+            font-size: 40px;
+        }
+        
+        .ar-info-content {
+            flex: 1;
+        }
+        
+        .ar-info-title {
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .ar-info-year {
+            color: var(--gold);
+            font-size: 14px;
+            margin-bottom: 0.25rem;
+        }
+        
+        .ar-info-distance {
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+        }
+        
+        .ar-searching {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+        }
+        
+        .ar-searching-icon {
+            font-size: 64px;
+            margin-bottom: 1rem;
+            animation: arPulse 2s infinite;
+        }
+        
+        @keyframes arPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+        
+        .ar-searching-text {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .ar-searching-hint {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        .ar-counter {
+            position: absolute;
+            top: 70px;
+            right: 1rem;
+            background: rgba(196,163,90,0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body>
@@ -1691,6 +1915,51 @@
 </div>
 
 <!-- AUTH SCREEN -->
+    <!-- AR CAMERA OVERLAY -->
+    <div class="ar-overlay" id="arOverlay" style="display:none;">
+        <div class="ar-header">
+            <button class="ar-close" onclick="closeAR()">×</button>
+            <div class="ar-title" id="arTitle">📱 Modo AR</div>
+        </div>
+        
+        <!-- Video da câmera -->
+        <video id="arCamera" autoplay playsinline muted></video>
+        
+        <!-- Canvas para overlay -->
+        <canvas id="arCanvas"></canvas>
+        
+        <!-- Foto histórica sobreposta -->
+        <div class="ar-photo-overlay" id="arPhotoOverlay" style="display:none;">
+            <img id="arHistoricalPhoto" src="" alt="Foto Histórica">
+            <div class="ar-slider-container">
+                <input type="range" min="0" max="100" value="50" class="ar-slider" id="arSlider">
+                <div class="ar-slider-label">👈 Deslize para comparar 👉</div>
+            </div>
+        </div>
+        
+        <!-- Info do local -->
+        <div class="ar-info" id="arInfo" style="display:none;">
+            <div class="ar-info-icon">📍</div>
+            <div class="ar-info-content">
+                <div class="ar-info-title" id="arInfoTitle">Local Histórico</div>
+                <div class="ar-info-year" id="arInfoYear">Ano</div>
+                <div class="ar-info-distance" id="arInfoDistance">Distância</div>
+            </div>
+        </div>
+        
+        <!-- Estado de busca -->
+        <div class="ar-searching" id="arSearching">
+            <div class="ar-searching-icon">🔍</div>
+            <div class="ar-searching-text">Procurando locais históricos...</div>
+            <div class="ar-searching-hint">Aproxime-se de um ponto histórico</div>
+        </div>
+        
+        <!-- Contador de descobertas -->
+        <div class="ar-counter" id="arCounter">
+            <span id="arCounterText">0/22 descobertos</span>
+        </div>
+    </div>
+
 <div id="authScreen">
     <div class="screen-content" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem;">
         <div class="auth-card">
@@ -1763,6 +2032,40 @@
 
 <script>
 'use strict';
+
+// =================================================================
+// BANCO DE DADOS DE FOTOS HISTÓRICAS
+// =================================================================
+const HISTORICAL_PHOTOS = [
+    {id:'hist_001',title:'Igreja Matriz de São Sebastião',description:'Marco Zero da cidade - Praça São Sebastião, Centro',year:'1950',decade:'Anos 50',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=800',radius:50},
+    {id:'hist_002',title:'Igreja Batista de Presidente Dutra',description:'Igreja Batista no Centro da cidade',year:'1965',decade:'Anos 60/70',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1519491050282-cf00c82424b4?w=800',radius:50},
+    {id:'hist_003',title:'Igreja Evangélica Assembleia de Deus',description:'Sede histórica da Assembleia de Deus no Centro',year:'1955',decade:'Anos 50/60',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1548625149-fc4a29cf3728?w=800',radius:50},
+    {id:'hist_004',title:'Igreja Cristã Evangélica',description:'Igreja na Rua Magalhães de Almeida',year:'1960',decade:'Anos 60',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2831462,lng:-44.4929264},photo_url:'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?w=800',radius:50},
+    {id:'hist_005',title:'Praça São Sebastião (Caixa d\'Água)',description:'Vista da Praça São Sebastião com a caixa d\'água',year:'2008',decade:'2008',category:'praca',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1567942712756-e22ac4520ef6?w=800',radius:50},
+    {id:'hist_006',title:'Praça da Complast',description:'Praça na Av. José Olavo Sampaio',year:'2000',decade:'Anos 2000',category:'praca',sector:'setor_01',coordinates:{lat:-5.2875,lng:-44.5020},photo_url:'https://images.unsplash.com/photo-1585517315971-66b2f07bfb5f?w=800',radius:100},
+    {id:'hist_007',title:'Igreja de São Sebastião (Histórica)',description:'Foto histórica da Igreja - Marco Zero',year:'1920',decade:'Histórica',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800',radius:50},
+    {id:'hist_008',title:'Construção da Capela',description:'Registro da construção da capela - Marco Zero',year:'1925',decade:'Histórica',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1541888446174-e01919fc608e?w=800',radius:50},
+    {id:'hist_009',title:'População construindo Capela (1929)',description:'População do Curador ajuda a construir - Raridade histórica!',year:'1929',decade:'1929',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800',radius:50},
+    {id:'hist_010',title:'Caminhões com Algodão',description:'Época áurea do algodão na entrada da cidade',year:'1955',decade:'Anos 50/60',category:'economia',sector:'setor_02',coordinates:{lat:-5.286,lng:-44.505},photo_url:'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=800',radius:100},
+    {id:'hist_011',title:'Armazém Porto Seguro (1ª Sede)',description:'Em frente ao Banco do Brasil',year:'1950',decade:'Anos 50',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2903,lng:-44.4896},photo_url:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800',radius:30},
+    {id:'hist_012',title:'Fachada Armazém Porto Seguro',description:'Esquina histórica do Centro',year:'1960',decade:'Anos 60',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800',radius:30},
+    {id:'hist_013',title:'Interior Armazém Porto Seguro',description:'Cotidiano comercial',year:'1960',decade:'Anos 60',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=800',radius:30},
+    {id:'hist_014',title:'Auto Peças Falcão',description:'Av. José Olavo Sampaio',year:'2008',decade:'2008',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2870,lng:-44.5015},photo_url:'https://images.unsplash.com/photo-1486754735734-325b5831c3ad?w=800',radius:80},
+    {id:'hist_015',title:'Supermercado Moderno',description:'Comércio na Av. José Olavo Sampaio',year:'2014',decade:'2013-2015',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2868,lng:-44.5018},photo_url:'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=800',radius:80},
+    {id:'hist_016',title:'Prédio da Emater',description:'Rua Magalhães de Almeida',year:'1975',decade:'Anos 70/80',category:'predio_publico',sector:'setor_03',coordinates:{lat:-5.2831462,lng:-44.4929264},photo_url:'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',radius:50},
+    {id:'hist_017',title:'Avenida José Olavo Sampaio',description:'Entrada da cidade',year:'2017',decade:'2015-2020',category:'avenida',sector:'setor_03',coordinates:{lat:-5.286,lng:-44.505},photo_url:'https://images.unsplash.com/photo-1567473030492-533b30c5494c?w=800',radius:100},
+    {id:'hist_018',title:'Rua do Comércio (2013)',description:'Vista do Centro',year:'2013',decade:'2013',category:'urbanismo',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1569437061241-a848be43cc82?w=800',radius:50},
+    {id:'hist_019',title:'Vista Aérea Antiga',description:'Centro Histórico da torre',year:'1960',decade:'Anos 60',category:'urbanismo',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=800',radius:50},
+    {id:'hist_020',title:'Vista Aérea Atual',description:'Centro atual da torre',year:'2025',decade:'2024-2026',category:'urbanismo',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800',radius:50},
+    {id:'hist_021',title:'Rua com Gado (1960)',description:'Cotidiano rural - Documento único!',year:'1960',decade:'1960',category:'historia_rural',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=800',radius:100},
+    {id:'hist_022',title:'Esquina Histórica',description:'Calçada do Armazém',year:'1960',decade:'Anos 60',category:'cotidiano',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800',radius:30}
+];
+
+function calculateDistance(lat1,lon1,lat2,lon2){const R=6371e3;const φ1=lat1*Math.PI/180;const φ2=lat2*Math.PI/180;const Δφ=(lat2-lat1)*Math.PI/180;const Δλ=(lon2-lon1)*Math.PI/180;const a=Math.sin(Δφ/2)*Math.sin(Δφ/2)+Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)*Math.sin(Δλ/2);const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));return R*c;}
+function getNearbyHistoricalPhotos(lat,lng,max=100){return HISTORICAL_PHOTOS.filter(p=>p.coordinates&&calculateDistance(lat,lng,p.coordinates.lat,p.coordinates.lng)<=(p.radius||max)).sort((a,b)=>calculateDistance(lat,lng,a.coordinates.lat,a.coordinates.lng)-calculateDistance(lat,lng,b.coordinates.lat,b.coordinates.lng));}
+function getClosestHistoricalPhoto(lat,lng){const n=getNearbyHistoricalPhotos(lat,lng,200);return n.length>0?n[0]:null;}
+function countDiscoveredPhotos(){const d=localStorage.getItem('ar_discovered');return d?JSON.parse(d).length:0;}
+function markPhotoAsDiscovered(id){let d=localStorage.getItem('ar_discovered');d=d?JSON.parse(d):[];if(!d.includes(id)){d.push(id);localStorage.setItem('ar_discovered',JSON.stringify(d));return true;}return false;}
 
 // =================================================================
 // AUTH SYSTEM
@@ -1964,38 +2267,102 @@ async function updateProfilePhoto(input) {
     }
 }
 
-// AR Mode toggle
-let arModeActive = false;
+// =================================================================
+// AR MODE - REALIDADE AUMENTADA
+// =================================================================
+let arActive=false;
+let arStream=null;
+let arWatchId=null;
+let currentHistoricalPhoto=null;
 
-function toggleARMode() {
-    arModeActive = !arModeActive;
-    
-    if (arModeActive) {
-        startARMode();
-    } else {
-        stopARMode();
+async function toggleARMode(){
+    if(!arActive){await openARMode();}
+    else{closeAR();}
+}
+
+async function openARMode(){
+    try{
+        arStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+        document.getElementById('arOverlay').style.display='block';
+        document.getElementById('appShell').style.display='none';
+        const video=document.getElementById('arCamera');
+        video.srcObject=arStream;
+        updateARCounter();
+        startARDetection();
+        arActive=true;
+        showToast('📱','AR Ativado','Procurando locais históricos...');
+    }catch(e){
+        console.error('Erro câmera:',e);
+        showToast('❌','Erro','Não foi possível acessar a câmera');
     }
 }
 
-function startARMode() {
-    showToast('📱', 'Modo AR Ativado', 'Aponte a câmera para locais históricos');
-    // In production, this would start camera and AR overlay
-    // For now, just show a message
-    const arButton = document.getElementById('arModeButton');
-    if (arButton) {
-        arButton.textContent = '📱 AR: ON';
-        arButton.style.background = 'var(--green)';
+function closeAR(){
+    if(arStream){arStream.getTracks().forEach(t=>t.stop());arStream=null;}
+    if(arWatchId){navigator.geolocation.clearWatch(arWatchId);arWatchId=null;}
+    document.getElementById('arOverlay').style.display='none';
+    document.getElementById('appShell').style.display='flex';
+    arActive=false;
+}
+
+function startARDetection(){
+    if(!navigator.geolocation){showToast('❌','GPS indisponível','');return;}
+    arWatchId=navigator.geolocation.watchPosition(pos=>{
+        checkNearbyHistoricalPhotos(pos.coords.latitude,pos.coords.longitude);
+    },err=>console.error('GPS:',err),{enableHighAccuracy:true,timeout:5000,maximumAge:0});
+}
+
+function checkNearbyHistoricalPhotos(lat,lng){
+    const closest=getClosestHistoricalPhoto(lat,lng);
+    if(closest){
+        const dist=calculateDistance(lat,lng,closest.coordinates.lat,closest.coordinates.lng);
+        if(dist<=closest.radius){showHistoricalPhoto(closest,dist);}
+        else{hideHistoricalPhoto();}
+    }else{hideHistoricalPhoto();}
+}
+
+function showHistoricalPhoto(photo,dist){
+    currentHistoricalPhoto=photo;
+    document.getElementById('arSearching').style.display='none';
+    const overlay=document.getElementById('arPhotoOverlay');
+    const img=document.getElementById('arHistoricalPhoto');
+    const info=document.getElementById('arInfo');
+    img.src=photo.photo_url;
+    overlay.style.display='flex';
+    info.style.display='flex';
+    document.getElementById('arInfoTitle').textContent=photo.title;
+    document.getElementById('arInfoYear').textContent=photo.year;
+    document.getElementById('arInfoDistance').textContent=`📏 ${Math.round(dist)}m de você`;
+    const slider=document.getElementById('arSlider');
+    slider.oninput=function(){img.style.opacity=this.value/100;};
+    const isNew=markPhotoAsDiscovered(photo.id);
+    if(isNew){
+        if(AppState.user){
+            AppState.user.xp=(AppState.user.xp||0)+50;
+            Auth.setCurrent(AppState.user);
+            document.getElementById('topbarXP').textContent=`⭐ ${AppState.user.xp} XP`;
+        }
+        updateARCounter();
+        createConfetti();
+        showToast('🎉','Nova Descoberta!',`+50 XP - ${photo.title}`);
+        if(navigator.vibrate){navigator.vibrate([200,100,200]);}
     }
 }
 
-function stopARMode() {
-    showToast('📱', 'Modo AR Desativado', '');
-    const arButton = document.getElementById('arModeButton');
-    if (arButton) {
-        arButton.textContent = '📱 Modo AR';
-        arButton.style.background = 'var(--primary)';
-    }
+function hideHistoricalPhoto(){
+    document.getElementById('arPhotoOverlay').style.display='none';
+    document.getElementById('arInfo').style.display='none';
+    document.getElementById('arSearching').style.display='block';
+    currentHistoricalPhoto=null;
 }
+
+function updateARCounter(){
+    const count=countDiscoveredPhotos();
+    document.getElementById('arCounterText').textContent=`${count}/22 descobertos`;
+}
+
+function startARMode(){toggleARMode();}
+function stopARMode(){closeAR();}
 
 // =================================================================
 // APP SHELL
