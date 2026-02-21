@@ -22,8 +22,11 @@
     <!-- Leaflet Maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
-    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    
+    <!-- Leaflet Locate Plugin for GPS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
@@ -2417,15 +2420,15 @@
                 
                 <div class="map-layer-panel" id="layerPanel" style="display:none;">
                     <div style="font-weight:700;margin-bottom:0.75rem;color:var(--primary);font-size:0.9rem;">📍 Camadas do Mapa</div>
-                    <div class="layer-option" onclick="changeMapLayer('streets', this)">
+                    <div class="layer-option" onclick="changeMapLayer('Ruas', this)">
                         <input type="radio" name="layer" checked> 
                         <span>🗺️ Mapa de Ruas</span>
                     </div>
-                    <div class="layer-option" onclick="changeMapLayer('topo', this)">
+                    <div class="layer-option" onclick="changeMapLayer('Topográfico', this)">
                         <input type="radio" name="layer"> 
                         <span>⛰️ Topográfico</span>
                     </div>
-                    <div class="layer-option" onclick="changeMapLayer('satellite', this)">
+                    <div class="layer-option" onclick="changeMapLayer('Satélite', this)">
                         <input type="radio" name="layer"> 
                         <span>🛰️ Satélite</span>
                     </div>
@@ -3847,11 +3850,34 @@ function initMap() {
     if (!mapEl) return;
 
     try {
-        AppState.map = L.map('map').setView([-5.2902343, -44.4895682], 14);
+        AppState.map = L.map('map', {
+            zoomControl: false  // Add custom position later
+        }).setView([-5.2902343, -44.4895682], 14);
         
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 19
+        // Define map layers
+        const baseLayers = {
+            'Ruas': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap',
+                maxZoom: 19
+            }),
+            'Satélite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© Esri',
+                maxZoom: 19
+            }),
+            'Topográfico': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenTopoMap',
+                maxZoom: 17
+            })
+        };
+        
+        // Add default layer (Ruas)
+        baseLayers['Ruas'].addTo(AppState.map);
+        AppState.currentLayer = 'Ruas';
+        AppState.baseLayers = baseLayers;
+        
+        // Add zoom control to bottom right
+        L.control.zoom({
+            position: 'bottomright'
         }).addTo(AppState.map);
         
         // Sample points
@@ -3865,17 +3891,82 @@ function initMap() {
 
         samplePoints.forEach(p => addMapMarker(p));
         
-        // GPS location control
-        L.control.locate({
+        // GPS location control with TRACKING
+        const locateControl = L.control.locate({
             position: 'bottomright',
+            flyTo: true,
+            keepCurrentZoomLevel: false,
+            initialZoomLevel: 16,
+            drawCircle: true,
+            drawMarker: true,
+            showCompass: true,
+            markerStyle: {
+                color: '#2D5A3D',
+                fillColor: '#C4A35A',
+                fillOpacity: 0.7,
+                weight: 3,
+                opacity: 0.9,
+                radius: 8
+            },
+            circleStyle: {
+                color: '#2D5A3D',
+                fillColor: '#C4A35A',
+                fillOpacity: 0.15,
+                weight: 2,
+                opacity: 0.5
+            },
+            followCircleStyle: {
+                color: '#2D5A3D',
+                fillColor: '#C4A35A',
+                fillOpacity: 0.2,
+                weight: 2,
+                opacity: 0.8
+            },
+            compassStyle: {
+                fillColor: '#C4A35A',
+                fillOpacity: 0.8,
+                color: '#2D5A3D',
+                weight: 2,
+                opacity: 1
+            },
             strings: {
-                title: "Mostrar minha localização"
+                title: "Minha localização",
+                metersUnit: "metros",
+                feetUnit: "pés",
+                popup: "Você está a {distance} {unit} deste ponto",
+                outsideMapBoundsMsg: "Você está fora dos limites do mapa"
+            },
+            locateOptions: {
+                enableHighAccuracy: true,
+                watch: true,  // CONTINUOUS TRACKING
+                maxZoom: 18
             }
         }).addTo(AppState.map);
+        
+        // Auto-start GPS tracking
+        setTimeout(() => {
+            locateControl.start();
+        }, 1000);
+        
+        // Track device orientation on mobile for compass rotation
+        if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
+            window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+            window.addEventListener('deviceorientation', handleOrientation, true);
+        }
         
     } catch(e) {
         console.error('Erro ao inicializar mapa:', e);
         showToast('❌', 'Erro no mapa', 'Verifique sua conexão');
+    }
+}
+
+function handleOrientation(event) {
+    if (!AppState.map) return;
+    
+    let compass = event.webkitCompassHeading || event.alpha;
+    if (compass !== null && compass !== undefined) {
+        // Rotate map based on device orientation
+        AppState.map.setBearing(-compass);
     }
 }
 
@@ -3921,77 +4012,62 @@ function toggleLayerPanel() {
 }
 
 function changeMapLayer(layerType, element) {
-    if (layerType === currentLayer) return;
+    if (!AppState.map || !AppState.baseLayers) return;
+    if (layerType === AppState.currentLayer) return;
     
     // Update radio buttons
     document.querySelectorAll('.layer-option input[type="radio"]').forEach(r => r.checked = false);
     element.querySelector('input[type="radio"]').checked = true;
     
-    // Save current view
-    const center = AppState.map.getCenter();
-    const zoom = AppState.map.getZoom();
-    const bearing = AppState.map.getBearing();
-    const pitch = AppState.map.getPitch();
+    // Remove current layer
+    if (AppState.currentLayer && AppState.baseLayers[AppState.currentLayer]) {
+        AppState.map.removeLayer(AppState.baseLayers[AppState.currentLayer]);
+    }
     
-    // Save markers
-    const markers = AppState.markers.slice();
-    
-    // Change style
-    AppState.map.setStyle(MAP_LAYERS[layerType]);
-    currentLayer = layerType;
-    
-    // Restore view and markers after style loads
-    AppState.map.once('styledata', () => {
-        AppState.map.setCenter(center);
-        AppState.map.setZoom(zoom);
-        AppState.map.setBearing(bearing);
-        AppState.map.setPitch(pitch);
+    // Add new layer
+    if (AppState.baseLayers[layerType]) {
+        AppState.baseLayers[layerType].addTo(AppState.map);
+        AppState.currentLayer = layerType;
         
-        // Re-add markers
-        markers.forEach(({ point }) => {
-            // Remove old marker
-            const oldMarker = AppState.markers.find(m => m.point.name === point.name);
-            if (oldMarker) {
-                oldMarker.marker.remove();
-            }
-        });
+        const layerNames = {
+            'Ruas': 'Mapa de Ruas',
+            'Satélite': 'Visão Satélite',
+            'Topográfico': 'Mapa Topográfico'
+        };
         
-        // Clear markers array
-        AppState.markers = [];
-        
-        // Re-add all markers
-        const samplePoints = [
-            { name: 'Igreja Matriz', lat: -5.291234, lng: -44.493456, status: 'approved', category: 'igreja' },
-            { name: 'Praça Central', lat: -5.292000, lng: -44.494000, status: 'approved', category: 'praca' },
-            { name: 'Estação Ferroviária', lat: -5.290000, lng: -44.495000, status: 'pending', category: 'patrimonio' },
-            { name: 'Mercado Municipal', lat: -5.293000, lng: -44.492000, status: 'approved', category: 'comercio' },
-            { name: 'Casa da Cultura', lat: -5.291800, lng: -44.492800, status: 'pending', category: 'patrimonio' }
-        ];
-        samplePoints.forEach(p => addMapMarker(p));
-    });
+        showToast('🗺️', 'Camada alterada', `Visualizando: ${layerNames[layerType]}`);
+    }
     
-    showToast('🗺️', 'Camada alterada', `Visualizando: ${layerType === 'streets' ? 'Mapa de Ruas' : layerType === 'topo' ? 'Topográfico' : 'Satélite'}`);
     toggleLayerPanel();
 }
 
 function filterMap(filter, el) {
     document.querySelectorAll('.map-filter-btn').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
+    
+    if (!AppState.markers) return;
+    
     AppState.markers.forEach(({ marker, point }) => {
         const visible = filter === 'all' || point.status === filter || point.category === filter;
-        marker.getElement().style.display = visible ? 'block' : 'none';
+        if (visible) {
+            marker.addTo(AppState.map);
+        } else {
+            marker.remove();
+        }
     });
 }
 
 function searchMap(query) {
     const searchBtn = document.getElementById('clearSearch');
+    if (!AppState.markers) return;
+    
     if (query.trim().length > 0) {
         searchBtn.style.display = 'flex';
     } else {
         searchBtn.style.display = 'none';
         // Show all markers
         AppState.markers.forEach(({ marker }) => {
-            marker.getElement().style.display = 'block';
+            marker.addTo(AppState.map);
         });
         return;
     }
@@ -4005,16 +4081,17 @@ function searchMap(query) {
             point.category?.toLowerCase().includes(lowerQuery) ||
             point.status?.toLowerCase().includes(lowerQuery);
         
-        marker.getElement().style.display = matches ? 'block' : 'none';
-        
-        if (matches && !foundAny) {
-            foundAny = true;
-            // Center on first match
-            AppState.map.flyTo({
-                center: [point.lng, point.lat],
-                zoom: 16,
-                duration: 1000
-            });
+        if (matches) {
+            marker.addTo(AppState.map);
+            if (!foundAny) {
+                foundAny = true;
+                // Center on first match
+                AppState.map.flyTo([point.lat, point.lng], 16, {
+                    duration: 1
+                });
+            }
+        } else {
+            marker.remove();
         }
     });
     
