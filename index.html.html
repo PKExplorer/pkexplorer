@@ -18,15 +18,8 @@
     <title>PK Explorer — Sistema Completo</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
-    
-    <!-- Leaflet Maps -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    
-    <!-- Leaflet Locate Plugin for GPS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js"></script>
-    
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
@@ -499,14 +492,14 @@
 
         .map-layer-panel {
             position: absolute;
-            bottom: 1.5rem;
-            left: 5rem;
+            bottom: 5rem;
+            left: 1.5rem;
             background: var(--white);
             border: 2px solid var(--gold);
             border-radius: 12px;
             padding: 1rem;
             box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-            z-index: 1000;
+            z-index: 15;
             min-width: 200px;
         }
 
@@ -1803,6 +1796,77 @@
             margin: 0;
         }
 
+        /* ==================== TEACHER PANEL ==================== */
+        .teacher-header{background:linear-gradient(135deg,#0F3D2E 0%,#1a5c44 100%);padding:1.5rem 1rem;color:white;position:relative;overflow:hidden;}
+        .teacher-header::before{content:'';position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(212,175,55,0.1) 0%,transparent 70%);border-radius:50%;}
+        .teacher-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;position:relative;z-index:2;}
+        .teacher-logo{display:flex;align-items:center;gap:0.5rem;}
+        .teacher-logo-icon{font-size:2rem;}
+        .teacher-logo-text h1{margin:0;font-size:1.25rem;font-family:'Playfair Display',serif;color:#D4AF37;}
+        .teacher-logo-text p{margin:0;font-size:0.75rem;opacity:0.9;}
+        .teacher-profile{display:flex;align-items:center;gap:0.75rem;}
+        .teacher-avatar{width:60px;height:60px;border-radius:50%;border:3px solid #D4AF37;background:#ccc;object-fit:cover;}
+        .teacher-info h2{margin:0;font-size:0.9rem;color:#D4AF37;font-weight:600;}
+        .teacher-info p{margin:0.25rem 0 0 0;font-size:1.1rem;font-weight:700;}
+        .teacher-actions{display:flex;gap:0.5rem;}
+        .teacher-notif-btn{position:relative;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;color:white;font-size:1.25rem;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+        .notif-badge{position:absolute;top:-2px;right:-2px;background:#e74c3c;color:white;border-radius:10px;padding:0.15rem 0.4rem;font-size:0.7rem;font-weight:700;}
+        .teacher-welcome{position:relative;z-index:2;margin-top:0.5rem;}
+        .teacher-welcome h3{margin:0 0 0.25rem 0;font-size:1.5rem;font-family:'Playfair Display',serif;}
+        .teacher-welcome p{margin:0;font-size:0.9rem;opacity:0.9;}
+        .teacher-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;padding:1rem;margin-top:-2rem;position:relative;z-index:3;}
+        .stat-card{background:white;border-radius:12px;padding:1rem 0.75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+        .stat-icon{font-size:1.75rem;margin-bottom:0.5rem;}
+        .stat-value{font-size:1.5rem;font-weight:700;color:#0F3D2E;margin-bottom:0.25rem;}
+        .stat-label{font-size:0.75rem;color:#666;}
+        .section-header{display:flex;justify-content:space-between;align-items:center;padding:1rem;margin-top:0.5rem;}
+        .section-title{display:flex;align-items:center;gap:0.5rem;font-size:1.1rem;font-weight:700;color:#0F3D2E;}
+        .section-title-icon{font-size:1.5rem;}
+        .btn-see-all{background:none;border:none;color:#D4AF37;font-weight:600;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;gap:0.25rem;}
+        .approval-list{padding:0 1rem 1rem;display:flex;flex-direction:column;gap:0.75rem;}
+        .approval-card{background:white;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);display:flex;align-items:center;gap:1rem;}
+        .student-avatar{width:50px;height:50px;border-radius:50%;background:#D4AF37;flex-shrink:0;}
+        .approval-info{flex:1;}
+        .approval-student-name{font-weight:700;color:#0F3D2E;margin-bottom:0.25rem;}
+        .approval-details{font-size:0.85rem;color:#666;}
+        .approval-location{font-weight:600;color:#0F3D2E;}
+        .approval-actions{display:flex;flex-direction:column;gap:0.5rem;}
+        .btn-approve{background:#27ae60;color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;white-space:nowrap;}
+        .btn-request{background:#f39c12;color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;white-space:nowrap;}
+        .btn-reject{background:#e74c3c;color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;white-space:nowrap;}
+        .btn-map-view{background:#3498db;color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;white-space:nowrap;}
+        .turma-list{padding:0 1rem 1rem;display:flex;flex-direction:column;gap:0.75rem;}
+        .turma-card{background:white;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);display:flex;align-items:center;gap:1rem;cursor:pointer;transition:all 0.2s;}
+        .turma-card:hover{transform:translateX(4px);box-shadow:0 4px 12px rgba(0,0,0,0.12);}
+        .turma-icon{width:50px;height:50px;background:linear-gradient(135deg,#3498db,#2980b9);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.75rem;flex-shrink:0;}
+        .turma-info{flex:1;}
+        .turma-name{font-size:1.1rem;font-weight:700;color:#0F3D2E;margin-bottom:0.25rem;}
+        .turma-stats{font-size:0.85rem;color:#666;margin-bottom:0.5rem;}
+        .turma-progress{height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden;margin-bottom:0.25rem;}
+        .turma-progress-fill{height:100%;background:linear-gradient(90deg,#D4AF37,#f1c40f);border-radius:3px;}
+        .turma-xp{font-size:0.75rem;color:#D4AF37;font-weight:600;}
+        .turma-arrow{font-size:1.5rem;color:#D4AF37;}
+        .management-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;padding:0 1rem 1rem;}
+        .management-btn{background:white;border:2px solid #e0e0e0;border-radius:12px;padding:1.25rem 1rem;display:flex;flex-direction:column;align-items:center;gap:0.5rem;cursor:pointer;transition:all 0.2s;}
+        .management-btn:hover{border-color:#D4AF37;transform:translateY(-2px);box-shadow:0 4px 12px rgba(212,175,55,0.2);}
+        .management-icon{font-size:2.5rem;}
+        .management-label{font-size:0.9rem;font-weight:600;color:#0F3D2E;text-align:center;}
+        .activity-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;padding:0 1rem 1rem;}
+        .activity-card{background:white;border-radius:12px;padding:1rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+        .activity-value{font-size:2rem;font-weight:700;color:#0F3D2E;margin:0.5rem 0 0.25rem;}
+        .activity-label{font-size:0.85rem;color:#666;}
+        .activity-progress{height:4px;background:#e0e0e0;border-radius:2px;overflow:hidden;margin-top:0.5rem;}
+        .activity-progress-fill{height:100%;background:#27ae60;border-radius:2px;}
+        .ranking-list{padding:0 1rem 1rem;}
+        .ranking-item{background:white;border-radius:12px;padding:1rem;margin-bottom:0.75rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+        .ranking-medal{font-size:2rem;flex-shrink:0;}
+        .ranking-info{flex:1;}
+        .ranking-turma{font-size:1.1rem;font-weight:700;color:#0F3D2E;}
+        .ranking-xp{font-size:1.25rem;font-weight:700;color:#D4AF37;}
+        .btn-full-ranking{width:calc(100% - 2rem);margin:0 1rem 1rem;padding:1rem;background:#0F3D2E;color:white;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;}
+        .motivational-footer{text-align:center;padding:1.5rem 1rem;background:linear-gradient(135deg,#fff9e6 0%,#fffef5 100%);margin:1rem;border-radius:12px;font-style:italic;color:#0F3D2E;display:flex;align-items:center;justify-content:center;gap:0.75rem;}
+        .footer-icon{font-size:2rem;}
+
         /* ==================== NOTIFICATIONS ==================== */
         .toast-container {
             position: fixed;
@@ -2420,15 +2484,15 @@
                 
                 <div class="map-layer-panel" id="layerPanel" style="display:none;">
                     <div style="font-weight:700;margin-bottom:0.75rem;color:var(--primary);font-size:0.9rem;">📍 Camadas do Mapa</div>
-                    <div class="layer-option" onclick="changeMapLayer('Ruas', this)">
+                    <div class="layer-option" onclick="changeMapLayer('streets', this)">
                         <input type="radio" name="layer" checked> 
                         <span>🗺️ Mapa de Ruas</span>
                     </div>
-                    <div class="layer-option" onclick="changeMapLayer('Topográfico', this)">
+                    <div class="layer-option" onclick="changeMapLayer('topo', this)">
                         <input type="radio" name="layer"> 
                         <span>⛰️ Topográfico</span>
                     </div>
-                    <div class="layer-option" onclick="changeMapLayer('Satélite', this)">
+                    <div class="layer-option" onclick="changeMapLayer('satellite', this)">
                         <input type="radio" name="layer"> 
                         <span>🛰️ Satélite</span>
                     </div>
@@ -2467,75 +2531,129 @@
             
             <!-- VERSÃO PROFESSOR -->
             <div class="screen-content" id="teacherPanel" style="display:none;">
-                <div class="screen-header">
-                    <span style="font-size:1.5rem">👨‍🏫</span>
-                    <div class="screen-title">Painel do Professor</div>
-                </div>
-                
-                <div class="card" style="background:rgba(255,140,0,0.1);border:2px solid var(--orange);">
-                    <div style="font-size:1.3rem;font-weight:700;color:var(--orange);margin-bottom:0.5rem;">⏳ 3 pontos aguardando aprovação</div>
-                    <div style="font-size:0.9rem;color:var(--gray);">Revise as informações e aprove ou rejeite</div>
-                </div>
-                
-                <!-- Ponto 1 -->
-                <div class="card">
-                    <div style="display:flex;gap:1rem;margin-bottom:1rem;">
-                        <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=120&h=120&fit=crop" style="width:100px;height:100px;border-radius:10px;object-fit:cover;">
-                        <div style="flex:1;">
-                            <div style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:0.25rem;">Casa Antiga Dona Maria</div>
-                            <div style="font-size:0.85rem;color:var(--gray);">👤 Pedro Santos · 7ºB<br>📅 Há 2 dias</div>
+                <div class="teacher-header">
+                    <div class="teacher-top-row">
+                        <div class="teacher-logo">
+                            <div class="teacher-logo-icon">🗺️</div>
+                            <div class="teacher-logo-text">
+                                <h1>PK Explorer</h1>
+                                <p>— Painel do Professor</p>
+                            </div>
+                        </div>
+                        <div class="teacher-actions">
+                            <button class="teacher-notif-btn">🔔<span class="notif-badge">3</span></button>
+                            <button class="teacher-notif-btn" onclick="navigateTo('profile')">⚙️</button>
                         </div>
                     </div>
-                    <div style="background:var(--paper-dark);padding:0.875rem;border-radius:8px;margin-bottom:1rem;font-size:0.9rem;">
-                        Casa centenária com arquitetura colonial preservada.
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
-                        <button onclick="viewPointLocation(1)" class="btn btn-secondary" style="font-size:0.85rem;">🗺️ Ver</button>
-                        <button onclick="rejectPointSimple(1, event)" class="btn" style="background:white;border:2px solid var(--red);color:var(--red);font-size:0.85rem;">❌ Rejeitar</button>
-                        <button onclick="approvePointSimple(1, event)" class="btn" style="background:var(--green);color:white;font-size:0.85rem;">✅ Aprovar</button>
+                    <div class="teacher-welcome">
+                        <h3>Olá, Professor <span id="teacherName">Rodrigo</span>! 👋</h3>
+                        <p>Acompanhe as produções dos seus alunos</p>
                     </div>
                 </div>
-                
-                <!-- Ponto 2 -->
-                <div class="card">
-                    <div style="display:flex;gap:1rem;margin-bottom:1rem;">
-                        <img src="https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=120&h=120&fit=crop" style="width:100px;height:100px;border-radius:10px;object-fit:cover;">
-                        <div style="flex:1;">
-                            <div style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:0.25rem;">Fonte do Centro</div>
-                            <div style="font-size:0.85rem;color:var(--gray);">👤 Ana Clara · 6ºA<br>📅 Ontem</div>
+                <div class="teacher-stats-row">
+                    <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value">12</div><div class="stat-label">Pontos Pendentes</div></div>
+                    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value">83</div><div class="stat-label">Alunos Ativos</div></div>
+                    <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-value">1.200</div><div class="stat-label">XP Distribuídos</div></div>
+                    <div class="stat-card" onclick="showToast('🏫','Turmas','Gerencie suas turmas')" style="cursor:pointer"><div class="stat-icon">🏫</div><div class="stat-value">4</div><div class="stat-label">Turmas</div></div>
+                </div>
+                <div class="section-header">
+                    <div class="section-title"><div class="section-title-icon">🌟</div><span>Pontos para Aprovação</span></div>
+                    <button class="btn-see-all" onclick="showToast('📍','Ver todos','Todos os pontos')">Ver todos →</button>
+                </div>
+                <div class="approval-list">
+                    <div class="approval-card">
+                        <img src="https://ui-avatars.com/api/?name=Maria+Santos&background=D4AF37&color=fff" class="student-avatar">
+                        <div class="approval-info">
+                            <div class="approval-student-name">Maria Santos</div>
+                            <div class="approval-details">6º Ano A</div>
+                            <div class="approval-location">Praça Central</div>
+                            <div class="approval-details">Aguardando</div>
+                        </div>
+                        <div class="approval-actions">
+                            <button class="btn-approve" onclick="approvePointSimple(1,event)">✓ Aprovar</button>
+                            <button class="btn-request" onclick="showToast('📝','Correção','Em breve')">Solicitar Correção</button>
                         </div>
                     </div>
-                    <div style="background:var(--paper-dark);padding:0.875rem;border-radius:8px;margin-bottom:1rem;font-size:0.9rem;">
-                        Fonte histórica que abastecia a população no início do século XX.
+                    <div class="approval-card">
+                        <img src="https://ui-avatars.com/api/?name=Joao+Pereira&background=D4AF37&color=fff" class="student-avatar">
+                        <div class="approval-info">
+                            <div class="approval-student-name">João Pereira</div>
+                            <div class="approval-details">7º Ano B</div>
+                            <div class="approval-location">Museu Histórico</div>
+                            <div class="approval-details">Aguardando</div>
+                        </div>
+                        <div class="approval-actions">
+                            <button class="btn-approve" onclick="approvePointSimple(2,event)">✓ Aprovar</button>
+                            <button class="btn-reject" onclick="rejectPointSimple(2,event)">✗ Recusar</button>
+                        </div>
                     </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
-                        <button onclick="viewPointLocation(2)" class="btn btn-secondary" style="font-size:0.85rem;">🗺️ Ver</button>
-                        <button onclick="rejectPointSimple(2, event)" class="btn" style="background:white;border:2px solid var(--red);color:var(--red);font-size:0.85rem;">❌ Rejeitar</button>
-                        <button onclick="approvePointSimple(2, event)" class="btn" style="background:var(--green);color:white;font-size:0.85rem;">✅ Aprovar</button>
+                    <div class="approval-card">
+                        <img src="https://ui-avatars.com/api/?name=Ana+Clara&background=D4AF37&color=fff" class="student-avatar">
+                        <div class="approval-info">
+                            <div class="approval-student-name">Ana Clara</div>
+                            <div class="approval-details">6º Ano A</div>
+                            <div class="approval-location">Igreja Antiga</div>
+                            <div class="approval-details">Aguardando</div>
+                        </div>
+                        <div class="approval-actions">
+                            <button class="btn-approve" onclick="approvePointSimple(3,event)">✓ Aprovar</button>
+                            <button class="btn-map-view" onclick="viewPointLocation(3)">🗺️ Ver no Mapa</button>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- Ponto 3 -->
-                <div class="card">
-                    <div style="display:flex;gap:1rem;margin-bottom:1rem;">
-                        <img src="https://images.unsplash.com/photo-1519491050282-cf00c82424b4?w=120&h=120&fit=crop" style="width:100px;height:100px;border-radius:10px;object-fit:cover;">
-                        <div style="flex:1;">
-                            <div style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:0.25rem;">Capela São José</div>
-                            <div style="font-size:0.85rem;color:var(--gray);">👤 Lucas Oliveira · 8ºA<br>📅 Há 3 dias</div>
+                <div class="section-header">
+                    <div class="section-title"><div class="section-title-icon">🏫</div><span>Minhas Turmas</span></div>
+                    <button class="btn-see-all" onclick="showToast('📚','Nova Turma','Criar turma')">+ Nova Turma</button>
+                </div>
+                <div class="turma-list">
+                    <div class="turma-card" onclick="showToast('🏫','6º Ano A','Abrir turma')">
+                        <div class="turma-icon">🏫</div>
+                        <div class="turma-info">
+                            <div class="turma-name">6º Ano A</div>
+                            <div class="turma-stats">25 Alunos • 47 Pontos</div>
+                            <div class="turma-progress"><div class="turma-progress-fill" style="width:75%"></div></div>
+                            <div class="turma-xp">320 XP</div>
                         </div>
+                        <div class="turma-arrow">›</div>
                     </div>
-                    <div style="background:var(--paper-dark);padding:0.875rem;border-radius:8px;margin-bottom:1rem;font-size:0.9rem;">
-                        Capela construída em 1955 pelos moradores do bairro.
+                    <div class="turma-card" onclick="showToast('🏫','7º Ano B','Abrir turma')">
+                        <div class="turma-icon">🏫</div>
+                        <div class="turma-info">
+                            <div class="turma-name">7º Ano B</div>
+                            <div class="turma-stats">28 Alunos • 62 Pontos</div>
+                            <div class="turma-progress"><div class="turma-progress-fill" style="width:60%"></div></div>
+                            <div class="turma-xp">280 XP</div>
+                        </div>
+                        <div class="turma-arrow">›</div>
                     </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
-                        <button onclick="viewPointLocation(3)" class="btn btn-secondary" style="font-size:0.85rem;">🗺️ Ver</button>
-                        <button onclick="rejectPointSimple(3, event)" class="btn" style="background:white;border:2px solid var(--red);color:var(--red);font-size:0.85rem;">❌ Rejeitar</button>
-                        <button onclick="approvePointSimple(3, event)" class="btn" style="background:var(--green);color:white;font-size:0.85rem;">✅ Aprovar</button>
-                    </div>
+                </div>
+                <div class="section-header">
+                    <div class="section-title"><div class="section-title-icon">📋</div><span>Gestão Pedagógica</span></div>
+                </div>
+                <div class="management-grid">
+                    <div class="management-btn" onclick="showToast('📝','Produções','Ver produções')"><div class="management-icon">📝</div><div class="management-label">Produções</div></div>
+                    <div class="management-btn" onclick="showToast('🏫','Turmas','Gerenciar')"><div class="management-icon">🏫</div><div class="management-label">Turmas</div></div>
+                    <div class="management-btn" onclick="showToast('🏆','Recompensas','Gerenciar')"><div class="management-icon">🏆</div><div class="management-label">Recompensas</div></div>
+                    <div class="management-btn" onclick="showToast('📊','Relatórios','Ver')"><div class="management-icon">📊</div><div class="management-label">Relatórios</div></div>
+                    <div class="management-btn" onclick="navigateTo('feedback')"><div class="management-icon">💡</div><div class="management-label">Feedback</div></div>
+                    <div class="management-btn" onclick="showToast('🎯','Missões','Gerenciar')"><div class="management-icon">🎯</div><div class="management-label">Missões</div></div>
+                </div>
+                <div class="section-header">
+                    <div class="section-title"><div class="section-title-icon">🏆</div><span>Ranking Geral</span></div>
+                </div>
+                <div class="ranking-list">
+                    <div class="ranking-item"><div class="ranking-medal">🥇</div><div class="ranking-info"><div class="ranking-turma">6º Ano A</div></div><div class="ranking-xp">320 XP</div></div>
+                    <div class="ranking-item"><div class="ranking-medal">🥈</div><div class="ranking-info"><div class="ranking-turma">7º Ano B</div></div><div class="ranking-xp">280 XP</div></div>
+                    <div class="ranking-item"><div class="ranking-medal">🥉</div><div class="ranking-info"><div class="ranking-turma">8º Ano A</div></div><div class="ranking-xp">190 XP</div></div>
+                </div>
+                <button class="btn-full-ranking" onclick="showToast('🏆','Ranking','Ver completo')">Ver Ranking Completo</button>
+                <div class="motivational-footer">
+                    <div class="footer-icon">🚀</div>
+                    <div><strong>Juntos construindo o conhecimento!</strong></div>
+                    <div class="footer-icon">📚</div>
                 </div>
             </div>
         </div>
-
         <!-- FEED -->
         <div class="screen" id="screen-feed">
             <div class="screen-content">
@@ -2643,12 +2761,12 @@
                 </div>
                 
                 <div class="missions-list">
-                    <div class="mission-item completed" onclick="showMissionDetails('cadastrar')" style="cursor:pointer;">
+                    <div class="mission-item completed">
                         <input type="checkbox" checked disabled>
                         <span class="mission-text">Cadastrar 1 ponto histórico</span>
                         <span class="mission-badge">✓ 7</span>
                     </div>
-                    <div class="mission-item" onclick="showMissionDetails('visitar')" style="cursor:pointer;">
+                    <div class="mission-item">
                         <input type="checkbox" disabled>
                         <span class="mission-text">Visitar 2 locais no mapa</span>
                         <div class="mission-progress-inline">
@@ -2658,7 +2776,7 @@
                             <span class="progress-text-mini">1/2</span>
                         </div>
                     </div>
-                    <div class="mission-item" onclick="showMissionDetails('xp')" style="cursor:pointer;">
+                    <div class="mission-item">
                         <input type="checkbox" disabled>
                         <span class="mission-text">Ganhar 100 XP</span>
                         <div class="mission-progress-inline">
@@ -2691,7 +2809,7 @@
                 </div>
                 
                 <div class="stats-grid">
-                    <div class="stat-box" onclick="showPointsList()" style="cursor:pointer;">
+                    <div class="stat-box">
                         <div class="stat-icon-big">📍</div>
                         <div class="stat-content">
                             <div class="stat-label">Pontos cadastrados</div>
@@ -2775,8 +2893,8 @@
                     </div>
                     <div class="personalization-preview">
                         <div class="avatar-preview">
-                            <div class="avatar-option" onclick="selectAvatar('👨‍🎓')">👨‍🎓</div>
-                            <div class="avatar-option" onclick="selectAvatar('👩‍🎓')">👩‍🎓</div>
+                            <div class="avatar-option">👨‍🎓</div>
+                            <div class="avatar-option">👩‍🎓</div>
                         </div>
                         <div class="map-preview">
                             <div class="map-option"></div>
@@ -3592,68 +3710,6 @@ function viewAllFeedback(){
 function stopARMode(){closeAR();}
 
 // =================================================================
-// MISSION DETAILS, AVATAR & POINTS LIST
-// =================================================================
-function showMissionDetails(mission){
-    const details={
-        cadastrar:{title:'📍 Cadastrar 1 ponto histórico',description:'Explore a cidade e cadastre um local histórico que você conhece ou descobre.',reward:'+50 XP por ponto cadastrado',progress:'7/1 (Completo! ✅)',status:'completed',tip:'Você já cadastrou 7 pontos! Parabéns!'},
-        visitar:{title:'🗺️ Visitar 2 locais no mapa',description:'Use o Modo AR para visitar locais históricos próximos a você.',reward:'+30 XP por local visitado',progress:'1/2 (50%)',status:'in_progress',tip:'Falta visitar mais 1 local! Ative o Modo AR e explore.'},
-        xp:{title:'⭐ Ganhar 100 XP',description:'Acumule pontos de experiência cadastrando pontos, visitando locais e dando sugestões.',reward:'Badge Explorador Ativo 🏆',progress:'50/100 XP',status:'in_progress',tip:'Você está no meio do caminho! Continue explorando.'}
-    };
-    const m=details[mission];
-    if(!m)return;
-    showModal(`<div style="background:white;padding:2rem;border-radius:16px;max-width:400px;text-align:center;"><h2 style="color:var(--primary);margin:0 0 1rem 0;font-family:'Playfair Display',serif;">${m.title}</h2><p style="color:var(--gray);margin-bottom:1.5rem;line-height:1.6;">${m.description}</p><div style="background:var(--paper);padding:1rem;border-radius:12px;margin-bottom:1rem;"><div style="font-size:0.9rem;color:var(--gray);margin-bottom:0.5rem;">Progresso:</div><div style="font-size:1.25rem;font-weight:700;color:var(--primary);">${m.progress}</div></div><div style="background:rgba(196,163,90,0.1);padding:1rem;border-radius:12px;margin-bottom:1rem;border:2px solid var(--gold);"><div style="font-size:0.9rem;color:var(--primary);margin-bottom:0.5rem;">Recompensa:</div><div style="font-size:1.1rem;font-weight:700;color:var(--gold);">${m.reward}</div></div><div style="background:var(--paper-dark);padding:1rem;border-radius:8px;margin-bottom:1.5rem;"><div style="font-size:0.85rem;color:var(--gray);">💡 ${m.tip}</div></div><button onclick="closeModal()" style="width:100%;padding:1rem;background:var(--primary);color:white;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;">Entendido!</button></div>`);
-}
-
-function selectAvatar(emoji){
-    if(!AppState.user)return;
-    AppState.user.avatar=emoji;
-    Auth.setCurrent(AppState.user);
-    const avatarEl=document.getElementById('profileAvatarBig');
-    avatarEl.textContent=emoji;
-    avatarEl.style.backgroundImage='none';
-    document.getElementById('topbarAvatar').textContent=emoji;
-    showToast('✅','Avatar atualizado!','Seu novo avatar foi salvo');
-}
-
-function showPointsList(){
-    const points=[
-        {title:'Igreja Matriz',status:'approved',category:'Religiosa',xp:50},
-        {title:'Praça Central',status:'approved',category:'Praça',xp:50},
-        {title:'Estação Ferroviária',status:'pending',category:'Patrimônio',xp:0},
-        {title:'Mercado Municipal',status:'approved',category:'Comércio',xp:50},
-        {title:'Casa da Cultura',status:'pending',category:'Patrimônio',xp:0},
-        {title:'Escola Antiga',status:'approved',category:'Educação',xp:50},
-        {title:'Coreto da Praça',status:'approved',category:'Lazer',xp:50}
-    ];
-    let html='<div style="background:white;padding:1.5rem;border-radius:16px;max-width:500px;"><h2 style="color:var(--primary);margin:0 0 1.5rem 0;font-family:\'Playfair Display\',serif;">📍 Meus Pontos Cadastrados</h2><div style="max-height:400px;overflow-y:auto;">';
-    points.forEach(p=>{
-        const sc=p.status==='approved'?'var(--green)':'var(--gold)';
-        const st=p.status==='approved'?'✅ Aprovado':'⏳ Pendente';
-        html+=`<div style="background:var(--paper);padding:1rem;border-radius:12px;margin-bottom:0.75rem;border-left:4px solid ${sc};"><div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:0.5rem;"><strong style="color:var(--primary);font-size:1rem;">${p.title}</strong><span style="color:${sc};font-size:0.85rem;font-weight:600;">${st}</span></div><div style="font-size:0.85rem;color:var(--gray);margin-bottom:0.25rem;">${p.category}</div><div style="font-size:0.9rem;color:var(--gold);font-weight:600;">${p.xp>0?'+'+p.xp+' XP':'Aguardando aprovação'}</div></div>`;
-    });
-    html+='</div><button onclick="closeModal()" style="width:100%;margin-top:1rem;padding:1rem;background:var(--primary);color:white;border:none;border-radius:12px;font-weight:700;cursor:pointer;">Fechar</button></div>';
-    showModal(html);
-}
-
-function showModal(content){
-    let modal=document.getElementById('genericModal');
-    if(!modal){
-        modal=document.createElement('div');
-        modal.id='genericModal';
-        modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;padding:1rem;';
-        document.body.appendChild(modal);
-    }
-    modal.innerHTML=content;
-    modal.style.display='flex';
-}
-
-function closeModal(){
-    const modal=document.getElementById('genericModal');
-    if(modal)modal.style.display='none';
-}
-
-// =================================================================
 // APP SHELL
 // =================================================================
 function showApp() {
@@ -3677,6 +3733,11 @@ function showApp() {
         document.getElementById('teacherPanel').style.display = 'block';
         document.getElementById('nav-missions').querySelector('.nav-label').textContent = 'Painel';
         document.getElementById('nav-missions').querySelector('.nav-icon').textContent = '👨‍🏫';
+        // Update teacher name
+        setTimeout(() => {
+            const teacherNameEl = document.getElementById('teacherName');
+            if (teacherNameEl) teacherNameEl.textContent = u.name.split(' ')[0];
+        }, 100);
     } else {
         document.getElementById('studentProgress').style.display = 'block';
         document.getElementById('teacherPanel').style.display = 'none';
@@ -3747,14 +3808,8 @@ function navigateTo(screen) {
         logo.style.display = 'none';
     }
 
-    if (screen === 'map') {
-        if (!AppState.map) {
-            setTimeout(() => initMap(), 100);
-        } else {
-            setTimeout(() => {
-                AppState.map.invalidateSize();
-            }, 50);
-        }
+    if (screen === 'map' && AppState.map) {
+        setTimeout(() => AppState.map.resize(), 50);
     }
 }
 
@@ -3845,129 +3900,116 @@ let currentLayer = 'streets';
 
 function initMap() {
     if (AppState.map) return;
-    
-    const mapEl = document.getElementById('map');
-    if (!mapEl) return;
 
-    try {
-        AppState.map = L.map('map', {
-            zoomControl: false  // Add custom position later
-        }).setView([-5.2902343, -44.4895682], 14);
+    AppState.map = new maplibregl.Map({
+        container: 'map',
+        style: MAP_LAYERS.streets,
+        center: [-44.493456, -5.291234],
+        zoom: 14,
+        minZoom: 3,
+        maxZoom: 22,
+        pitch: 0,
+        bearing: 0
+    });
+
+    AppState.map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
+    
+    // Enhanced GPS with tracking and rotation
+    const geolocate = new maplibregl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true,
+            timeout: 6000
+        },
+        trackUserLocation: true,
+        showUserHeading: true,
+        showAccuracyCircle: true
+    });
+    
+    AppState.map.addControl(geolocate, 'bottom-right');
+    
+    // Auto-activate GPS on map load
+    AppState.map.on('load', () => {
+        geolocate.trigger();
+    });
+
+    // Track user orientation on mobile
+    if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
+        window.addEventListener('deviceorientation', (e) => {
+            if (e.alpha !== null && AppState.map) {
+                AppState.map.setBearing(-e.alpha);
+            }
+        });
+    }
+
+    const samplePoints = [
+        { name: 'Igreja Matriz', lat: -5.291234, lng: -44.493456, status: 'approved', category: 'igreja' },
+        { name: 'Praça Central', lat: -5.292000, lng: -44.494000, status: 'approved', category: 'praca' },
+        { name: 'Estação Ferroviária', lat: -5.290000, lng: -44.495000, status: 'pending', category: 'patrimonio' },
+        { name: 'Mercado Municipal', lat: -5.293000, lng: -44.492000, status: 'approved', category: 'comercio' },
+        { name: 'Casa da Cultura', lat: -5.291800, lng: -44.492800, status: 'pending', category: 'patrimonio' }
+    ];
+
+    samplePoints.forEach(p => addMapMarker(p));
+}
+
+function toggleLayerPanel() {
+    const panel = document.getElementById('layerPanel');
+    const isVisible = panel.style.display !== 'none';
+    panel.style.display = isVisible ? 'none' : 'block';
+}
+
+function changeMapLayer(layerType, element) {
+    if (layerType === currentLayer) return;
+    
+    // Update radio buttons
+    document.querySelectorAll('.layer-option input[type="radio"]').forEach(r => r.checked = false);
+    element.querySelector('input[type="radio"]').checked = true;
+    
+    // Save current view
+    const center = AppState.map.getCenter();
+    const zoom = AppState.map.getZoom();
+    const bearing = AppState.map.getBearing();
+    const pitch = AppState.map.getPitch();
+    
+    // Save markers
+    const markers = AppState.markers.slice();
+    
+    // Change style
+    AppState.map.setStyle(MAP_LAYERS[layerType]);
+    currentLayer = layerType;
+    
+    // Restore view and markers after style loads
+    AppState.map.once('styledata', () => {
+        AppState.map.setCenter(center);
+        AppState.map.setZoom(zoom);
+        AppState.map.setBearing(bearing);
+        AppState.map.setPitch(pitch);
         
-        // Define map layers
-        const baseLayers = {
-            'Ruas': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap',
-                maxZoom: 19
-            }),
-            'Satélite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                attribution: '© Esri',
-                maxZoom: 19
-            }),
-            'Topográfico': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenTopoMap',
-                maxZoom: 17
-            })
-        };
+        // Re-add markers
+        markers.forEach(({ point }) => {
+            // Remove old marker
+            const oldMarker = AppState.markers.find(m => m.point.name === point.name);
+            if (oldMarker) {
+                oldMarker.marker.remove();
+            }
+        });
         
-        // Add default layer (Ruas)
-        baseLayers['Ruas'].addTo(AppState.map);
-        AppState.currentLayer = 'Ruas';
-        AppState.baseLayers = baseLayers;
+        // Clear markers array
+        AppState.markers = [];
         
-        // Add zoom control to bottom right
-        L.control.zoom({
-            position: 'bottomright'
-        }).addTo(AppState.map);
-        
-        // Sample points
+        // Re-add all markers
         const samplePoints = [
-            { name: 'Igreja Matriz', lat: -5.2902343, lng: -44.4895682, status: 'approved', category: 'igreja' },
+            { name: 'Igreja Matriz', lat: -5.291234, lng: -44.493456, status: 'approved', category: 'igreja' },
             { name: 'Praça Central', lat: -5.292000, lng: -44.494000, status: 'approved', category: 'praca' },
             { name: 'Estação Ferroviária', lat: -5.290000, lng: -44.495000, status: 'pending', category: 'patrimonio' },
             { name: 'Mercado Municipal', lat: -5.293000, lng: -44.492000, status: 'approved', category: 'comercio' },
             { name: 'Casa da Cultura', lat: -5.291800, lng: -44.492800, status: 'pending', category: 'patrimonio' }
         ];
-
         samplePoints.forEach(p => addMapMarker(p));
-        
-        // GPS location control with TRACKING
-        const locateControl = L.control.locate({
-            position: 'bottomright',
-            flyTo: true,
-            keepCurrentZoomLevel: false,
-            initialZoomLevel: 16,
-            drawCircle: true,
-            drawMarker: true,
-            showCompass: true,
-            markerStyle: {
-                color: '#2D5A3D',
-                fillColor: '#C4A35A',
-                fillOpacity: 0.7,
-                weight: 3,
-                opacity: 0.9,
-                radius: 8
-            },
-            circleStyle: {
-                color: '#2D5A3D',
-                fillColor: '#C4A35A',
-                fillOpacity: 0.15,
-                weight: 2,
-                opacity: 0.5
-            },
-            followCircleStyle: {
-                color: '#2D5A3D',
-                fillColor: '#C4A35A',
-                fillOpacity: 0.2,
-                weight: 2,
-                opacity: 0.8
-            },
-            compassStyle: {
-                fillColor: '#C4A35A',
-                fillOpacity: 0.8,
-                color: '#2D5A3D',
-                weight: 2,
-                opacity: 1
-            },
-            strings: {
-                title: "Minha localização",
-                metersUnit: "metros",
-                feetUnit: "pés",
-                popup: "Você está a {distance} {unit} deste ponto",
-                outsideMapBoundsMsg: "Você está fora dos limites do mapa"
-            },
-            locateOptions: {
-                enableHighAccuracy: true,
-                watch: true,  // CONTINUOUS TRACKING
-                maxZoom: 18
-            }
-        }).addTo(AppState.map);
-        
-        // Auto-start GPS tracking
-        setTimeout(() => {
-            locateControl.start();
-        }, 1000);
-        
-        // Track device orientation on mobile for compass rotation
-        if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
-            window.addEventListener('deviceorientationabsolute', handleOrientation, true);
-            window.addEventListener('deviceorientation', handleOrientation, true);
-        }
-        
-    } catch(e) {
-        console.error('Erro ao inicializar mapa:', e);
-        showToast('❌', 'Erro no mapa', 'Verifique sua conexão');
-    }
-}
-
-function handleOrientation(event) {
-    if (!AppState.map) return;
+    });
     
-    let compass = event.webkitCompassHeading || event.alpha;
-    if (compass !== null && compass !== undefined) {
-        // Rotate map based on device orientation
-        AppState.map.setBearing(-compass);
-    }
+    showToast('🗺️', 'Camada alterada', `Visualizando: ${layerType === 'streets' ? 'Mapa de Ruas' : layerType === 'topo' ? 'Topográfico' : 'Satélite'}`);
+    toggleLayerPanel();
 }
 
 function addMapMarker(point) {
@@ -3980,94 +4022,98 @@ function addMapMarker(point) {
         escola: '🏫',
         residencia: '🏠',
         'marco-geo': '🗻',
-        educativo: '📚',
-        cultural: '🎭',
-        lazer: '🎪'
+        'curiosidade': '💡'
     };
     
-    const icon = L.divIcon({
-        html: `<div style="font-size:2rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))">${icons[point.category] || '📍'}</div>`,
-        className: 'custom-marker',
-        iconSize: [32, 32],
-        iconAnchor: [16, 32]
-    });
+    // Create custom marker element with icon
+    const el = document.createElement('div');
+    el.style.cssText = `
+        width:36px;
+        height:36px;
+        border-radius:50%;
+        background:${colors[point.status] || '#FF8C00'};
+        border:3px solid white;
+        box-shadow:0 3px 12px rgba(0,0,0,0.4);
+        cursor:pointer;
+        transition:all 0.3s;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:18px;
+        animation:markerPulse 2s infinite;
+    `;
+    el.innerHTML = icons[point.category] || '📍';
     
-    const marker = L.marker([point.lat, point.lng], { icon }).addTo(AppState.map);
+    el.onmouseenter = () => {
+        el.style.transform = 'scale(1.4)';
+        el.style.boxShadow = '0 6px 20px rgba(0,0,0,0.5)';
+    };
+    el.onmouseleave = () => {
+        el.style.transform = 'scale(1)';
+        el.style.boxShadow = '0 3px 12px rgba(0,0,0,0.4)';
+    };
     
-    marker.bindPopup(`
-        <div style="font-family:'Crimson Text',serif;">
-            <strong>${point.name}</strong><br>
-            <span style="color:${colors[point.status]}">${point.status === 'approved' ? '✓ Aprovado' : '⏳ Pendente'}</span>
-        </div>
-    `);
+    // Add pulse animation style if not exists
+    if (!document.getElementById('markerPulseStyle')) {
+        const style = document.createElement('style');
+        style.id = 'markerPulseStyle';
+        style.textContent = `
+            @keyframes markerPulse {
+                0%, 100% { box-shadow: 0 3px 12px rgba(0,0,0,0.4); }
+                50% { box-shadow: 0 3px 20px rgba(196,163,90,0.6); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    const statusLabel = { approved: '✅ Aprovado', pending: '⏳ Pendente', rejected: '❌ Rejeitado' };
     
-    AppState.markers = AppState.markers || [];
+    // Click handler to open detail
+    el.onclick = () => {
+        // Find point ID from POINT_DETAILS
+        const pointId = Object.keys(POINT_DETAILS).find(id => 
+            POINT_DETAILS[id].title === point.name || 
+            POINT_DETAILS[id].lat === point.lat
+        );
+        if (pointId) {
+            openPointDetail(parseInt(pointId));
+        } else {
+            showToast('📍', point.name, statusLabel[point.status]);
+        }
+    };
+
+    const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([point.lng, point.lat])
+        .setPopup(new maplibregl.Popup({ offset: 20, closeButton: false }).setHTML(`
+            <div style="font-family:'Crimson Text',serif;padding:0.5rem;">
+                <strong style="color:#2D5A3D;font-size:0.95rem;">${point.name}</strong><br>
+                <span style="font-size:0.8rem;color:#6B7280;">${statusLabel[point.status]}</span><br>
+                <span style="font-size:0.75rem;color:#C4A35A;margin-top:0.25rem;display:block;">👆 Clique para ver detalhes</span>
+            </div>
+        `))
+        .addTo(AppState.map);
+
     AppState.markers.push({ marker, point });
-}
-
-function toggleLayerPanel() {
-    const panel = document.getElementById('layerPanel');
-    const isVisible = panel.style.display !== 'none';
-    panel.style.display = isVisible ? 'none' : 'block';
-}
-
-function changeMapLayer(layerType, element) {
-    if (!AppState.map || !AppState.baseLayers) return;
-    if (layerType === AppState.currentLayer) return;
-    
-    // Update radio buttons
-    document.querySelectorAll('.layer-option input[type="radio"]').forEach(r => r.checked = false);
-    element.querySelector('input[type="radio"]').checked = true;
-    
-    // Remove current layer
-    if (AppState.currentLayer && AppState.baseLayers[AppState.currentLayer]) {
-        AppState.map.removeLayer(AppState.baseLayers[AppState.currentLayer]);
-    }
-    
-    // Add new layer
-    if (AppState.baseLayers[layerType]) {
-        AppState.baseLayers[layerType].addTo(AppState.map);
-        AppState.currentLayer = layerType;
-        
-        const layerNames = {
-            'Ruas': 'Mapa de Ruas',
-            'Satélite': 'Visão Satélite',
-            'Topográfico': 'Mapa Topográfico'
-        };
-        
-        showToast('🗺️', 'Camada alterada', `Visualizando: ${layerNames[layerType]}`);
-    }
-    
-    toggleLayerPanel();
 }
 
 function filterMap(filter, el) {
     document.querySelectorAll('.map-filter-btn').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
-    
-    if (!AppState.markers) return;
-    
     AppState.markers.forEach(({ marker, point }) => {
         const visible = filter === 'all' || point.status === filter || point.category === filter;
-        if (visible) {
-            marker.addTo(AppState.map);
-        } else {
-            marker.remove();
-        }
+        marker.getElement().style.display = visible ? 'block' : 'none';
     });
 }
 
 function searchMap(query) {
     const searchBtn = document.getElementById('clearSearch');
-    if (!AppState.markers) return;
-    
     if (query.trim().length > 0) {
         searchBtn.style.display = 'flex';
     } else {
         searchBtn.style.display = 'none';
         // Show all markers
         AppState.markers.forEach(({ marker }) => {
-            marker.addTo(AppState.map);
+            marker.getElement().style.display = 'block';
         });
         return;
     }
@@ -4081,17 +4127,16 @@ function searchMap(query) {
             point.category?.toLowerCase().includes(lowerQuery) ||
             point.status?.toLowerCase().includes(lowerQuery);
         
-        if (matches) {
-            marker.addTo(AppState.map);
-            if (!foundAny) {
-                foundAny = true;
-                // Center on first match
-                AppState.map.flyTo([point.lat, point.lng], 16, {
-                    duration: 1
-                });
-            }
-        } else {
-            marker.remove();
+        marker.getElement().style.display = matches ? 'block' : 'none';
+        
+        if (matches && !foundAny) {
+            foundAny = true;
+            // Center on first match
+            AppState.map.flyTo({
+                center: [point.lng, point.lat],
+                zoom: 16,
+                duration: 1000
+            });
         }
     });
     
