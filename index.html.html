@@ -6,7 +6,6 @@
     <meta name="theme-color" content="#2D5A3D">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="PK Explorer">
-    <meta name="description" content="Explore e mapeie a história de Presidente Dutra">
     
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
     
@@ -16,10 +15,10 @@
     <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
     <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* ==================== RESET & VARS ==================== */
+        /* ==================== RESTAURAÇÃO DO DESIGN ORIGINAL ==================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         :root {
@@ -32,7 +31,6 @@
             --white: #FFFEF9;
             --red: #8B1A1A;
             --orange: #D4700A;
-            --blue: #1A4A6B;
             --green: #10B981;
             --gray: #6B7280;
             --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -42,18 +40,25 @@
             height: 100%;
             overflow: hidden;
             font-family: 'Crimson Text', serif;
-            background: var(--paper);
+            background: var(--paper-dark); /* Fundo externo */
             color: var(--ink);
             font-size: 17px;
         }
 
+        /* App Shell - Mantém a proporção sem distorcer */
         .app-shell {
             display: flex;
             flex-direction: column;
+            background: var(--paper);
             height: 100vh;
             height: 100dvh;
+            max-width: 480px; /* Previne o efeito "puxado" em telas largas */
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.2);
         }
 
+        /* Topbar Original */
         .topbar {
             background: var(--primary);
             border-bottom: 3px solid var(--gold);
@@ -61,398 +66,248 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0;
             z-index: 50;
         }
 
-        .topbar-left { display: flex; align-items: center; gap: 0.75rem; }
-        
-        .topbar-back {
-            width: 36px; height: 36px; border-radius: 50%;
-            background: rgba(255,255,255,0.2); border: none; color: white;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-        }
+        .topbar-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold); }
+        .topbar-xp { background: rgba(196,163,90,0.2); border: 1px solid var(--gold); color: var(--gold-light); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; }
 
-        .topbar-logo { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--gold); }
-        .topbar-right { display: flex; align-items: center; gap: 0.75rem; }
-
-        .notification-badge {
-            position: absolute; top: -4px; right: -4px;
-            background: var(--red); color: white; font-size: 0.7rem;
-            min-width: 18px; height: 18px; border-radius: 9px;
-            display: flex; align-items: center; justify-content: center;
-            border: 2px solid var(--primary); animation: badgePulse 2s infinite;
-        }
-        
-        @keyframes badgePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-
-        .topbar-xp { background: rgba(196,163,90,0.2); border: 1px solid var(--gold); color: var(--gold-light); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; }
-        .topbar-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--gold); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; cursor: pointer; border: 2px solid var(--gold-light); }
-
+        /* Telas */
         .screens { flex: 1; overflow: hidden; position: relative; }
-        .screen { position: absolute; inset: 0; overflow-y: auto; display: none; background: var(--paper); animation: screenIn 0.25s ease-out; }
+        .screen { position: absolute; inset: 0; overflow-y: auto; display: none; padding-bottom: 2rem; }
         .screen.active { display: block; }
 
-        @keyframes screenIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        /* Cards Estilizados */
+        .card { 
+            background: var(--white); 
+            border: 2px solid var(--gold); 
+            border-radius: 16px; 
+            margin: 1rem; 
+            padding: 1.25rem; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+        }
 
-        .bottom-nav { background: var(--white); border-top: 3px solid var(--gold); display: flex; flex-shrink: 0; padding-bottom: var(--safe-bottom); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.6rem 0.25rem; color: var(--gray); border: none; background: none; }
-        .nav-item.active { color: var(--primary); position: relative; }
-        .nav-item.active::before { content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 3px; background: var(--gold); }
-        .nav-icon { font-size: 1.4rem; margin-bottom: 0.15rem; }
-        .nav-label { font-size: 0.65rem; font-weight: 600; }
+        /* Botões Originais */
+        .btn-gold { background: var(--gold); color: var(--primary); font-weight: 700; border: none; border-radius: 12px; padding: 1rem; cursor: pointer; width: 100%; font-family: 'Playfair Display'; }
 
-        /* Estilos adicionais para Cards e Modais */
-        .card { background: white; margin: 1rem; padding: 1.25rem; border-radius: 16px; border: 2px solid var(--paper-dark); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 1000; align-items: flex-end; justify-content: center; }
-        .modal-overlay.active { display: flex; }
-        .modal-sheet { background: var(--white); border-radius: 20px 20px 0 0; border-top: 3px solid var(--gold); width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; padding-bottom: var(--safe-bottom); animation: sheetUp 0.3s ease-out; }
-        @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        /* Menu Inferior Original */
+        .bottom-nav { 
+            background: var(--white); 
+            border-top: 3px solid var(--gold); 
+            display: flex; 
+            padding-bottom: var(--safe-bottom); 
+        }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0.6rem 0; color: var(--gray); border: none; background: none; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item.active::before { content: ''; position: absolute; top: 0; width: 30%; height: 3px; background: var(--gold); }
 
-        /* Auth Styles */
-        .auth-card { background: var(--white); border: 2px solid var(--gold); border-radius: 20px; padding: 2rem; width: 100%; max-width: 400px; }
-        .form-group { margin-bottom: 1rem; }
-        .form-input, .form-select { width: 100%; padding: 0.75rem; border: 2px solid var(--gold); border-radius: 10px; font-family: inherit; }
-        .btn-full { width: 100%; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
-        .hidden { display: none !important; }
-
-        /* Map UI */
+        /* Mapa e Filtros de Camadas */
         #map { width: 100%; height: 100%; }
-        .map-wrapper { position: relative; height: 100%; }
-        .map-fab { position: absolute; bottom: 1.5rem; right: 1.5rem; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 3px solid var(--gold); font-size: 1.5rem; z-index: 10; display: flex; align-items: center; justify-content: center; }
+        .map-layer-panel {
+            position: absolute; bottom: 5rem; left: 1rem;
+            background: white; border: 2px solid var(--gold);
+            padding: 0.5rem; border-radius: 12px; z-index: 20;
+        }
 
-        /* Feedback */
-        .feedback-category.selected { border-color: var(--gold); background: white; box-shadow: 0 4px 12px rgba(196,163,90,0.3); }
-        .star-btn { font-size: 2rem; background: none; border: none; cursor: pointer; filter: grayscale(1); opacity: 0.4; }
-        .star-btn.active { filter: grayscale(0); opacity: 1; }
+        /* Modal Original */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: flex-end; }
+        .modal-overlay.active { display: flex; }
+        .modal-sheet { background: var(--white); width: 100%; border-radius: 24px 24px 0 0; padding: 2rem; border-top: 4px solid var(--gold); }
 
-        /* AR Overlay */
-        .ar-overlay { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; }
-        #arCamera { width: 100%; height: 100%; object-fit: cover; }
-        .ar-photo-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-        #arHistoricalPhoto { max-width: 80%; border-radius: 12px; transition: opacity 0.2s; }
-        .ar-slider-container { pointer-events: auto; position: absolute; bottom: 100px; width: 80%; background: rgba(0,0,0,0.6); padding: 1rem; border-radius: 20px; }
-
-        .toast-container { position: fixed; top: 70px; right: 1rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; }
-        .toast { background: white; border: 2px solid var(--gold); padding: 0.75rem 1rem; border-radius: 12px; display: flex; gap: 0.75rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        /* AR e Toast */
+        .ar-overlay { position: fixed; inset: 0; background: black; z-index: 9999; display: none; }
+        .toast { position: fixed; top: 80px; right: 1rem; background: white; border: 2px solid var(--gold); padding: 1rem; border-radius: 12px; z-index: 10000; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
-<div class="toast-container" id="toastContainer"></div>
+<div id="toastContainer"></div>
 
-<div id="authScreen" style="height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: var(--paper-dark);">
-    <div class="auth-card">
-        <div style="text-align: center; margin-bottom: 1.5rem;">
-            <span style="font-size: 3rem;">🗺️</span>
-            <h2 style="font-family: 'Playfair Display'; color: var(--primary);">PK Explorer</h2>
-            <p style="color: var(--gold); font-style: italic;">Memórias de Presidente Dutra</p>
-        </div>
-
-        <div id="loginForm">
-            <div class="form-group">
-                <input type="email" class="form-input" id="loginEmail" placeholder="E-mail">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-input" id="loginPassword" placeholder="Senha">
-            </div>
-            <button class="btn-full" onclick="login()">Entrar</button>
-            <button class="btn-full" style="background: var(--gold);" onclick="quickLogin()">⚡ Acesso Rápido</button>
+<div id="authScreen" class="app-shell" style="justify-content: center; background: var(--primary);">
+    <div class="card" style="margin: 2rem; text-align: center;">
+        <span style="font-size: 4rem;">🗺️</span>
+        <h1 style="font-family: 'Playfair Display'; color: var(--primary); margin: 1rem 0;">PK Explorer</h1>
+        <div style="margin-top: 1.5rem;">
+            <input type="email" id="loginEmail" placeholder="E-mail" style="width:100%; padding:0.8rem; margin-bottom:1rem; border:2px solid var(--gold); border-radius:8px;">
+            <input type="password" id="loginPassword" placeholder="Senha" style="width:100%; padding:0.8rem; margin-bottom:1rem; border:2px solid var(--gold); border-radius:8px;">
+            <button class="btn-gold" onclick="login()">Entrar no Sistema</button>
         </div>
     </div>
 </div>
 
 <div class="app-shell" id="appShell" style="display:none;">
     <div class="topbar">
-        <div class="topbar-left">
-            <button class="topbar-back" id="topbarBack" onclick="goBack()" style="display:none;">←</button>
-            <div class="topbar-logo" id="topbarLogo">🗺️ PK Explorer</div>
-        </div>
-        <div class="topbar-right">
-            <div class="topbar-xp" id="topbarXP">⭐ 0 XP</div>
-            <div class="topbar-avatar" id="topbarAvatar" onclick="navigateTo('profile')">U</div>
+        <div class="topbar-logo">PK Explorer</div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+            <div class="topbar-xp" id="topbarXP">⭐ 350 XP</div>
+            <div id="userAvatar" style="width:32px; height:32px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--primary);">M</div>
         </div>
     </div>
 
     <div class="screens">
         <div class="screen active" id="screen-home">
-            <div style="padding: 1.25rem;">
-                <div class="card" style="background: var(--primary); color: white; margin: 0 0 1rem 0;">
-                    <h3 id="welcomeName">Olá! 👋</h3>
-                    <p style="opacity: 0.8;">Pronto para explorar a história hoje?</p>
+            <div class="card" style="background: linear-gradient(135deg, var(--primary), #1d3d28); color: white; border: none;">
+                <h2 style="font-family: 'Playfair Display';">Olá, Explorador! 👋</h2>
+                <p style="opacity: 0.8; font-size: 0.9rem;">Presidente Dutra espera por suas descobertas.</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0 1rem;">
+                <div class="card" style="margin:0; text-align:center; padding:1rem;" onclick="navigateTo('map')">
+                    <div style="font-size:1.5rem;">🗺️</div>
+                    <div style="font-weight:600; color:var(--primary); font-size:0.8rem;">Mapa Interativo</div>
                 </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                    <div class="card" style="margin: 0; text-align: center;" onclick="navigateTo('map')">
-                        <span style="font-size: 2rem;">🗺️</span>
-                        <p>Ver Mapa</p>
-                    </div>
-                    <div class="card" style="margin: 0; text-align: center;" onclick="openRegisterModal()">
-                        <span style="font-size: 2rem;">📍</span>
-                        <p>Cadastrar</p>
-                    </div>
+                <div class="card" style="margin:0; text-align:center; padding:1rem;" onclick="openRegisterModal()">
+                    <div style="font-size:1.5rem;">📍</div>
+                    <div style="font-weight:600; color:var(--primary); font-size:0.8rem;">Novo Ponto</div>
                 </div>
             </div>
         </div>
 
         <div class="screen" id="screen-map">
-            <div class="map-wrapper">
-                <div id="map"></div>
-                <button class="map-fab" onclick="openRegisterModal()">📍</button>
+            <div id="map"></div>
+            <div class="map-layer-panel" id="layerPanel">
+                <button onclick="changeMapLayer('streets')" style="border:none; background:none; margin-right:5px;">🗺️</button>
+                <button onclick="changeMapLayer('satellite')" style="border:none; background:none; margin-right:5px;">🛰️</button>
+                <button onclick="changeMapLayer('topo')" style="border:none; background:none;">⛰️</button>
             </div>
+            <button style="position:absolute; bottom:1.5rem; right:1.5rem; width:56px; height:56px; border-radius:50%; background:var(--primary); color:white; border:3px solid var(--gold); font-size:1.5rem; z-index:10;" onclick="openRegisterModal()">📍</button>
         </div>
 
         <div class="screen" id="screen-missions">
-            <div id="studentProgress"></div> <div id="teacherPanel" style="display:none;"></div>
-        </div>
-
-        <div class="screen" id="screen-feed">
-            <div id="feedContent" style="padding: 1rem;"></div>
+            <div id="missionsContent"></div>
         </div>
 
         <div class="screen" id="screen-profile">
-            <div id="profileContainer" style="padding: 1rem;">
-                <div class="card" style="text-align: center;">
-                    <div id="profileAvatarBig" style="width: 80px; height: 80px; border-radius: 50%; background: var(--gold); margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold;">U</div>
-                    <h2 id="profileName">Usuário</h2>
-                    <p id="profileRole" style="color: var(--gray);">Explorador</p>
-                    <button class="btn-full" style="background: var(--red); margin-top: 2rem;" onclick="logout()">Sair da conta</button>
-                </div>
+            <div class="card" style="text-align: center;">
+                <div style="width:80px; height:80px; background:var(--gold); border-radius:50%; margin:0 auto 1rem; display:flex; align-items:center; justify-content:center; font-size:2rem; border:4px solid var(--gold-light);">M</div>
+                <h3 id="profileNameDisplay">Nome do Usuário</h3>
+                <p id="profileTurmaDisplay" style="color:var(--gray); margin-bottom:1.5rem;">Turma</p>
+                <button class="btn-gold" style="background:var(--red); color:white;" onclick="logout()">Sair da Conta</button>
             </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-item active" onclick="navigateTo('home')" id="nav-home">
-            <div class="nav-icon">🏠</div><div class="nav-label">Início</div>
-        </button>
-        <button class="nav-item" onclick="navigateTo('map')" id="nav-map">
-            <div class="nav-icon">🗺️</div><div class="nav-label">Mapa</div>
-        </button>
-        <button class="nav-item" onclick="navigateTo('missions')" id="nav-missions">
-            <div class="nav-icon">📊</div><div class="nav-label">Painel</div>
-        </button>
-        <button class="nav-item" onclick="navigateTo('feed')" id="nav-feed">
-            <div class="nav-icon">📰</div><div class="nav-label">Feed</div>
-        </button>
-        <button class="nav-item" onclick="navigateTo('profile')" id="nav-profile">
-            <div class="nav-icon">👤</div><div class="nav-label">Perfil</div>
-        </button>
+        <button class="nav-item active" onclick="navigateTo('home')" id="nav-home">🏠<small>Início</small></button>
+        <button class="nav-item" onclick="navigateTo('map')" id="nav-map">🗺️<small>Mapa</small></button>
+        <button class="nav-item" onclick="navigateTo('missions')" id="nav-missions">📊<small>Painel</small></button>
+        <button class="nav-item" onclick="navigateTo('profile')" id="nav-profile">👤<small>Perfil</small></button>
     </nav>
 </div>
 
 <div class="ar-overlay" id="arOverlay">
-    <div style="position: absolute; top: 1rem; left: 1rem; z-index: 10;">
-        <button onclick="closeAR()" style="background: white; border: none; padding: 0.5rem 1rem; border-radius: 20px;">Sair do AR</button>
-    </div>
     <video id="arCamera" autoplay playsinline muted></video>
-    <div class="ar-photo-overlay" id="arPhotoOverlay" style="display: none;">
-        <img id="arHistoricalPhoto" src="">
-        <div class="ar-slider-container">
-            <input type="range" min="0" max="100" value="50" style="width: 100%;" oninput="document.getElementById('arHistoricalPhoto').style.opacity = this.value/100">
-        </div>
+    <div style="position:absolute; top:1rem; width:100%; text-align:center;">
+        <button onclick="closeAR()" style="padding:0.5rem 1.5rem; border-radius:20px; border:none; background:white;">Sair do AR</button>
     </div>
 </div>
 
 <div class="modal-overlay" id="registerModal">
     <div class="modal-sheet">
-        <div style="padding: 1.5rem;">
-            <h3>📍 Cadastrar Ponto Histórico</h3>
-            <div class="form-group" style="margin-top: 1rem;">
-                <label>Nome do Local</label>
-                <input type="text" id="pointName" class="form-input">
-            </div>
-            <div class="form-group">
-                <label>Descrição (mín. 100 letras)</label>
-                <textarea id="pointDesc" class="form-input" style="height: 100px;"></textarea>
-            </div>
-            <button class="btn-full" onclick="submitPoint()">Enviar para Análise</button>
-            <button class="btn-full" style="background: var(--gray);" onclick="closeRegisterModal()">Cancelar</button>
-        </div>
+        <h3 style="font-family:'Playfair Display'; color:var(--primary);">📍 Novo Registro</h3>
+        <input type="text" id="pointName" placeholder="Nome do Local" style="width:100%; padding:0.8rem; margin:1rem 0; border:2px solid var(--gold); border-radius:8px;">
+        <textarea id="pointDesc" placeholder="Descrição histórica (mín. 100 caracteres)" style="width:100%; height:100px; padding:0.8rem; border:2px solid var(--gold); border-radius:8px;"></textarea>
+        <button class="btn-gold" style="margin-top:1rem;" onclick="submitPoint()">Enviar para Análise</button>
+        <button onclick="closeRegisterModal()" style="width:100%; background:none; border:none; margin-top:1rem; color:var(--gray);">Cancelar</button>
     </div>
 </div>
 
 <script>
-    'use strict';
+    // CONFIGURAÇÃO SUPABASE
+    const supabaseUrl = 'SUA_URL_AQUI';
+    const supabaseKey = 'SUA_KEY_AQUI';
+    const supabase = supabasejs.createClient(supabaseUrl, supabaseKey);
 
-    let AppState = {
-        user: null,
-        currentScreen: 'home',
-        map: null,
-        markers: [],
-        location: null
-    };
+    let AppState = { user: null, map: null, markers: [] };
 
-    const Auth = {
-        getCurrent: () => JSON.parse(localStorage.getItem('pk_current_user') || 'null'),
-        setCurrent: (u) => localStorage.setItem('pk_current_user', JSON.stringify(u)),
-        clear: () => localStorage.removeItem('pk_current_user'),
-        quickLogin: () => {
-            const user = { name: 'Maria Santos', role: 'aluno', turma: '6ANOA', xp: 350, points: 7 };
-            Auth.setCurrent(user);
-            return user;
-        }
-    };
-
-    window.addEventListener('load', () => {
-        const user = Auth.getCurrent();
-        if (user) {
-            AppState.user = user;
-            showApp();
-        }
-    });
-
-    function login() { quickLogin(); } // Simplificado para demo
-
-    function quickLogin() {
-        AppState.user = Auth.quickLogin();
-        showApp();
-        showToast('⚡', 'Bem-vinda!', 'Maria Santos conectada');
-    }
-
-    function logout() {
-        Auth.clear();
-        location.reload();
-    }
-
-    function showApp() {
-        document.getElementById('authScreen').style.display = 'none';
-        document.getElementById('appShell').style.display = 'flex';
-        updateUI();
-        navigateTo('home');
-        initMap();
-        renderFeed();
-    }
-
-    function updateUI() {
-        const u = AppState.user;
-        document.getElementById('welcomeName').textContent = `Olá, ${u.name.split(' ')[0]}! 👋`;
-        document.getElementById('topbarXP').textContent = `⭐ ${u.xp} XP`;
-        document.getElementById('topbarAvatar').textContent = u.name.charAt(0);
-        document.getElementById('profileName').textContent = u.name;
-        document.getElementById('profileRole').textContent = u.role === 'aluno' ? `Aluno - ${u.turma}` : 'Professor';
-    }
-
+    // NAVEGAÇÃO
     function navigateTo(screen) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-        const target = document.getElementById('screen-' + screen);
-        if (target) target.classList.add('active');
         
-        const nav = document.getElementById('nav-' + screen);
-        if (nav) nav.classList.add('active');
-
-        AppState.currentScreen = screen;
-
-        if (screen === 'missions') {
-            renderStudentProgress();
-        }
+        document.getElementById('screen-' + screen).style.display = 'block';
+        document.getElementById('nav-' + screen).classList.add('active');
         
-        if (screen === 'map' && AppState.map) {
+        if(screen === 'map' && AppState.map) {
             setTimeout(() => AppState.map.resize(), 100);
         }
+        if(screen === 'missions') renderMissions();
     }
 
-    function goBack() { navigateTo('home'); }
+    // MAPA COM CAMADAS
+    const MAP_STYLES = {
+        streets: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        topo: 'https://a.tile.opentopomap.org/{z}/{x}/{y}.png'
+    };
 
-    // ==================== MAPA ====================
     function initMap() {
-        if (AppState.map) return;
+        if(AppState.map) return;
         AppState.map = new maplibregl.Map({
             container: 'map',
             style: {
                 version: 8,
-                sources: { 'osm': { type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256 } },
-                layers: [{ id: 'osm', type: 'raster', source: 'osm' }]
+                sources: { 'raster-tiles': { type: 'raster', tiles: [MAP_STYLES.streets], tileSize: 256 } },
+                layers: [{ id: 'simple-tiles', type: 'raster', source: 'raster-tiles' }]
             },
             center: [-44.4934, -5.2912],
             zoom: 14
         });
     }
 
-    // ==================== FEED (CORRIGIDO) ====================
-    function renderFeed() {
-        const points = [
-            { id: 1, title: 'Igreja Matriz', author: 'Maria S.', turma: '6ANOA', category: '⛪ Igreja', likes: 24, img: 'https://images.unsplash.com/photo-1548625149-fc4a29cf7092?w=400' },
-            { id: 2, title: 'Praça Central', author: 'João P.', turma: '7ANOA', category: '🌳 Praça', likes: 18, img: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400' }
-        ];
-
-        document.getElementById('feedContent').innerHTML = points.map(p => `
-            <div class="card" style="margin: 0 0 1rem 0; padding: 0; overflow: hidden;">
-                <img src="${p.img}" style="width: 100%; height: 150px; object-fit: cover;">
-                <div style="padding: 1rem;">
-                    <small style="color: var(--gold);">${p.category}</small>
-                    <h4 style="margin: 0.25rem 0;">${p.title}</h4>
-                    <p style="font-size: 0.8rem; color: var(--gray);">Por ${p.author} (${p.turma})</p>
-                </div>
-            </div>
-        `).join('');
+    function changeMapLayer(layer) {
+        AppState.map.getSource('raster-tiles').setTiles([MAP_STYLES[layer]]);
+        showToast('🗺️', 'Camada alterada', 'Mapa atualizado!');
     }
 
-    // ==================== PROGRESSO (CORRIGIDO ID) ====================
-    function renderStudentProgress() {
-        const container = document.getElementById('studentProgress');
-        if (!container) return;
-        
-        container.innerHTML = `
-            <div class="card" style="background: var(--gold); color: var(--primary);">
-                <h3>Seu Progresso</h3>
-                <div style="font-size: 2rem; font-weight: bold;">${AppState.user.points} Pontos</div>
-                <p>Mantenha a sequência de descobertas!</p>
-            </div>
-            <div class="card">
-                <h4>Conquistas</h4>
-                <p>🏆 Explorador Iniciante</p>
-                <p>📸 Primeiro Registro</p>
-            </div>
-        `;
+    // LOGIN SIMULADO (CONECTE AO SUPABASE AQUI)
+    function login() {
+        AppState.user = { name: 'Maria Santos', turma: '6º Ano A', xp: 350 };
+        document.getElementById('authScreen').style.display = 'none';
+        document.getElementById('appShell').style.display = 'flex';
+        document.getElementById('profileNameDisplay').textContent = AppState.user.name;
+        document.getElementById('profileTurmaDisplay').textContent = AppState.user.turma;
+        initMap();
+        showToast('👋', 'Bem-vinda!', 'Maria Santos');
     }
 
-    // ==================== REGISTRO ====================
+    function logout() { location.reload(); }
+
+    // MODAL
     function openRegisterModal() { document.getElementById('registerModal').classList.add('active'); }
     function closeRegisterModal() { document.getElementById('registerModal').classList.remove('active'); }
 
-    function submitPoint() {
-        const name = document.getElementById('pointName').value;
-        const desc = document.getElementById('pointDesc').value;
-
-        if (name && desc.length >= 100) {
-            AppState.user.xp += 75;
-            AppState.user.points += 1;
-            Auth.setCurrent(AppState.user);
-            updateUI();
-            closeRegisterModal();
-            showToast('🎉', 'Sucesso!', 'Ponto enviado para revisão');
-            navigateTo('missions');
-        } else {
-            showToast('⚠️', 'Erro', 'Preencha o nome e a descrição longa');
-        }
-    }
-
-    // ==================== AR MODE ====================
-    function openAR() {
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-            .then(stream => {
-                document.getElementById('arOverlay').style.display = 'block';
-                document.getElementById('arCamera').srcObject = stream;
-            });
-    }
-
-    function closeAR() {
-        const video = document.getElementById('arCamera');
-        if (video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
-        document.getElementById('arOverlay').style.display = 'none';
-    }
-
-    // ==================== UTILITÁRIOS ====================
+    // FEEDBACK VISUAL (TOAST)
     function showToast(icon, title, body) {
         const container = document.getElementById('toastContainer');
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerHTML = `<div>${icon}</div><div><strong>${title}</strong><br><small>${body}</small></div>`;
-        container.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+        const t = document.createElement('div');
+        t.className = 'toast';
+        t.innerHTML = `<strong>${icon} ${title}</strong><br><small>${body}</small>`;
+        container.appendChild(t);
+        setTimeout(() => t.remove(), 3000);
+    }
+
+    // BUG FIX: SUBMIT
+    function submitPoint() {
+        const desc = document.getElementById('pointDesc').value;
+        if(desc.length < 100) {
+            showToast('⚠️', 'Descrição curta', 'Escreva pelo menos 100 caracteres');
+            return;
+        }
+        showToast('✅', 'Enviado', 'Seu ponto foi para análise!');
+        closeRegisterModal();
+    }
+
+    function renderMissions() {
+        document.getElementById('missionsContent').innerHTML = `
+            <div class="card">
+                <h3>📊 Seu Progresso</h3>
+                <div style="height:10px; background:#eee; border-radius:5px; margin:1rem 0;">
+                    <div style="width:70%; height:100%; background:var(--gold); border-radius:5px;"></div>
+                </div>
+                <p>7/10 pontos para o próximo nível</p>
+            </div>
+        `;
     }
 </script>
 </body>
