@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* ==================== RESTAURAÇÃO DO DESIGN ORIGINAL ==================== */
+        /* ==================== CONFIGURAÇÕES DE LAYOUT ==================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         :root {
@@ -30,35 +30,32 @@
             --ink: #1A1A2E;
             --white: #FFFEF9;
             --red: #8B1A1A;
-            --orange: #D4700A;
-            --green: #10B981;
             --gray: #6B7280;
             --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         html, body {
             height: 100%;
+            width: 100%;
             overflow: hidden;
             font-family: 'Crimson Text', serif;
-            background: var(--paper-dark); /* Fundo externo */
+            background: var(--paper);
             color: var(--ink);
             font-size: 17px;
         }
 
-        /* App Shell - Mantém a proporção sem distorcer */
+        /* App Shell - Agora ocupa a tela toda sem distorcer */
         .app-shell {
             display: flex;
             flex-direction: column;
-            background: var(--paper);
+            width: 100%;
             height: 100vh;
             height: 100dvh;
-            max-width: 480px; /* Previne o efeito "puxado" em telas largas */
-            margin: 0 auto;
             position: relative;
-            box-shadow: 0 0 40px rgba(0,0,0,0.2);
+            background: var(--paper);
         }
 
-        /* Topbar Original */
+        /* Topbar */
         .topbar {
             background: var(--primary);
             border-bottom: 3px solid var(--gold);
@@ -67,14 +64,15 @@
             justify-content: space-between;
             align-items: center;
             z-index: 50;
+            flex-shrink: 0;
         }
 
         .topbar-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold); }
-        .topbar-xp { background: rgba(196,163,90,0.2); border: 1px solid var(--gold); color: var(--gold-light); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; }
+        .topbar-xp { background: rgba(196,163,90,0.2); border: 1px solid var(--gold); color: var(--gold-light); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
 
-        /* Telas */
-        .screens { flex: 1; overflow: hidden; position: relative; }
-        .screen { position: absolute; inset: 0; overflow-y: auto; display: none; padding-bottom: 2rem; }
+        /* Container de Telas */
+        .screens { flex: 1; overflow: hidden; position: relative; width: 100%; }
+        .screen { position: absolute; inset: 0; overflow-y: auto; display: none; padding-bottom: calc(2rem + var(--safe-bottom)); }
         .screen.active { display: block; }
 
         /* Cards Estilizados */
@@ -87,50 +85,93 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
         }
 
-        /* Botões Originais */
-        .btn-gold { background: var(--gold); color: var(--primary); font-weight: 700; border: none; border-radius: 12px; padding: 1rem; cursor: pointer; width: 100%; font-family: 'Playfair Display'; }
+        /* Botões */
+        .btn-gold { 
+            background: var(--gold); 
+            color: var(--primary); 
+            font-weight: 700; 
+            border: none; 
+            border-radius: 12px; 
+            padding: 1rem; 
+            cursor: pointer; 
+            width: 100%; 
+            font-family: 'Playfair Display';
+            font-size: 1rem;
+            transition: transform 0.1s;
+        }
+        .btn-gold:active { transform: scale(0.98); }
 
-        /* Menu Inferior Original */
+        /* Menu Inferior */
         .bottom-nav { 
             background: var(--white); 
             border-top: 3px solid var(--gold); 
             display: flex; 
-            padding-bottom: var(--safe-bottom); 
+            padding-bottom: var(--safe-bottom);
+            flex-shrink: 0;
         }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0.6rem 0; color: var(--gray); border: none; background: none; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item.active::before { content: ''; position: absolute; top: 0; width: 30%; height: 3px; background: var(--gold); }
+        .nav-item { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 0.75rem 0; 
+            color: var(--gray); 
+            border: none; 
+            background: none; 
+            font-family: inherit;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .nav-item.active { color: var(--primary); position: relative; }
+        .nav-item.active::before { content: ''; position: absolute; top: 0; width: 40%; height: 3px; background: var(--gold); border-radius: 0 0 4px 4px; }
+        .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
 
-        /* Mapa e Filtros de Camadas */
+        /* Mapa e Camadas */
         #map { width: 100%; height: 100%; }
         .map-layer-panel {
-            position: absolute; bottom: 5rem; left: 1rem;
+            position: absolute; bottom: 2rem; left: 1rem;
             background: white; border: 2px solid var(--gold);
             padding: 0.5rem; border-radius: 12px; z-index: 20;
+            display: flex; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
+        .layer-btn { background: var(--paper); border: 1px solid var(--gold); padding: 8px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; }
 
-        /* Modal Original */
+        /* Modais */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: flex-end; }
         .modal-overlay.active { display: flex; }
-        .modal-sheet { background: var(--white); width: 100%; border-radius: 24px 24px 0 0; padding: 2rem; border-top: 4px solid var(--gold); }
+        .modal-sheet { background: var(--white); width: 100%; border-radius: 24px 24px 0 0; padding: 2rem; border-top: 4px solid var(--gold); max-height: 90vh; overflow-y: auto; }
 
-        /* AR e Toast */
-        .ar-overlay { position: fixed; inset: 0; background: black; z-index: 9999; display: none; }
-        .toast { position: fixed; top: 80px; right: 1rem; background: white; border: 2px solid var(--gold); padding: 1rem; border-radius: 12px; z-index: 10000; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        /* Auth */
+        #authScreen { 
+            position: fixed; inset: 0; z-index: 2000; 
+            background: var(--primary); 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        /* Toast */
+        .toast { 
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: white; border: 2px solid var(--gold); padding: 1rem; 
+            border-radius: 12px; z-index: 10000; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            min-width: 250px; text-align: center;
+        }
     </style>
 </head>
 <body>
 
 <div id="toastContainer"></div>
 
-<div id="authScreen" class="app-shell" style="justify-content: center; background: var(--primary);">
-    <div class="card" style="margin: 2rem; text-align: center;">
+<div id="authScreen">
+    <div class="card" style="width: 90%; max-width: 400px; text-align: center; margin: 0;">
         <span style="font-size: 4rem;">🗺️</span>
         <h1 style="font-family: 'Playfair Display'; color: var(--primary); margin: 1rem 0;">PK Explorer</h1>
-        <div style="margin-top: 1.5rem;">
-            <input type="email" id="loginEmail" placeholder="E-mail" style="width:100%; padding:0.8rem; margin-bottom:1rem; border:2px solid var(--gold); border-radius:8px;">
-            <input type="password" id="loginPassword" placeholder="Senha" style="width:100%; padding:0.8rem; margin-bottom:1rem; border:2px solid var(--gold); border-radius:8px;">
-            <button class="btn-gold" onclick="login()">Entrar no Sistema</button>
+        <p style="color: var(--gold); font-style: italic; margin-bottom: 2rem;">Memórias de Presidente Dutra</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <input type="email" id="loginEmail" placeholder="E-mail" style="width:100%; padding:1rem; border:2px solid var(--gold); border-radius:10px; font-size: 1rem;">
+            <input type="password" id="loginPassword" placeholder="Senha" style="width:100%; padding:1rem; border:2px solid var(--gold); border-radius:10px; font-size: 1rem;">
+            <button class="btn-gold" id="btnEntrar" onclick="handleLogin()">Entrar no Sistema</button>
+            <button class="btn-gold" style="background: var(--paper-dark); color: var(--ink); border: 2px solid var(--gold);" onclick="handleQuickLogin()">⚡ Acesso Rápido (Demo)</button>
         </div>
     </div>
 </div>
@@ -140,37 +181,37 @@
         <div class="topbar-logo">PK Explorer</div>
         <div style="display:flex; gap:0.5rem; align-items:center;">
             <div class="topbar-xp" id="topbarXP">⭐ 350 XP</div>
-            <div id="userAvatar" style="width:32px; height:32px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--primary);">M</div>
+            <div id="userAvatar" style="width:34px; height:34px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--primary); border: 2px solid var(--gold-light);">M</div>
         </div>
     </div>
 
     <div class="screens">
         <div class="screen active" id="screen-home">
             <div class="card" style="background: linear-gradient(135deg, var(--primary), #1d3d28); color: white; border: none;">
-                <h2 style="font-family: 'Playfair Display';">Olá, Explorador! 👋</h2>
-                <p style="opacity: 0.8; font-size: 0.9rem;">Presidente Dutra espera por suas descobertas.</p>
+                <h2 style="font-family: 'Playfair Display';">Olá, <span id="userNameSpan">Explorador</span>! 👋</h2>
+                <p style="opacity: 0.8; font-size: 0.9rem; margin-top: 5px;">Presidente Dutra espera por suas descobertas.</p>
             </div>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0 1rem;">
-                <div class="card" style="margin:0; text-align:center; padding:1rem;" onclick="navigateTo('map')">
-                    <div style="font-size:1.5rem;">🗺️</div>
-                    <div style="font-weight:600; color:var(--primary); font-size:0.8rem;">Mapa Interativo</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 0 1rem;">
+                <div class="card" style="margin:0; text-align:center; padding:1.5rem; cursor: pointer;" onclick="navigateTo('map')">
+                    <div style="font-size:2rem; margin-bottom: 10px;">🗺️</div>
+                    <div style="font-weight:700; color:var(--primary); font-size:0.9rem;">Ver Mapa</div>
                 </div>
-                <div class="card" style="margin:0; text-align:center; padding:1rem;" onclick="openRegisterModal()">
-                    <div style="font-size:1.5rem;">📍</div>
-                    <div style="font-weight:600; color:var(--primary); font-size:0.8rem;">Novo Ponto</div>
+                <div class="card" style="margin:0; text-align:center; padding:1.5rem; cursor: pointer;" onclick="openRegisterModal()">
+                    <div style="font-size:2rem; margin-bottom: 10px;">📍</div>
+                    <div style="font-weight:700; color:var(--primary); font-size:0.9rem;">Novo Ponto</div>
                 </div>
             </div>
         </div>
 
         <div class="screen" id="screen-map">
             <div id="map"></div>
-            <div class="map-layer-panel" id="layerPanel">
-                <button onclick="changeMapLayer('streets')" style="border:none; background:none; margin-right:5px;">🗺️</button>
-                <button onclick="changeMapLayer('satellite')" style="border:none; background:none; margin-right:5px;">🛰️</button>
-                <button onclick="changeMapLayer('topo')" style="border:none; background:none;">⛰️</button>
+            <div class="map-layer-panel">
+                <button class="layer-btn" onclick="changeMapLayer('streets')" title="Ruas">🗺️</button>
+                <button class="layer-btn" onclick="changeMapLayer('satellite')" title="Satélite">🛰️</button>
+                <button class="layer-btn" onclick="changeMapLayer('topo')" title="Relevo">⛰️</button>
             </div>
-            <button style="position:absolute; bottom:1.5rem; right:1.5rem; width:56px; height:56px; border-radius:50%; background:var(--primary); color:white; border:3px solid var(--gold); font-size:1.5rem; z-index:10;" onclick="openRegisterModal()">📍</button>
+            <button style="position:absolute; bottom:2rem; right:1rem; width:65px; height:65px; border-radius:50%; background:var(--primary); color:white; border:3px solid var(--gold); font-size:2rem; z-index:30; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" onclick="openRegisterModal()">📍</button>
         </div>
 
         <div class="screen" id="screen-missions">
@@ -178,71 +219,116 @@
         </div>
 
         <div class="screen" id="screen-profile">
-            <div class="card" style="text-align: center;">
-                <div style="width:80px; height:80px; background:var(--gold); border-radius:50%; margin:0 auto 1rem; display:flex; align-items:center; justify-content:center; font-size:2rem; border:4px solid var(--gold-light);">M</div>
-                <h3 id="profileNameDisplay">Nome do Usuário</h3>
-                <p id="profileTurmaDisplay" style="color:var(--gray); margin-bottom:1.5rem;">Turma</p>
-                <button class="btn-gold" style="background:var(--red); color:white;" onclick="logout()">Sair da Conta</button>
+            <div class="card" style="text-align: center; margin-top: 2rem;">
+                <div id="profileAvatarBig" style="width:100px; height:100px; background:var(--gold); border-radius:50%; margin:0 auto 1.5rem; display:flex; align-items:center; justify-content:center; font-size:2.5rem; border:5px solid var(--gold-light); font-weight: bold; color: var(--primary);">M</div>
+                <h2 id="profileNameDisplay" style="font-family: 'Playfair Display'; color: var(--primary);">Nome</h2>
+                <p id="profileTurmaDisplay" style="color:var(--gray); margin-bottom:2rem; font-weight: 600;">Turma</p>
+                <button class="btn-gold" style="background:var(--red); color:white;" onclick="handleLogout()">🚪 Sair da Conta</button>
             </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-item active" onclick="navigateTo('home')" id="nav-home">🏠<small>Início</small></button>
-        <button class="nav-item" onclick="navigateTo('map')" id="nav-map">🗺️<small>Mapa</small></button>
-        <button class="nav-item" onclick="navigateTo('missions')" id="nav-missions">📊<small>Painel</small></button>
-        <button class="nav-item" onclick="navigateTo('profile')" id="nav-profile">👤<small>Perfil</small></button>
+        <button class="nav-item active" onclick="navigateTo('home')" id="nav-home">
+            <span class="nav-icon">🏠</span>Início
+        </button>
+        <button class="nav-item" onclick="navigateTo('map')" id="nav-map">
+            <span class="nav-icon">🗺️</span>Mapa
+        </button>
+        <button class="nav-item" onclick="navigateTo('missions')" id="nav-missions">
+            <span class="nav-icon">📊</span>Painel
+        </button>
+        <button class="nav-item" onclick="navigateTo('profile')" id="nav-profile">
+            <span class="nav-icon">👤</span>Perfil
+        </button>
     </nav>
-</div>
-
-<div class="ar-overlay" id="arOverlay">
-    <video id="arCamera" autoplay playsinline muted></video>
-    <div style="position:absolute; top:1rem; width:100%; text-align:center;">
-        <button onclick="closeAR()" style="padding:0.5rem 1.5rem; border-radius:20px; border:none; background:white;">Sair do AR</button>
-    </div>
 </div>
 
 <div class="modal-overlay" id="registerModal">
     <div class="modal-sheet">
-        <h3 style="font-family:'Playfair Display'; color:var(--primary);">📍 Novo Registro</h3>
-        <input type="text" id="pointName" placeholder="Nome do Local" style="width:100%; padding:0.8rem; margin:1rem 0; border:2px solid var(--gold); border-radius:8px;">
-        <textarea id="pointDesc" placeholder="Descrição histórica (mín. 100 caracteres)" style="width:100%; height:100px; padding:0.8rem; border:2px solid var(--gold); border-radius:8px;"></textarea>
-        <button class="btn-gold" style="margin-top:1rem;" onclick="submitPoint()">Enviar para Análise</button>
-        <button onclick="closeRegisterModal()" style="width:100%; background:none; border:none; margin-top:1rem; color:var(--gray);">Cancelar</button>
+        <h2 style="font-family:'Playfair Display'; color:var(--primary); margin-bottom: 1rem;">📍 Novo Registro</h2>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <input type="text" id="pointName" placeholder="Nome do Local (Ex: Igreja Matriz)" style="width:100%; padding:1rem; border:2px solid var(--gold); border-radius:10px;">
+            <textarea id="pointDesc" placeholder="Descreva a história deste local (mínimo de 100 caracteres)..." style="width:100%; height:150px; padding:1rem; border:2px solid var(--gold); border-radius:10px; font-family: inherit; resize: none;"></textarea>
+            <button class="btn-gold" onclick="handleSubmitPoint()">🚀 Enviar para Análise</button>
+            <button onclick="closeRegisterModal()" style="width:100%; background:none; border:none; padding: 10px; color:var(--gray); font-weight: bold; cursor: pointer;">Cancelar</button>
+        </div>
     </div>
 </div>
 
 <script>
-    // CONFIGURAÇÃO SUPABASE
-    const supabaseUrl = 'SUA_URL_AQUI';
-    const supabaseKey = 'SUA_KEY_AQUI';
-    const supabase = supabasejs.createClient(supabaseUrl, supabaseKey);
-
-    let AppState = { user: null, map: null, markers: [] };
-
-    // NAVEGAÇÃO
-    function navigateTo(screen) {
-        document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        
-        document.getElementById('screen-' + screen).style.display = 'block';
-        document.getElementById('nav-' + screen).classList.add('active');
-        
-        if(screen === 'map' && AppState.map) {
-            setTimeout(() => AppState.map.resize(), 100);
-        }
-        if(screen === 'missions') renderMissions();
-    }
-
-    // MAPA COM CAMADAS
+    /* ==================== CONFIGURAÇÃO INICIAL ==================== */
     const MAP_STYLES = {
         streets: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         topo: 'https://a.tile.opentopomap.org/{z}/{x}/{y}.png'
     };
 
+    let AppState = { 
+        user: null, 
+        map: null, 
+        currentScreen: 'home' 
+    };
+
+    /* ==================== LÓGICA DE LOGIN ==================== */
+    function handleLogin() {
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPassword').value;
+        
+        if(!email || !pass) {
+            showToast('⚠️', 'Atenção', 'Preencha todos os campos.');
+            return;
+        }
+        // Aqui entra sua conexão real com Supabase
+        handleQuickLogin();
+    }
+
+    function handleQuickLogin() {
+        const demoUser = { name: 'Francisco', turma: 'Professor', xp: 550 };
+        AppState.user = demoUser;
+        
+        // UI Update
+        document.getElementById('authScreen').style.display = 'none';
+        document.getElementById('appShell').style.display = 'flex';
+        document.getElementById('userNameSpan').textContent = demoUser.name;
+        document.getElementById('profileNameDisplay').textContent = demoUser.name;
+        document.getElementById('profileTurmaDisplay').textContent = demoUser.turma;
+        document.getElementById('userAvatar').textContent = demoUser.name.charAt(0);
+        document.getElementById('profileAvatarBig').textContent = demoUser.name.charAt(0);
+        
+        showToast('👋', 'Bem-vindo!', demoUser.name);
+        initMap();
+    }
+
+    function handleLogout() {
+        if(confirm("Deseja mesmo sair?")) {
+            location.reload();
+        }
+    }
+
+    /* ==================== NAVEGAÇÃO ==================== */
+    function navigateTo(screen) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        const target = document.getElementById('screen-' + screen);
+        if(target) target.classList.add('active');
+        
+        const nav = document.getElementById('nav-' + screen);
+        if(nav) nav.classList.add('active');
+        
+        AppState.currentScreen = screen;
+        
+        if(screen === 'map' && AppState.map) {
+            setTimeout(() => AppState.map.resize(), 200);
+        }
+        if(screen === 'missions') renderMissions();
+    }
+
+    /* ==================== MAPA ==================== */
     function initMap() {
         if(AppState.map) return;
+        
         AppState.map = new maplibregl.Map({
             container: 'map',
             style: {
@@ -253,61 +339,61 @@
             center: [-44.4934, -5.2912],
             zoom: 14
         });
+
+        // Adicionar controles de navegação
+        AppState.map.addControl(new maplibregl.NavigationControl(), 'top-right');
     }
 
     function changeMapLayer(layer) {
+        if(!AppState.map) return;
         AppState.map.getSource('raster-tiles').setTiles([MAP_STYLES[layer]]);
-        showToast('🗺️', 'Camada alterada', 'Mapa atualizado!');
+        showToast('🗺️', 'Mapa Atualizado', 'Camada alterada com sucesso.');
     }
 
-    // LOGIN SIMULADO (CONECTE AO SUPABASE AQUI)
-    function login() {
-        AppState.user = { name: 'Maria Santos', turma: '6º Ano A', xp: 350 };
-        document.getElementById('authScreen').style.display = 'none';
-        document.getElementById('appShell').style.display = 'flex';
-        document.getElementById('profileNameDisplay').textContent = AppState.user.name;
-        document.getElementById('profileTurmaDisplay').textContent = AppState.user.turma;
-        initMap();
-        showToast('👋', 'Bem-vinda!', 'Maria Santos');
-    }
-
-    function logout() { location.reload(); }
-
-    // MODAL
+    /* ==================== FUNCIONALIDADES ==================== */
     function openRegisterModal() { document.getElementById('registerModal').classList.add('active'); }
     function closeRegisterModal() { document.getElementById('registerModal').classList.remove('active'); }
 
-    // FEEDBACK VISUAL (TOAST)
+    function handleSubmitPoint() {
+        const name = document.getElementById('pointName').value;
+        const desc = document.getElementById('pointDesc').value;
+        
+        if(!name || desc.length < 100) {
+            showToast('⚠️', 'Erro no envio', 'O nome é obrigatório e a descrição precisa de 100 caracteres.');
+            return;
+        }
+        
+        showToast('✅', 'Enviado!', 'Sua descoberta foi enviada ao professor.');
+        closeRegisterModal();
+        navigateTo('missions');
+    }
+
+    function renderMissions() {
+        document.getElementById('missionsContent').innerHTML = `
+            <div class="card">
+                <h3 style="font-family: 'Playfair Display'; color: var(--primary);">📊 Seu Impacto</h3>
+                <div style="height:12px; background:#eee; border-radius:10px; margin:1.5rem 0; overflow:hidden;">
+                    <div style="width:75%; height:100%; background: linear-gradient(90deg, var(--primary), var(--gold));"></div>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--gray);">Você já mapeou <strong>7 locais</strong>. Faltam 3 para o próximo nível!</p>
+            </div>
+            <div class="card" style="border-left: 5px solid var(--gold);">
+                <h4 style="color: var(--primary);">🏆 Conquista Desbloqueada</h4>
+                <p style="font-size: 0.85rem; margin-top: 5px;"><strong>Explorador do Curador:</strong> Cadastrou seu primeiro ponto histórico.</p>
+            </div>
+        `;
+    }
+
     function showToast(icon, title, body) {
         const container = document.getElementById('toastContainer');
         const t = document.createElement('div');
         t.className = 'toast';
         t.innerHTML = `<strong>${icon} ${title}</strong><br><small>${body}</small>`;
         container.appendChild(t);
-        setTimeout(() => t.remove(), 3000);
-    }
-
-    // BUG FIX: SUBMIT
-    function submitPoint() {
-        const desc = document.getElementById('pointDesc').value;
-        if(desc.length < 100) {
-            showToast('⚠️', 'Descrição curta', 'Escreva pelo menos 100 caracteres');
-            return;
-        }
-        showToast('✅', 'Enviado', 'Seu ponto foi para análise!');
-        closeRegisterModal();
-    }
-
-    function renderMissions() {
-        document.getElementById('missionsContent').innerHTML = `
-            <div class="card">
-                <h3>📊 Seu Progresso</h3>
-                <div style="height:10px; background:#eee; border-radius:5px; margin:1rem 0;">
-                    <div style="width:70%; height:100%; background:var(--gold); border-radius:5px;"></div>
-                </div>
-                <p>7/10 pontos para o próximo nível</p>
-            </div>
-        `;
+        setTimeout(() => {
+            t.style.opacity = '0';
+            setTimeout(() => t.remove(), 500);
+        }, 3000);
     }
 </script>
 </body>
