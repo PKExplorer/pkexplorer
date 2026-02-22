@@ -1797,75 +1797,63 @@
         }
 
         /* ==================== TEACHER PANEL ==================== */
-        .teacher-header{background:linear-gradient(135deg,#0F3D2E 0%,#1a5c44 100%);padding:1.5rem 1rem;color:white;position:relative;overflow:hidden;}
-        .teacher-header::before{content:'';position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(212,175,55,0.1) 0%,transparent 70%);border-radius:50%;}
-        .teacher-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;position:relative;z-index:2;}
-        .teacher-logo{display:flex;align-items:center;gap:0.5rem;}
-        .teacher-logo-icon{font-size:2rem;}
-        .teacher-logo-text h1{margin:0;font-size:1.25rem;font-family:'Playfair Display',serif;color:#D4AF37;}
-        .teacher-logo-text p{margin:0;font-size:0.75rem;opacity:0.9;}
-        .teacher-profile{display:flex;align-items:center;gap:0.75rem;}
-        .teacher-avatar{width:60px;height:60px;border-radius:50%;border:3px solid #D4AF37;background:#ccc;object-fit:cover;}
-        .teacher-info h2{margin:0;font-size:0.9rem;color:#D4AF37;font-weight:600;}
-        .teacher-info p{margin:0.25rem 0 0 0;font-size:1.1rem;font-weight:700;}
-        .teacher-actions{display:flex;gap:0.5rem;}
-        .teacher-notif-btn{position:relative;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;color:white;font-size:1.25rem;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-        .notif-badge{position:absolute;top:-2px;right:-2px;background:#e74c3c;color:white;border-radius:10px;padding:0.15rem 0.4rem;font-size:0.7rem;font-weight:700;}
-        .teacher-welcome{position:relative;z-index:2;margin-top:0.5rem;}
-        .teacher-welcome h3{margin:0 0 0.25rem 0;font-size:1.5rem;font-family:'Playfair Display',serif;}
-        .teacher-welcome p{margin:0;font-size:0.9rem;opacity:0.9;}
-        .teacher-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;padding:1rem;margin-top:-2rem;position:relative;z-index:3;}
-        .stat-card{background:white;border-radius:12px;padding:1rem 0.75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
-        .stat-icon{font-size:1.75rem;margin-bottom:0.5rem;}
-        .stat-value{font-size:1.5rem;font-weight:700;color:#0F3D2E;margin-bottom:0.25rem;}
-        .stat-label{font-size:0.75rem;color:#666;}
-        .section-header{display:flex;justify-content:space-between;align-items:center;padding:1rem;margin-top:0.5rem;}
-        .section-title{display:flex;align-items:center;gap:0.5rem;font-size:1.1rem;font-weight:700;color:#0F3D2E;}
-        .section-title-icon{font-size:1.5rem;}
-        .btn-see-all{background:none;border:none;color:#D4AF37;font-weight:600;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;gap:0.25rem;}
-        .approval-list{padding:0 1rem 1rem;display:flex;flex-direction:column;gap:0.75rem;}
-        .approval-card{background:white;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);display:flex;align-items:center;gap:1rem;}
-        .student-avatar{width:50px;height:50px;border-radius:50%;background:#D4AF37;flex-shrink:0;}
-        .approval-info{flex:1;}
-        .approval-student-name{font-weight:700;color:#0F3D2E;margin-bottom:0.25rem;}
-        .approval-details{font-size:0.85rem;color:#666;}
-        .approval-location{font-weight:600;color:#0F3D2E;}
-        .approval-actions{display:flex;flex-direction:column;gap:0.5rem;}
-        .btn-approve{background:#27ae60;color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;white-space:nowrap;}
-        .btn-request{background:#f39c12;color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;white-space:nowrap;}
-        .btn-reject{background:#e74c3c;color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;white-space:nowrap;}
-        .btn-map-view{background:#3498db;color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;white-space:nowrap;}
-        .turma-list{padding:0 1rem 1rem;display:flex;flex-direction:column;gap:0.75rem;}
-        .turma-card{background:white;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);display:flex;align-items:center;gap:1rem;cursor:pointer;transition:all 0.2s;}
-        .turma-card:hover{transform:translateX(4px);box-shadow:0 4px 12px rgba(0,0,0,0.12);}
-        .turma-icon{width:50px;height:50px;background:linear-gradient(135deg,#3498db,#2980b9);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.75rem;flex-shrink:0;}
-        .turma-info{flex:1;}
-        .turma-name{font-size:1.1rem;font-weight:700;color:#0F3D2E;margin-bottom:0.25rem;}
-        .turma-stats{font-size:0.85rem;color:#666;margin-bottom:0.5rem;}
-        .turma-progress{height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden;margin-bottom:0.25rem;}
-        .turma-progress-fill{height:100%;background:linear-gradient(90deg,#D4AF37,#f1c40f);border-radius:3px;}
-        .turma-xp{font-size:0.75rem;color:#D4AF37;font-weight:600;}
-        .turma-arrow{font-size:1.5rem;color:#D4AF37;}
-        .management-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;padding:0 1rem 1rem;}
-        .management-btn{background:white;border:2px solid #e0e0e0;border-radius:12px;padding:1.25rem 1rem;display:flex;flex-direction:column;align-items:center;gap:0.5rem;cursor:pointer;transition:all 0.2s;}
-        .management-btn:hover{border-color:#D4AF37;transform:translateY(-2px);box-shadow:0 4px 12px rgba(212,175,55,0.2);}
-        .management-icon{font-size:2.5rem;}
-        .management-label{font-size:0.9rem;font-weight:600;color:#0F3D2E;text-align:center;}
-        .activity-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;padding:0 1rem 1rem;}
-        .activity-card{background:white;border-radius:12px;padding:1rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
-        .activity-value{font-size:2rem;font-weight:700;color:#0F3D2E;margin:0.5rem 0 0.25rem;}
-        .activity-label{font-size:0.85rem;color:#666;}
-        .activity-progress{height:4px;background:#e0e0e0;border-radius:2px;overflow:hidden;margin-top:0.5rem;}
-        .activity-progress-fill{height:100%;background:#27ae60;border-radius:2px;}
-        .ranking-list{padding:0 1rem 1rem;}
-        .ranking-item{background:white;border-radius:12px;padding:1rem;margin-bottom:0.75rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
-        .ranking-medal{font-size:2rem;flex-shrink:0;}
-        .ranking-info{flex:1;}
-        .ranking-turma{font-size:1.1rem;font-weight:700;color:#0F3D2E;}
-        .ranking-xp{font-size:1.25rem;font-weight:700;color:#D4AF37;}
-        .btn-full-ranking{width:calc(100% - 2rem);margin:0 1rem 1rem;padding:1rem;background:#0F3D2E;color:white;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;}
-        .motivational-footer{text-align:center;padding:1.5rem 1rem;background:linear-gradient(135deg,#fff9e6 0%,#fffef5 100%);margin:1rem;border-radius:12px;font-style:italic;color:#0F3D2E;display:flex;align-items:center;justify-content:center;gap:0.75rem;}
-        .footer-icon{font-size:2rem;}
+        .teacher-header{background:linear-gradient(135deg,#0F3D2E,#1a5c44);padding:1.5rem 1rem;color:#fff;position:relative;overflow:hidden}
+        .teacher-header::before{content:'';position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(212,175,55,.1),transparent 70%);border-radius:50%}
+        .teacher-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;position:relative;z-index:2}
+        .teacher-logo{display:flex;align-items:center;gap:.5rem}
+        .teacher-logo-icon{font-size:2rem}
+        .teacher-logo-text h1{margin:0;font-size:1.25rem;font-family:'Playfair Display',serif;color:#D4AF37}
+        .teacher-logo-text p{margin:0;font-size:.75rem;opacity:.9}
+        .teacher-actions{display:flex;gap:.5rem}
+        .teacher-notif-btn{position:relative;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1.25rem;display:flex;align-items:center;justify-content:center;cursor:pointer}
+        .notif-badge{position:absolute;top:-2px;right:-2px;background:#e74c3c;color:#fff;border-radius:10px;padding:.15rem .4rem;font-size:.7rem;font-weight:700}
+        .teacher-welcome{position:relative;z-index:2;margin-top:.5rem}
+        .teacher-welcome h3{margin:0 0 .25rem 0;font-size:1.5rem;font-family:'Playfair Display',serif}
+        .teacher-welcome p{margin:0;font-size:.9rem;opacity:.9}
+        .teacher-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;padding:1rem;margin-top:-2rem;position:relative;z-index:3}
+        .stat-card{background:#fff;border-radius:12px;padding:1rem .75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+        .stat-icon{font-size:1.75rem;margin-bottom:.5rem}
+        .stat-value{font-size:1.5rem;font-weight:700;color:#0F3D2E;margin-bottom:.25rem}
+        .stat-label{font-size:.75rem;color:#666}
+        .section-header{display:flex;justify-content:space-between;align-items:center;padding:1rem;margin-top:.5rem}
+        .section-title{display:flex;align-items:center;gap:.5rem;font-size:1.1rem;font-weight:700;color:#0F3D2E}
+        .section-title-icon{font-size:1.5rem}
+        .btn-see-all{background:none;border:none;color:#D4AF37;font-weight:600;font-size:.9rem;cursor:pointer}
+        .approval-list{padding:0 1rem 1rem;display:flex;flex-direction:column;gap:.75rem}
+        .approval-card{background:#fff;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.08);display:flex;align-items:center;gap:1rem}
+        .student-avatar{width:50px;height:50px;border-radius:50%;flex-shrink:0}
+        .approval-info{flex:1}
+        .approval-student-name{font-weight:700;color:#0F3D2E;margin-bottom:.25rem}
+        .approval-details{font-size:.85rem;color:#666}
+        .approval-location{font-weight:600;color:#0F3D2E}
+        .approval-actions{display:flex;flex-direction:column;gap:.5rem}
+        .btn-approve{background:#27ae60;color:#fff;border:none;padding:.5rem 1rem;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;white-space:nowrap}
+        .btn-request{background:#f39c12;color:#fff;border:none;padding:.5rem 1rem;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;white-space:nowrap}
+        .btn-reject{background:#e74c3c;color:#fff;border:none;padding:.5rem 1rem;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;white-space:nowrap}
+        .btn-map-view{background:#3498db;color:#fff;border:none;padding:.5rem 1rem;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;white-space:nowrap}
+        .turma-list{padding:0 1rem 1rem;display:flex;flex-direction:column;gap:.75rem}
+        .turma-card{background:#fff;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.08);display:flex;align-items:center;gap:1rem;cursor:pointer}
+        .turma-icon{width:50px;height:50px;background:linear-gradient(135deg,#3498db,#2980b9);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.75rem}
+        .turma-info{flex:1}
+        .turma-name{font-size:1.1rem;font-weight:700;color:#0F3D2E;margin-bottom:.25rem}
+        .turma-stats{font-size:.85rem;color:#666;margin-bottom:.5rem}
+        .turma-progress{height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden;margin-bottom:.25rem}
+        .turma-progress-fill{height:100%;background:linear-gradient(90deg,#D4AF37,#f1c40f);border-radius:3px}
+        .turma-xp{font-size:.75rem;color:#D4AF37;font-weight:600}
+        .turma-arrow{font-size:1.5rem;color:#D4AF37}
+        .management-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;padding:0 1rem 1rem}
+        .management-btn{background:#fff;border:2px solid #e0e0e0;border-radius:12px;padding:1.25rem 1rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;cursor:pointer}
+        .management-icon{font-size:2.5rem}
+        .management-label{font-size:.9rem;font-weight:600;color:#0F3D2E;text-align:center}
+        .ranking-list{padding:0 1rem 1rem}
+        .ranking-item{background:#fff;border-radius:12px;padding:1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+        .ranking-medal{font-size:2rem}
+        .ranking-info{flex:1}
+        .ranking-turma{font-size:1.1rem;font-weight:700;color:#0F3D2E}
+        .ranking-xp{font-size:1.25rem;font-weight:700;color:#D4AF37}
+        .btn-full-ranking{width:calc(100% - 2rem);margin:0 1rem 1rem;padding:1rem;background:#0F3D2E;color:#fff;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer}
+        .motivational-footer{text-align:center;padding:1.5rem 1rem;background:linear-gradient(135deg,#fff9e6,#fffef5);margin:1rem;border-radius:12px;font-style:italic;color:#0F3D2E;display:flex;align-items:center;justify-content:center;gap:.75rem}
+        .footer-icon{font-size:2rem}
 
         /* ==================== NOTIFICATIONS ==================== */
         .toast-container {
@@ -2546,7 +2534,7 @@
                         </div>
                     </div>
                     <div class="teacher-welcome">
-                        <h3>Olá, Professor <span id="teacherName">Rodrigo</span>! 👋</h3>
+                        <h3>Olá, Professor <span id="teacherName"></span>! 👋</h3>
                         <p>Acompanhe as produções dos seus alunos</p>
                     </div>
                 </div>
@@ -2554,11 +2542,11 @@
                     <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value">12</div><div class="stat-label">Pontos Pendentes</div></div>
                     <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value">83</div><div class="stat-label">Alunos Ativos</div></div>
                     <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-value">1.200</div><div class="stat-label">XP Distribuídos</div></div>
-                    <div class="stat-card" onclick="showToast('🏫','Turmas','Gerencie suas turmas')" style="cursor:pointer"><div class="stat-icon">🏫</div><div class="stat-value">4</div><div class="stat-label">Turmas</div></div>
+                    <div class="stat-card"><div class="stat-icon">🏫</div><div class="stat-value">4</div><div class="stat-label">Turmas</div></div>
                 </div>
                 <div class="section-header">
                     <div class="section-title"><div class="section-title-icon">🌟</div><span>Pontos para Aprovação</span></div>
-                    <button class="btn-see-all" onclick="showToast('📍','Ver todos','Todos os pontos')">Ver todos →</button>
+                    <button class="btn-see-all">Ver todos →</button>
                 </div>
                 <div class="approval-list">
                     <div class="approval-card">
@@ -2567,11 +2555,10 @@
                             <div class="approval-student-name">Maria Santos</div>
                             <div class="approval-details">6º Ano A</div>
                             <div class="approval-location">Praça Central</div>
-                            <div class="approval-details">Aguardando</div>
                         </div>
                         <div class="approval-actions">
                             <button class="btn-approve" onclick="approvePointSimple(1,event)">✓ Aprovar</button>
-                            <button class="btn-request" onclick="showToast('📝','Correção','Em breve')">Solicitar Correção</button>
+                            <button class="btn-request">Solicitar Correção</button>
                         </div>
                     </div>
                     <div class="approval-card">
@@ -2580,7 +2567,6 @@
                             <div class="approval-student-name">João Pereira</div>
                             <div class="approval-details">7º Ano B</div>
                             <div class="approval-location">Museu Histórico</div>
-                            <div class="approval-details">Aguardando</div>
                         </div>
                         <div class="approval-actions">
                             <button class="btn-approve" onclick="approvePointSimple(2,event)">✓ Aprovar</button>
@@ -2593,20 +2579,18 @@
                             <div class="approval-student-name">Ana Clara</div>
                             <div class="approval-details">6º Ano A</div>
                             <div class="approval-location">Igreja Antiga</div>
-                            <div class="approval-details">Aguardando</div>
                         </div>
                         <div class="approval-actions">
                             <button class="btn-approve" onclick="approvePointSimple(3,event)">✓ Aprovar</button>
-                            <button class="btn-map-view" onclick="viewPointLocation(3)">🗺️ Ver no Mapa</button>
+                            <button class="btn-map-view" onclick="viewPointLocation(3)">🗺️ Ver</button>
                         </div>
                     </div>
                 </div>
                 <div class="section-header">
                     <div class="section-title"><div class="section-title-icon">🏫</div><span>Minhas Turmas</span></div>
-                    <button class="btn-see-all" onclick="showToast('📚','Nova Turma','Criar turma')">+ Nova Turma</button>
                 </div>
                 <div class="turma-list">
-                    <div class="turma-card" onclick="showToast('🏫','6º Ano A','Abrir turma')">
+                    <div class="turma-card">
                         <div class="turma-icon">🏫</div>
                         <div class="turma-info">
                             <div class="turma-name">6º Ano A</div>
@@ -2616,7 +2600,7 @@
                         </div>
                         <div class="turma-arrow">›</div>
                     </div>
-                    <div class="turma-card" onclick="showToast('🏫','7º Ano B','Abrir turma')">
+                    <div class="turma-card">
                         <div class="turma-icon">🏫</div>
                         <div class="turma-info">
                             <div class="turma-name">7º Ano B</div>
@@ -2631,98 +2615,28 @@
                     <div class="section-title"><div class="section-title-icon">📋</div><span>Gestão Pedagógica</span></div>
                 </div>
                 <div class="management-grid">
-                    <div class="management-btn" onclick="showToast('📝','Produções','Ver produções')"><div class="management-icon">📝</div><div class="management-label">Produções</div></div>
-                    <div class="management-btn" onclick="showToast('🏫','Turmas','Gerenciar')"><div class="management-icon">🏫</div><div class="management-label">Turmas</div></div>
-                    <div class="management-btn" onclick="showToast('🏆','Recompensas','Gerenciar')"><div class="management-icon">🏆</div><div class="management-label">Recompensas</div></div>
-                    <div class="management-btn" onclick="showToast('📊','Relatórios','Ver')"><div class="management-icon">📊</div><div class="management-label">Relatórios</div></div>
+                    <div class="management-btn"><div class="management-icon">📝</div><div class="management-label">Produções</div></div>
+                    <div class="management-btn"><div class="management-icon">🏫</div><div class="management-label">Turmas</div></div>
+                    <div class="management-btn"><div class="management-icon">🏆</div><div class="management-label">Recompensas</div></div>
+                    <div class="management-btn"><div class="management-icon">📊</div><div class="management-label">Relatórios</div></div>
                     <div class="management-btn" onclick="navigateTo('feedback')"><div class="management-icon">💡</div><div class="management-label">Feedback</div></div>
-                    <div class="management-btn" onclick="showToast('🎯','Missões','Gerenciar')"><div class="management-icon">🎯</div><div class="management-label">Missões</div></div>
+                    <div class="management-btn"><div class="management-icon">🎯</div><div class="management-label">Missões</div></div>
                 </div>
                 <div class="section-header">
-                    <div class="section-title"><div class="section-title-icon">🏆</div><span>Ranking Geral</span></div>
+                    <div class="section-title"><div class="section-title-icon">🏆</div><span>Ranking</span></div>
                 </div>
                 <div class="ranking-list">
                     <div class="ranking-item"><div class="ranking-medal">🥇</div><div class="ranking-info"><div class="ranking-turma">6º Ano A</div></div><div class="ranking-xp">320 XP</div></div>
                     <div class="ranking-item"><div class="ranking-medal">🥈</div><div class="ranking-info"><div class="ranking-turma">7º Ano B</div></div><div class="ranking-xp">280 XP</div></div>
                     <div class="ranking-item"><div class="ranking-medal">🥉</div><div class="ranking-info"><div class="ranking-turma">8º Ano A</div></div><div class="ranking-xp">190 XP</div></div>
                 </div>
-                <button class="btn-full-ranking" onclick="showToast('🏆','Ranking','Ver completo')">Ver Ranking Completo</button>
+                <button class="btn-full-ranking">Ver Ranking Completo</button>
                 <div class="motivational-footer">
                     <div class="footer-icon">🚀</div>
                     <div><strong>Juntos construindo o conhecimento!</strong></div>
                     <div class="footer-icon">📚</div>
                 </div>
             </div>
-        </div>
-        <!-- FEED -->
-        <div class="screen" id="screen-feed">
-            <div class="screen-content">
-                <div class="screen-header">
-                    <span style="font-size:1.5rem">📰</span>
-                    <div class="screen-title">Descobertas</div>
-                </div>
-                
-                <!-- Feed Filters -->
-                <div style="background:var(--white);border:2px solid var(--gold);border-radius:14px;padding:1rem;margin-bottom:1rem;">
-                    <div style="font-weight:700;color:var(--primary);margin-bottom:0.75rem;font-size:0.875rem;">🔍 Filtrar por:</div>
-                    
-                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">
-                        <button class="feed-filter active" data-filter="all" onclick="filterFeed('all', this)">
-                            Todos
-                        </button>
-                        <button class="feed-filter" data-filter="minha-turma" onclick="filterFeed('minha-turma', this)">
-                            Minha Turma
-                        </button>
-                    </div>
-                    
-                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
-                        <button class="feed-filter-cat" data-category="all" onclick="filterFeedCategory('all', this)">
-                            📍 Todas
-                        </button>
-                        <button class="feed-filter-cat" data-category="igreja" onclick="filterFeedCategory('igreja', this)">
-                            ⛪
-                        </button>
-                        <button class="feed-filter-cat" data-category="praca" onclick="filterFeedCategory('praca', this)">
-                            🌳
-                        </button>
-                        <button class="feed-filter-cat" data-category="patrimonio" onclick="filterFeedCategory('patrimonio', this)">
-                            🏛️
-                        </button>
-                        <button class="feed-filter-cat" data-category="comercio" onclick="filterFeedCategory('comercio', this)">
-                            🏪
-                        </button>
-                    </div>
-                </div>
-                
-                <div id="feedContent"></div>
-            </div>
-        </div>
-
-        <!-- NOTIFICATIONS -->
-        <div class="screen" id="screen-notifications" style="display:none;">
-            <div class="screen-content">
-                <div class="screen-header">
-                    <span style="font-size:1.5rem">🔔</span>
-                    <div class="screen-title">Notificações</div>
-                </div>
-                <div id="notificationsContent">
-                    <!-- Notifications rendered by JS -->
-                </div>
-            </div>
-        </div>
-
-        <!-- PROFILE -->
-        <div class="screen" id="screen-profile">
-            <!-- Header do Perfil -->
-            <div class="profile-header-new">
-                <div class="profile-avatar-container">
-                    <div class="profile-avatar-frame">
-                        <div class="profile-avatar-big-new" id="profileAvatarBig">M</div>
-                        <button class="profile-camera-btn" onclick="document.getElementById('profilePhotoInput').click()">📷</button>
-                        <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;" onchange="updateProfilePhoto(this)">
-                    </div>
-                </div>
-                
                 <div class="profile-info-new">
                     <h1 class="profile-name-new" id="profileName">Maria Santos</h1>
                     <div class="profile-title-new" id="profileTitle">🏆 Exploradora Nível 1</div>
@@ -3733,11 +3647,10 @@ function showApp() {
         document.getElementById('teacherPanel').style.display = 'block';
         document.getElementById('nav-missions').querySelector('.nav-label').textContent = 'Painel';
         document.getElementById('nav-missions').querySelector('.nav-icon').textContent = '👨‍🏫';
-        // Update teacher name
         setTimeout(() => {
-            const teacherNameEl = document.getElementById('teacherName');
-            if (teacherNameEl) teacherNameEl.textContent = u.name.split(' ')[0];
-        }, 100);
+            const nameEl = document.getElementById('teacherName');
+            if (nameEl) nameEl.textContent = u.name.split(' ')[0];
+        }, 50);
     } else {
         document.getElementById('studentProgress').style.display = 'block';
         document.getElementById('teacherPanel').style.display = 'none';
