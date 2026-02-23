@@ -1907,6 +1907,55 @@
         .contribution-text{color:#fff;line-height:1.6}
         .contribution-success{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#27ae60;color:#fff;padding:2rem 3rem;border-radius:12px;font-size:1.2rem;font-weight:700;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:fadeInOut 3s}
         @keyframes fadeInOut{0%{opacity:0;transform:translate(-50%,-50%) scale(0.8)}20%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
+        
+        /* ==================== GEOGRAFIA ==================== */
+        .geo-header{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;padding:1.5rem 1rem;text-align:center}
+        .geo-title{font-size:1.5rem;font-weight:700;margin-bottom:0.5rem}
+        .geo-subtitle{font-size:0.9rem;opacity:0.9}
+        .geo-stats{display:flex;justify-content:space-around;margin-top:1rem;font-size:0.9rem}
+        .geo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;padding:1rem}
+        .geo-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);cursor:pointer;position:relative;transition:transform 0.2s}
+        .geo-card:hover{transform:translateY(-4px)}
+        .geo-card img{width:100%;height:180px;object-fit:cover}
+        .geo-card-info{padding:0.75rem}
+        .geo-card-title{font-size:0.9rem;font-weight:600;color:#1e40af;margin:0.25rem 0}
+        .geo-badge-container{position:absolute;top:8px;right:8px;display:flex;flex-direction:column;gap:4px}
+        .geo-mini-badge{background:#fff;padding:0.25rem 0.5rem;border-radius:8px;font-size:0.7rem;font-weight:700;box-shadow:0 2px 4px rgba(0,0,0,0.2)}
+        .geo-mini-badge.complete{background:#27ae60;color:#fff}
+        .geo-mini-badge.partial{background:#f39c12;color:#fff}
+        .geo-mini-badge.none{background:#95a5a6;color:#fff}
+        .geo-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:1000;overflow-y:auto}
+        .geo-modal-content{max-width:900px;margin:2rem auto;padding:1rem}
+        .geo-modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;color:#fff}
+        .geo-modal-close{background:none;border:none;color:#fff;font-size:2rem;cursor:pointer}
+        .geo-layers{margin-top:1rem}
+        .geo-layer{background:rgba(255,255,255,0.05);border:2px solid rgba(255,255,255,0.1);border-radius:12px;margin-bottom:1rem;overflow:hidden}
+        .geo-layer-header{padding:1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:#fff;transition:background 0.2s}
+        .geo-layer-header:hover{background:rgba(255,255,255,0.1)}
+        .geo-layer-icon{font-size:1.5rem;margin-right:0.5rem}
+        .geo-layer-info{flex:1}
+        .geo-layer-title{font-weight:700;font-size:1.1rem;margin-bottom:0.25rem}
+        .geo-layer-status{font-size:0.85rem;opacity:0.8}
+        .geo-layer-xp{background:#2563eb;color:#fff;padding:0.25rem 0.75rem;border-radius:12px;font-weight:700;font-size:0.85rem}
+        .geo-layer-content{display:none;padding:1.5rem;background:rgba(0,0,0,0.3);color:#fff}
+        .geo-layer-content.active{display:block}
+        .geo-layer.locked{opacity:0.5;cursor:not-allowed}
+        .geo-layer.locked .geo-layer-header{cursor:not-allowed}
+        .geo-form-group{margin-bottom:1.5rem}
+        .geo-form-label{display:block;font-weight:600;margin-bottom:0.5rem;color:#60a5fa}
+        .geo-radio-group{display:flex;flex-direction:column;gap:0.75rem}
+        .geo-radio-option{background:rgba(255,255,255,0.05);border:2px solid transparent;padding:1rem;border-radius:8px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:0.75rem}
+        .geo-radio-option:hover{background:rgba(255,255,255,0.1);border-color:#2563eb}
+        .geo-radio-option input[type="radio"]{width:20px;height:20px;cursor:pointer}
+        .geo-radio-option.selected{border-color:#2563eb;background:rgba(37,99,235,0.2)}
+        .geo-textarea{width:100%;min-height:100px;padding:1rem;border-radius:8px;border:2px solid rgba(96,165,250,0.3);background:rgba(0,0,0,0.3);color:#fff;font-size:1rem;font-family:inherit;resize:vertical}
+        .geo-char-counter{text-align:right;font-size:0.85rem;opacity:0.7;margin-top:0.25rem}
+        .geo-buttons{display:flex;gap:1rem;margin-top:1.5rem}
+        .geo-btn-save{flex:1;background:#2563eb;color:#fff;border:none;padding:1rem;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer}
+        .geo-btn-cancel{background:rgba(255,255,255,0.1);color:#fff;border:none;padding:1rem;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer}
+        .geo-analysis-saved{background:rgba(39,174,96,0.2);border:2px solid #27ae60;padding:1rem;border-radius:8px;margin-top:1rem}
+        .geo-analysis-saved-title{color:#4ade80;font-weight:700;margin-bottom:0.5rem}
+        .geo-success-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#27ae60;color:#fff;padding:2rem 3rem;border-radius:12px;font-size:1.2rem;font-weight:700;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:fadeInOut 3s}
 
         /* ==================== NOTIFICATIONS ==================== */
         .toast-container {
@@ -2857,6 +2906,33 @@
                 </div>
             </div>
         </div>
+        <!-- GEOGRAFIA -->
+        <div class="screen" id="screen-geography">
+            <div class="geo-header">
+                <div class="geo-title">🌍 Laboratório Geográfico</div>
+                <div class="geo-subtitle">Análise espacial de Presidente Dutra</div>
+                <div class="geo-stats">
+                    <div><strong id="geoCompleted">0</strong>/20 Analisadas</div>
+                    <div>🏆 <strong id="geoXP">0</strong> XP</div>
+                </div>
+            </div>
+            <div class="geo-grid" id="geoGrid"></div>
+        </div>
+        
+        <!-- GEO MODAL -->
+        <div class="geo-modal" id="geoModal">
+            <div class="geo-modal-content">
+                <div class="geo-modal-header">
+                    <div>
+                        <div style="font-size:1.5rem;font-weight:700" id="geoModalTitle"></div>
+                        <div style="opacity:0.8;font-size:0.9rem" id="geoModalLocation"></div>
+                    </div>
+                    <button class="geo-modal-close" onclick="closeGeoModal()">×</button>
+                </div>
+                <div style="margin-bottom:1rem"><img id="geoModalImage" src="" style="width:100%;border-radius:12px"></div>
+                <div class="geo-layers" id="geoLayers"></div>
+            </div>
+        </div>
         <div class="screen" id="screen-profile">
             <!-- Header do Perfil -->
             <div class="profile-header-new">
@@ -3170,6 +3246,10 @@
         <button class="nav-item" onclick="navigateTo('memories')" id="nav-memories">
             <div class="nav-icon">📸</div>
             <div class="nav-label">Memórias</div>
+        </button>
+        <button class="nav-item" onclick="navigateTo('geography')" id="nav-geography">
+            <div class="nav-icon">🌍</div>
+            <div class="nav-label">Geografia</div>
         </button>
         <button class="nav-item" onclick="navigateTo('profile')" id="nav-profile">
             <div class="nav-icon">👤</div>
@@ -4432,6 +4512,11 @@ function navigateTo(screen) {
     // Render memories grid when navigating to memories
     if (screen === 'memories') {
         renderPhotoGrid();
+    }
+    
+    // Render geography grid when navigating to geography
+    if (screen === 'geography') {
+        renderGeoGrid();
     }
     
     // Show/hide back button
@@ -5791,8 +5876,342 @@ function showToast(icon, title, body) {
     }, 3500);
 }
 
+// =================================================================
+// GEOGRAFIA - JAVASCRIPT
+// =================================================================
+
+let currentGeoPhoto = null;
+let geoAnalyses = {};
+
+function loadGeoAnalyses() {
+    const saved = localStorage.getItem('pk_geo_analyses');
+    if (saved) geoAnalyses = JSON.parse(saved);
+    updateGeoStats();
+}
+
+function saveGeoAnalyses() {
+    localStorage.setItem('pk_geo_analyses', JSON.stringify(geoAnalyses));
+}
+
+function updateGeoStats() {
+    let completed = 0;
+    let totalXP = 0;
+    Object.values(geoAnalyses).forEach(photo => {
+        if (photo.usoSolo?.complete) { completed++; totalXP += 40; }
+        if (photo.paisagem?.complete) { totalXP += 60; }
+        if (photo.percepcao?.complete) { totalXP += 30; }
+    });
+    const el1 = document.getElementById('geoCompleted');
+    const el2 = document.getElementById('geoXP');
+    if (el1) el1.textContent = Math.min(completed, 20);
+    if (el2) el2.textContent = totalXP;
+}
+
+function renderGeoGrid() {
+    const grid = document.getElementById('geoGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    
+    HISTORICAL_PHOTOS.forEach(photo => {
+        const analysis = geoAnalyses[photo.id] || {};
+        let badges = [];
+        if (analysis.usoSolo?.complete) badges.push('🗺️');
+        if (analysis.paisagem?.complete) badges.push('🏔️');
+        if (analysis.percepcao?.complete) badges.push('💭');
+        
+        const status = badges.length === 0 ? 'none' : badges.length === 3 ? 'complete' : 'partial';
+        
+        const card = document.createElement('div');
+        card.className = 'geo-card';
+        card.onclick = () => openGeoModal(photo);
+        card.innerHTML = `
+            <div class="geo-badge-container">
+                <div class="geo-mini-badge ${status}">${badges.length}/3</div>
+            </div>
+            <img src="${photo.photo_url}" alt="${photo.title}">
+            <div class="geo-card-info">
+                <div class="geo-card-title">${photo.title}</div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function openGeoModal(photo) {
+    currentGeoPhoto = photo;
+    document.getElementById('geoModalTitle').textContent = photo.title;
+    document.getElementById('geoModalLocation').textContent = photo.description;
+    document.getElementById('geoModalImage').src = photo.photo_url;
+    
+    const analysis = geoAnalyses[photo.id] || {};
+    const usoComplete = analysis.usoSolo?.complete;
+    const paisagemComplete = analysis.paisagem?.complete;
+    
+    const layers = [
+        {id:'usoSolo', icon:'🗺️', title:'Uso do Solo', xp:40, time:'15 min', locked:false},
+        {id:'paisagem', icon:'🏔️', title:'Análise de Paisagem', xp:60, time:'20 min', locked:!usoComplete},
+        {id:'percepcao', icon:'💭', title:'Percepção do Lugar', xp:30, time:'10 min', locked:false}
+    ];
+    
+    const container = document.getElementById('geoLayers');
+    container.innerHTML = '';
+    
+    layers.forEach(layer => {
+        const isComplete = analysis[layer.id]?.complete;
+        const div = document.createElement('div');
+        div.className = 'geo-layer' + (layer.locked ? ' locked' : '');
+        div.innerHTML = `
+            <div class="geo-layer-header" onclick="${layer.locked ? '' : `toggleGeoLayer('${layer.id}')`}">
+                <span class="geo-layer-icon">${layer.icon}</span>
+                <div class="geo-layer-info">
+                    <div class="geo-layer-title">${layer.title}</div>
+                    <div class="geo-layer-status">
+                        ${layer.locked ? '🔒 Bloqueado' : isComplete ? '✅ Completo' : '⏱️ ' + layer.time}
+                    </div>
+                </div>
+                <div class="geo-layer-xp">${isComplete ? '+' + layer.xp + ' XP ✓' : layer.xp + ' XP'}</div>
+            </div>
+            <div class="geo-layer-content" id="layer-${layer.id}">
+                ${layer.locked ? '<p>Complete a camada anterior para desbloquear.</p>' : renderLayerContent(layer.id, analysis[layer.id])}
+            </div>
+        `;
+        container.appendChild(div);
+    });
+    
+    document.getElementById('geoModal').style.display = 'block';
+}
+
+function closeGeoModal() {
+    document.getElementById('geoModal').style.display = 'none';
+    currentGeoPhoto = null;
+}
+
+function toggleGeoLayer(layerId) {
+    const content = document.getElementById('layer-' + layerId);
+    if (!content) return;
+    content.classList.toggle('active');
+}
+
+function renderLayerContent(layerId, savedData) {
+    if (layerId === 'usoSolo') {
+        const saved = savedData?.data || {};
+        return `
+            <div class="geo-form-group">
+                <label class="geo-form-label">1️⃣ Classifique o uso do solo na foto histórica:</label>
+                <div class="geo-radio-group">
+                    <label class="geo-radio-option ${saved.tipo === 'comercial' ? 'selected' : ''}">
+                        <input type="radio" name="usoTipo" value="comercial" ${saved.tipo === 'comercial' ? 'checked' : ''}>
+                        <span>🟦 Comercial (lojas, mercados)</span>
+                    </label>
+                    <label class="geo-radio-option ${saved.tipo === 'residencial' ? 'selected' : ''}">
+                        <input type="radio" name="usoTipo" value="residencial" ${saved.tipo === 'residencial' ? 'checked' : ''}>
+                        <span>🟩 Residencial (casas, prédios)</span>
+                    </label>
+                    <label class="geo-radio-option ${saved.tipo === 'industrial' ? 'selected' : ''}">
+                        <input type="radio" name="usoTipo" value="industrial" ${saved.tipo === 'industrial' ? 'checked' : ''}>
+                        <span>🟨 Industrial (fábricas)</span>
+                    </label>
+                    <label class="geo-radio-option ${saved.tipo === 'institucional' ? 'selected' : ''}">
+                        <input type="radio" name="usoTipo" value="institucional" ${saved.tipo === 'institucional' ? 'checked' : ''}>
+                        <span>🟥 Institucional (igreja, escola, governo)</span>
+                    </label>
+                </div>
+            </div>
+            <div class="geo-form-group">
+                <label class="geo-form-label">2️⃣ Como está hoje?</label>
+                <div class="geo-radio-group">
+                    <label class="geo-radio-option ${saved.mudanca === 'mesmo' ? 'selected' : ''}">
+                        <input type="radio" name="usoMudanca" value="mesmo" ${saved.mudanca === 'mesmo' ? 'checked' : ''}>
+                        <span>✅ Mesmo uso</span>
+                    </label>
+                    <label class="geo-radio-option ${saved.mudanca === 'mudou' ? 'selected' : ''}">
+                        <input type="radio" name="usoMudanca" value="mudou" ${saved.mudanca === 'mudou' ? 'checked' : ''}>
+                        <span>🔄 Mudou completamente</span>
+                    </label>
+                    <label class="geo-radio-option ${saved.mudanca === 'misto' ? 'selected' : ''}">
+                        <input type="radio" name="usoMudanca" value="misto" ${saved.mudanca === 'misto' ? 'checked' : ''}>
+                        <span>🔀 Uso misto</span>
+                    </label>
+                </div>
+            </div>
+            <div class="geo-form-group">
+                <label class="geo-form-label">3️⃣ Descreva a mudança (máx 200 caracteres):</label>
+                <textarea class="geo-textarea" id="usoDesc" maxlength="200">${saved.descricao || ''}</textarea>
+                <div class="geo-char-counter"><span id="usoDescCounter">${(saved.descricao || '').length}</span>/200</div>
+            </div>
+            ${savedData?.complete ? `
+                <div class="geo-analysis-saved">
+                    <div class="geo-analysis-saved-title">✅ Análise Salva!</div>
+                    <p>Você ganhou +40 XP por esta análise.</p>
+                </div>
+            ` : `
+                <div class="geo-buttons">
+                    <button class="geo-btn-save" onclick="saveGeoAnalysis('usoSolo')">💾 Salvar Análise</button>
+                </div>
+            `}
+        `;
+    }
+    
+    if (layerId === 'paisagem') {
+        const saved = savedData?.data || {};
+        return `
+            <div class="geo-form-group">
+                <label class="geo-form-label">1️⃣ Elementos visíveis na paisagem:</label>
+                <div style="display:flex;flex-direction:column;gap:0.5rem">
+                    <label style="display:flex;align-items:center;gap:0.5rem">
+                        <input type="checkbox" ${saved.relevo ? 'checked' : ''}> Relevo (morros, vales)
+                    </label>
+                    <label style="display:flex;align-items:center;gap:0.5rem">
+                        <input type="checkbox" ${saved.vegetacao ? 'checked' : ''}> Vegetação (árvores, parques)
+                    </label>
+                    <label style="display:flex;align-items:center;gap:0.5rem">
+                        <input type="checkbox" ${saved.construcoes ? 'checked' : ''}> Construções
+                    </label>
+                    <label style="display:flex;align-items:center;gap:0.5rem">
+                        <input type="checkbox" ${saved.infraestrutura ? 'checked' : ''}> Infraestrutura (ruas, postes)
+                    </label>
+                </div>
+            </div>
+            <div class="geo-form-group">
+                <label class="geo-form-label">2️⃣ O que mudou desde a foto antiga? (máx 300 chars):</label>
+                <textarea class="geo-textarea" id="paisagemDesc" maxlength="300">${saved.mudancas || ''}</textarea>
+            </div>
+            ${savedData?.complete ? `
+                <div class="geo-analysis-saved">
+                    <div class="geo-analysis-saved-title">✅ Análise Salva!</div>
+                    <p>Você ganhou +60 XP por esta análise.</p>
+                </div>
+            ` : `
+                <div class="geo-buttons">
+                    <button class="geo-btn-save" onclick="saveGeoAnalysis('paisagem')">💾 Salvar Análise</button>
+                </div>
+            `}
+        `;
+    }
+    
+    if (layerId === 'percepcao') {
+        const saved = savedData?.data || {};
+        return `
+            <div class="geo-form-group">
+                <label class="geo-form-label">💭 O que esta foto transmite para você?</label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+                    <label style="display:flex;align-items:center;gap:0.5rem">
+                        <input type="checkbox" ${saved.orgulho ? 'checked' : ''}> Orgulho
+                    </label>
+                    <label style="display:flex;align-items:center;gap:0.5rem">
+                        <input type="checkbox" ${saved.saudade ? 'checked' : ''}> Saudade
+                    </label>
+                    <label style="display:flex;align-items:center;gap:0.5rem">
+                        <input type="checkbox" ${saved.mudanca ? 'checked' : ''}> Mudança
+                    </label>
+                    <label style="display:flex;align-items:center;gap:0.5rem">
+                        <input type="checkbox" ${saved.pertencimento ? 'checked' : ''}> Pertencimento
+                    </label>
+                </div>
+            </div>
+            <div class="geo-form-group">
+                <label class="geo-form-label">✍️ Suas impressões (máx 250 chars):</label>
+                <textarea class="geo-textarea" id="percepcaoDesc" maxlength="250">${saved.impressoes || ''}</textarea>
+            </div>
+            ${savedData?.complete ? `
+                <div class="geo-analysis-saved">
+                    <div class="geo-analysis-saved-title">✅ Análise Salva!</div>
+                    <p>Você ganhou +30 XP por esta análise.</p>
+                </div>
+            ` : `
+                <div class="geo-buttons">
+                    <button class="geo-btn-save" onclick="saveGeoAnalysis('percepcao')">💾 Salvar Análise</button>
+                </div>
+            `}
+        `;
+    }
+}
+
+function saveGeoAnalysis(layerId) {
+    if (!currentGeoPhoto) return;
+    
+    const photoId = currentGeoPhoto.id;
+    if (!geoAnalyses[photoId]) geoAnalyses[photoId] = {};
+    
+    let data = {};
+    let xp = 0;
+    let layerName = '';
+    
+    if (layerId === 'usoSolo') {
+        const tipo = document.querySelector('input[name="usoTipo"]:checked')?.value;
+        const mudanca = document.querySelector('input[name="usoMudanca"]:checked')?.value;
+        const descricao = document.getElementById('usoDesc')?.value;
+        
+        if (!tipo || !mudanca || !descricao) {
+            showToast('⚠️', 'Campos incompletos', 'Preencha todos os campos!');
+            return;
+        }
+        
+        data = {tipo, mudanca, descricao};
+        xp = 40;
+        layerName = 'Uso do Solo';
+    } else if (layerId === 'paisagem') {
+        const mudancas = document.getElementById('paisagemDesc')?.value;
+        if (!mudancas) {
+            showToast('⚠️', 'Campo vazio', 'Descreva as mudanças!');
+            return;
+        }
+        data = {mudancas};
+        xp = 60;
+        layerName = 'Paisagem';
+    } else if (layerId === 'percepcao') {
+        const impressoes = document.getElementById('percepcaoDesc')?.value;
+        if (!impressoes) {
+            showToast('⚠️', 'Campo vazio', 'Escreva suas impressões!');
+            return;
+        }
+        data = {impressoes};
+        xp = 30;
+        layerName = 'Percepção';
+    }
+    
+    geoAnalyses[photoId][layerId] = {data, complete: true};
+    saveGeoAnalyses();
+    
+    if (AppState.user) {
+        AppState.user.xp = (AppState.user.xp || 0) + xp;
+        Auth.setCurrent(AppState.user);
+        const topbarXP = document.getElementById('topbarXP');
+        if (topbarXP) topbarXP.textContent = `⭐ ${AppState.user.xp} XP`;
+    }
+    
+    const popup = document.createElement('div');
+    popup.className = 'geo-success-popup';
+    popup.textContent = `✅ ${layerName} Salva! +${xp} XP`;
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 3000);
+    
+    closeGeoModal();
+    renderGeoGrid();
+    updateGeoStats();
+}
+
 // Initialize memories when app loads
 loadMemoriesFromLocalStorage();
+loadGeoAnalyses();
+
+// Event delegation for geography radio buttons
+document.addEventListener('click', function(e) {
+    if (e.target.type === 'radio' && e.target.closest('.geo-radio-option')) {
+        const option = e.target.closest('.geo-radio-option');
+        const group = option.closest('.geo-radio-group');
+        group.querySelectorAll('.geo-radio-option').forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+    }
+});
+
+// Character counters for geography textareas
+document.addEventListener('input', function(e) {
+    if (e.target.id === 'usoDesc') {
+        const counter = document.getElementById('usoDescCounter');
+        if (counter) counter.textContent = e.target.value.length;
+    }
+});
 
 </script>
 </body>
