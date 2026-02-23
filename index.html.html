@@ -3127,28 +3127,27 @@
 // BANCO DE DADOS DE FOTOS HISTÓRICAS
 // =================================================================
 const HISTORICAL_PHOTOS = [
-    {id:'hist_001',title:'Igreja Matriz de São Sebastião',description:'Marco Zero da cidade - Praça São Sebastião, Centro',year:'1950',decade:'Anos 50',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=800',radius:50},
-    {id:'hist_002',title:'Igreja Batista de Presidente Dutra',description:'Igreja Batista no Centro da cidade',year:'1965',decade:'Anos 60/70',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1519491050282-cf00c82424b4?w=800',radius:50},
-    {id:'hist_003',title:'Igreja Evangélica Assembleia de Deus',description:'Sede histórica da Assembleia de Deus no Centro',year:'1955',decade:'Anos 50/60',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1548625149-fc4a29cf3728?w=800',radius:50},
-    {id:'hist_004',title:'Igreja Cristã Evangélica',description:'Igreja na Rua Magalhães de Almeida',year:'1960',decade:'Anos 60',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2831462,lng:-44.4929264},photo_url:'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?w=800',radius:50},
-    {id:'hist_005',title:'Praça São Sebastião (Caixa d\'Água)',description:'Vista da Praça São Sebastião com a caixa d\'água',year:'2008',decade:'2008',category:'praca',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1567942712756-e22ac4520ef6?w=800',radius:50},
-    {id:'hist_006',title:'Praça da Complast',description:'Praça na Av. José Olavo Sampaio',year:'2000',decade:'Anos 2000',category:'praca',sector:'setor_01',coordinates:{lat:-5.2875,lng:-44.5020},photo_url:'https://images.unsplash.com/photo-1585517315971-66b2f07bfb5f?w=800',radius:100},
-    {id:'hist_007',title:'Igreja de São Sebastião (Histórica)',description:'Foto histórica da Igreja - Marco Zero',year:'1920',decade:'Histórica',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800',radius:50},
-    {id:'hist_008',title:'Construção da Capela',description:'Registro da construção da capela - Marco Zero',year:'1925',decade:'Histórica',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1541888446174-e01919fc608e?w=800',radius:50},
-    {id:'hist_009',title:'População construindo Capela (1929)',description:'População do Curador ajuda a construir - Raridade histórica!',year:'1929',decade:'1929',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800',radius:50},
-    {id:'hist_010',title:'Caminhões com Algodão',description:'Época áurea do algodão na entrada da cidade',year:'1955',decade:'Anos 50/60',category:'economia',sector:'setor_02',coordinates:{lat:-5.286,lng:-44.505},photo_url:'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=800',radius:100},
-    {id:'hist_011',title:'Armazém Porto Seguro (1ª Sede)',description:'Em frente ao Banco do Brasil',year:'1950',decade:'Anos 50',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2903,lng:-44.4896},photo_url:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800',radius:30},
-    {id:'hist_012',title:'Fachada Armazém Porto Seguro',description:'Esquina histórica do Centro',year:'1960',decade:'Anos 60',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800',radius:30},
-    {id:'hist_013',title:'Interior Armazém Porto Seguro',description:'Cotidiano comercial',year:'1960',decade:'Anos 60',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=800',radius:30},
-    {id:'hist_014',title:'Auto Peças Falcão',description:'Av. José Olavo Sampaio',year:'2008',decade:'2008',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2870,lng:-44.5015},photo_url:'https://images.unsplash.com/photo-1486754735734-325b5831c3ad?w=800',radius:80},
-    {id:'hist_015',title:'Supermercado Moderno',description:'Comércio na Av. José Olavo Sampaio',year:'2014',decade:'2013-2015',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2868,lng:-44.5018},photo_url:'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=800',radius:80},
-    {id:'hist_016',title:'Prédio da Emater',description:'Rua Magalhães de Almeida',year:'1975',decade:'Anos 70/80',category:'predio_publico',sector:'setor_03',coordinates:{lat:-5.2831462,lng:-44.4929264},photo_url:'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',radius:50},
-    {id:'hist_017',title:'Avenida José Olavo Sampaio',description:'Entrada da cidade',year:'2017',decade:'2015-2020',category:'avenida',sector:'setor_03',coordinates:{lat:-5.286,lng:-44.505},photo_url:'https://images.unsplash.com/photo-1567473030492-533b30c5494c?w=800',radius:100},
-    {id:'hist_018',title:'Rua do Comércio (2013)',description:'Vista do Centro',year:'2013',decade:'2013',category:'urbanismo',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1569437061241-a848be43cc82?w=800',radius:50},
-    {id:'hist_019',title:'Vista Aérea Antiga',description:'Centro Histórico da torre',year:'1960',decade:'Anos 60',category:'urbanismo',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=800',radius:50},
-    {id:'hist_020',title:'Vista Aérea Atual',description:'Centro atual da torre',year:'2025',decade:'2024-2026',category:'urbanismo',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800',radius:50},
-    {id:'hist_021',title:'Rua com Gado (1960)',description:'Cotidiano rural - Documento único!',year:'1960',decade:'1960',category:'historia_rural',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=800',radius:100},
-    {id:'hist_022',title:'Esquina Histórica',description:'Calçada do Armazém',year:'1960',decade:'Anos 60',category:'cotidiano',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800',radius:30}
+    {id:'hist_001',title:'População do Curador ajuda a construir a Capela de São Sebastião',description:'Registro histórico da comunidade do Curador participando da construção da primeira Capela de São Sebastião, marco inicial da formação religiosa e urbana de Presidente Dutra.',year:'1929',decade:'Anos 20',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=1GYfuA_ZuppaEPzcMtdkJGvYjIXD7toXD',radius:50},
+    {id:'hist_002',title:'Capela de São Sebastião sendo erguida',description:'Imagem do processo de edificação da Capela de São Sebastião, símbolo do crescimento religioso e da organização comunitária local.',year:'1930',decade:'Anos 30',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=1cUyKWc5OFFuPLzS_TtUVqCqnLygjZgth',radius:50},
+    {id:'hist_003',title:'Igreja de São Sebastião substitui a capela',description:'Registro da nova Igreja de São Sebastião construída para substituir a antiga capela, demonstrando a expansão populacional e estrutural da cidade.',year:'1940',decade:'Anos 40',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=1QAv-tU7ZrZiPCdlTn8MU0gSuJQqZyP-j',radius:50},
+    {id:'hist_004',title:'Igreja de São Sebastião no início dos anos 60',description:'Vista da igreja com a praça ainda sem calçamento, evidenciando o estágio inicial da urbanização do centro da cidade.',year:'1960',decade:'Anos 60',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=1xKAVB0VmQegOFy1GakT9zWKjCLYNi7GM',radius:50},
+    {id:'hist_005',title:'Esquina do Armazém Porto Seguro',description:'Registro da esquina do tradicional Armazém Porto Seguro, importante ponto comercial da cidade durante a década de 1960.',year:'1960',decade:'Anos 60',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2903,lng:-44.4896},photo_url:'https://drive.google.com/uc?export=view&id=1xYfCrbWYeABf8lnP9fwm4Kkxc9nSiVv-',radius:30},
+    {id:'hist_006',title:'Armazém Porto Seguro – Propriedade de JCOT',description:'Imagem do Armazém Porto Seguro pertencente a José da Cruz de Oliveira Torres (JCOT), referência comercial importante no desenvolvimento econômico local.',year:'1960',decade:'Anos 60',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=1F09jo77K8Vr2wREtzh10WgNIVfy3VqZI',radius:30},
+    {id:'hist_007',title:'Armazém Porto Seguro na Travessa Doca Sereno',description:'Vista do armazém já localizado na esquina da Travessa Doca Sereno com a Praça São Sebastião, consolidando-se como polo comercial.',year:'1960',decade:'Anos 60',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=1brJszuuwRpZ8rEiqu8ft669AG1iCc0Mq',radius:30},
+    {id:'hist_008',title:'Presidente Dutra no início dos anos 60',description:'Panorama urbano da cidade no começo da década de 1960, evidenciando ruas simples e estrutura em expansão.',year:'1960',decade:'Anos 60',category:'urbanismo',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=1HVRTmjbfpaZJu9Q1Uep43XRgUkRJwgNq',radius:100},
+    {id:'hist_009',title:'Rua Magalhães de Almeida anos depois',description:'Registro do mesmo trecho da rua em período posterior, permitindo comparação entre diferentes fases de urbanização.',year:'1970',decade:'Anos 70',category:'urbanismo',sector:'setor_03',coordinates:{lat:-5.2831462,lng:-44.4929264},photo_url:'https://drive.google.com/uc?export=view&id=1ye0Uw01kiaks7W9DoXietCagyG52wUom',radius:80},
+    {id:'hist_010',title:'Travessa Antônio Macedo',description:'Imagem da Travessa Antônio Macedo, importante via de circulação no desenvolvimento urbano do município.',year:'1960',decade:'Anos 60',category:'urbanismo',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=10Vt6O6I5cDmqtwRPne0XuJ5THj5VLi6h',radius:50},
+    {id:'hist_011',title:'Prolongamento da BR-226',description:'Registro do trecho que integra a BR-226, fundamental para a ligação regional entre o Rio Parnaíba e o Tocantins, impulsionando o crescimento econômico.',year:'1970',decade:'Anos 70',category:'urbanismo',sector:'setor_03',coordinates:{lat:-5.286,lng:-44.505},photo_url:'https://drive.google.com/uc?export=view&id=1hZ1wdpCAPxO34-xi7Ag5xhfSIT_xAe8O',radius:100},
+    {id:'hist_012',title:'Avenida Tancredo Neves',description:'Vista da Avenida Tancredo Neves, símbolo da expansão urbana e modernização da infraestrutura municipal.',year:'1980',decade:'Anos 80',category:'urbanismo',sector:'setor_03',coordinates:{lat:-5.2875,lng:-44.5020},photo_url:'https://drive.google.com/uc?export=view&id=1_WcCvSGvZ-8FG9FLnOzmhEF_0r3luCmA',radius:100},
+    {id:'hist_013',title:'Matriz São Sebastião',description:'Catedral iniciada em 1945 e concluída em 1949, construída em homenagem a São Sebastião, consolidando a identidade religiosa da cidade.',year:'1949',decade:'Anos 40',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=1OPjUnwYsKH3ysIJKB3induLq9YLghO8s',radius:50},
+    {id:'hist_014',title:'Igreja Batista',description:'Templo inaugurado em 1979, tendo como primeiro pastor Gessi Camilo de Sousa, representando a diversidade religiosa no município.',year:'1979',decade:'Anos 70',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=1oqe0h4EzSNyKsHv9bblxk_aN4UyTJD0N',radius:50},
+    {id:'hist_015',title:'Igreja Cristã Evangélica',description:'Registro da Igreja Cristã Evangélica fundada em 1947, importante marco da presença evangélica na cidade.',year:'1947',decade:'Anos 40',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2831462,lng:-44.4929264},photo_url:'https://drive.google.com/uc?export=view&id=16fpUwXFYfYUF7DLJrzpiAHvp3sB-bJJc',radius:50},
+    {id:'hist_016',title:'Assembleia de Deus',description:'Imagem da Assembleia de Deus em 1974, demonstrando a consolidação do movimento pentecostal em Presidente Dutra.',year:'1974',decade:'Anos 70',category:'religiosa',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=1qZiOqbK60B78bZEqDFf526FsVf0e9O0v',radius:50},
+    {id:'hist_017',title:'CHESF – Início das obras da Eletronorte',description:'Registro do início das obras relacionadas à Eletronorte, marcando avanço energético e estrutural na região.',year:'1970',decade:'Anos 70',category:'predio_publico',sector:'setor_03',coordinates:{lat:-5.2831462,lng:-44.4929264},photo_url:'https://drive.google.com/uc?export=view&id=1qSHp1NF2tqG9YEPDCQqQIXxwd4p9pB6E',radius:80},
+    {id:'hist_018',title:'Eletronorte – Dias atuais',description:'Imagem recente da Eletronorte (foto IBGE), demonstrando a modernização da infraestrutura energética local.',year:'2020',decade:'Anos 2020',category:'predio_publico',sector:'setor_03',coordinates:{lat:-5.2831462,lng:-44.4929264},photo_url:'https://drive.google.com/uc?export=view&id=1sEhqQlSGa7joBIdunZVMKY27fpVx2vIo',radius:80},
+    {id:'hist_019',title:'Armazém Porto Seguro – Comércio em expansão',description:'Registro do armazém ampliando seu mix de produtos, evidenciando o fortalecimento do comércio local.',year:'1960',decade:'Anos 60',category:'comercio',sector:'setor_02',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=1MRWRvn6r8zsSrsAWfWd49QOc4T5bA2HH',radius:30},
+    {id:'hist_020',title:'Praça São Sebastião',description:'Praça São Sebastião em uma manhã de final de inverno de 2007, mostrando o centro urbano já consolidado.',year:'2007',decade:'Anos 2000',category:'praca',sector:'setor_01',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=13nuISfe6T96GZOFSa67a4epqy-z23odz',radius:50},
+    {id:'hist_021',title:'Rua com Gado',description:'Cotidiano rural - Documento único da vida urbana com gado nas ruas de Presidente Dutra.',year:'1960',decade:'Anos 60',category:'historia_rural',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/uc?export=view&id=1HVRTmjbfpaZJu9Q1Uep43XRgUkRJwgNq',radius:100}
 ];
 
 function calculateDistance(lat1,lon1,lat2,lon2){const R=6371e3;const φ1=lat1*Math.PI/180;const φ2=lat2*Math.PI/180;const Δφ=(lat2-lat1)*Math.PI/180;const Δλ=(lon2-lon1)*Math.PI/180;const a=Math.sin(Δφ/2)*Math.sin(Δφ/2)+Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)*Math.sin(Δλ/2);const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));return R*c;}
@@ -3178,7 +3177,20 @@ const Auth = {
     register(data) {
         const users = this.getUsers();
         if (users.find(u => u.email === data.email)) return { error: 'E-mail já cadastrado' };
-        const user = { ...data, id: Date.now().toString(), xp: 0, points: 0, badges: [] };
+        
+        // Criar usuário com role explícito
+        const user = { 
+            id: Date.now().toString(),
+            name: data.name,
+            email: data.email,
+            password: data.password,
+            role: data.role,
+            turma: data.turma,
+            xp: 0, 
+            points: 0, 
+            badges: [] 
+        };
+        
         users.push(user);
         this.saveUsers(users);
         this.setCurrent(user);
@@ -3689,32 +3701,70 @@ function stopARMode(){closeAR();}
 // =================================================================
 function showApp() {
     const u = AppState.user;
-    document.getElementById('appShell').style.display = 'flex';
-    document.getElementById('authScreen').style.display = 'none';
+    const appShell = document.getElementById('appShell');
+    const authScreen = document.getElementById('authScreen');
+    
+    if (appShell) appShell.style.display = 'flex';
+    if (authScreen) authScreen.style.display = 'none';
 
-    // Update UI with user data
-    const initial = u.name.charAt(0).toUpperCase();
-    document.getElementById('topbarAvatar').textContent = initial;
-    document.getElementById('topbarXP').textContent = `⭐ ${u.xp || 350} XP`;
-    document.getElementById('welcomeName').textContent = `Olá, ${u.name.split(' ')[0]}! 👋`;
-    document.getElementById('profileAvatarBig').textContent = initial;
-    document.getElementById('profileName').textContent = u.name;
-    document.getElementById('profileRole').textContent = u.role === 'professor' ? '👨‍🏫 Professor' : `👨‍🎓 Aluno · Turma ${formatTurma(u.turma)}`;
-    document.getElementById('profileTurma').textContent = formatTurma(u.turma) || '—';
+    // Update UI with user data - with safety checks
+    const initial = u.name ? u.name.charAt(0).toUpperCase() : 'U';
+    
+    const topbarAvatar = document.getElementById('topbarAvatar');
+    if (topbarAvatar) topbarAvatar.textContent = initial;
+    
+    const topbarXP = document.getElementById('topbarXP');
+    if (topbarXP) topbarXP.textContent = `⭐ ${u.xp || 350} XP`;
+    
+    const welcomeName = document.getElementById('welcomeName');
+    if (welcomeName) welcomeName.textContent = `Olá, ${u.name ? u.name.split(' ')[0] : 'Usuário'}! 👋`;
+    
+    const profileAvatarBig = document.getElementById('profileAvatarBig');
+    if (profileAvatarBig) profileAvatarBig.textContent = initial;
+    
+    const profileName = document.getElementById('profileName');
+    if (profileName) profileName.textContent = u.name || 'Usuário';
+    
+    const profileRole = document.getElementById('profileRole');
+    if (profileRole) profileRole.textContent = u.role === 'professor' ? '👨‍🏫 Professor' : `👨‍🎓 Aluno · Turma ${formatTurma(u.turma)}`;
+    
+    const profileTurma = document.getElementById('profileTurma');
+    if (profileTurma) profileTurma.textContent = formatTurma(u.turma) || '—';
 
     // Toggle student/teacher screens
-    if (u.role === 'professor') {
-        document.getElementById('studentProgress').style.display = 'none';
-        document.getElementById('teacherPanel').style.display = 'block';
-        document.getElementById('nav-missions').querySelector('.nav-label').textContent = 'Painel';
-        document.getElementById('nav-missions').querySelector('.nav-icon').textContent = '👨‍🏫';
+    const isProfessor = u.role && String(u.role).toLowerCase() === 'professor';
+    console.log('DEBUG: User role =', u.role);
+    console.log('DEBUG: Is professor?', isProfessor);
+    
+    if (isProfessor) {
+        console.log('DEBUG: Activating teacher panel');
+        
+        const studentProgress = document.getElementById('studentProgress');
+        if (studentProgress) studentProgress.style.display = 'none';
+        
+        const teacherPanel = document.getElementById('teacherPanel');
+        if (teacherPanel) teacherPanel.style.display = 'block';
+        
+        const navMissions = document.getElementById('nav-missions');
+        if (navMissions) {
+            const navLabel = navMissions.querySelector('.nav-label');
+            const navIcon = navMissions.querySelector('.nav-icon');
+            if (navLabel) navLabel.textContent = 'Painel';
+            if (navIcon) navIcon.textContent = '👨‍🏫';
+        }
+        
         setTimeout(function() {
             var nameEl = document.getElementById('teacherName');
-            if (nameEl) nameEl.textContent = u.name.split(' ')[0];
+            if (nameEl && u.name) nameEl.textContent = u.name.split(' ')[0];
         }, 100);
     } else {
-        document.getElementById('studentProgress').style.display = 'block';
-        document.getElementById('teacherPanel').style.display = 'none';
+        console.log('DEBUG: Activating student panel');
+        
+        const studentProgress = document.getElementById('studentProgress');
+        if (studentProgress) studentProgress.style.display = 'block';
+        
+        const teacherPanel = document.getElementById('teacherPanel');
+        if (teacherPanel) teacherPanel.style.display = 'none';
     }
     
     // Update notification badge
@@ -3758,11 +3808,9 @@ function navigateTo(screen) {
     
     // Render progress content based on user role when navigating to missions
     if (screen === 'missions') {
-        if (AppState.user && AppState.user.role === 'professor') {
-            renderTeacherPanel();
-        } else {
-            renderStudentProgress();
-        }
+        // Panels are already in HTML (studentProgress and teacherPanel)
+        // showApp() already handles visibility based on role
+        // No need to render anything here
     }
     
     // Update profile display when navigating to profile
