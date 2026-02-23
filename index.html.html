@@ -1850,6 +1850,64 @@
         .motivational-footer{text-align:center;padding:1.5rem 1rem;background:linear-gradient(135deg,#fff9e6,#fffef5);margin:1rem;border-radius:12px;color:#0F3D2E;display:flex;align-items:center;justify-content:center;gap:.75rem}
         .footer-icon{font-size:2rem}
 
+        /* ==================== MEMÓRIAS DO BAIRRO ==================== */
+        .memories-header{background:linear-gradient(135deg,#1a5c44,#0F3D2E);color:#fff;padding:1.5rem 1rem;text-align:center}
+        .memories-title{font-size:1.5rem;font-weight:700;margin-bottom:0.5rem;font-family:'Playfair Display',serif}
+        .memories-subtitle{font-size:0.9rem;opacity:0.9}
+        .memories-progress{margin-top:1rem;background:rgba(255,255,255,0.2);border-radius:10px;height:8px;overflow:hidden}
+        .memories-progress-fill{background:#D4AF37;height:100%;transition:width 0.3s}
+        .memories-stats{display:flex;justify-content:space-around;margin-top:1rem;font-size:0.9rem}
+        .memories-filters{padding:1rem;display:flex;gap:0.5rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
+        .filter-btn{background:#fff;border:2px solid #0F3D2E;color:#0F3D2E;padding:0.5rem 1rem;border-radius:20px;font-size:0.85rem;font-weight:600;white-space:nowrap;cursor:pointer}
+        .filter-btn.active{background:#0F3D2E;color:#fff}
+        .photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;padding:1rem}
+        .photo-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);cursor:pointer;position:relative;transition:transform 0.2s}
+        .photo-card:hover{transform:translateY(-4px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+        .photo-card img{width:100%;height:180px;object-fit:cover}
+        .photo-card-info{padding:0.75rem}
+        .photo-card-year{color:#D4AF37;font-weight:700;font-size:0.85rem}
+        .photo-card-title{font-size:0.9rem;font-weight:600;color:#0F3D2E;margin:0.25rem 0}
+        .photo-card-location{font-size:0.75rem;color:#666}
+        .photo-locked{opacity:0.5;filter:grayscale(100%)}
+        .photo-lock-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3rem;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,0.5)}
+        .photo-badge{position:absolute;top:8px;right:8px;background:#27ae60;color:#fff;padding:0.25rem 0.5rem;border-radius:12px;font-size:0.7rem;font-weight:700}
+        
+        .photo-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:1000;overflow-y:auto}
+        .photo-modal-content{max-width:900px;margin:2rem auto;padding:1rem}
+        .photo-modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+        .photo-modal-close{background:none;border:none;color:#fff;font-size:2rem;cursor:pointer}
+        .photo-modal-image-container{position:relative;background:#000;border-radius:12px;overflow:hidden;margin-bottom:1rem}
+        .photo-modal-image{width:100%;display:block;cursor:zoom-in}
+        .photo-modal-tabs{display:flex;gap:0.5rem;margin-bottom:1rem;border-bottom:2px solid #333}
+        .photo-tab{background:none;border:none;color:#999;padding:1rem;font-size:0.9rem;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s}
+        .photo-tab.active{color:#fff;border-bottom-color:#D4AF37}
+        .photo-tab-content{display:none;background:rgba(255,255,255,0.1);border-radius:12px;padding:1.5rem;color:#fff}
+        .photo-tab-content.active{display:block}
+        
+        .compare-slider-container{position:relative;width:100%;overflow:hidden;border-radius:12px}
+        .compare-slider{position:relative;overflow:hidden;cursor:ew-resize}
+        .compare-before,.compare-after{display:block;width:100%}
+        .compare-overlay{position:absolute;top:0;left:0;width:50%;height:100%;overflow:hidden;border-right:3px solid #D4AF37}
+        .compare-handle{position:absolute;top:50%;left:50%;width:60px;height:60px;background:#D4AF37;border-radius:50%;transform:translate(-50%,-50%);cursor:ew-resize;box-shadow:0 4px 12px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:#000;font-size:1.5rem;font-weight:700}
+        
+        .quiz-container{color:#fff}
+        .quiz-question{font-size:1.1rem;font-weight:600;margin-bottom:1.5rem}
+        .quiz-options{display:flex;flex-direction:column;gap:0.75rem}
+        .quiz-option{background:rgba(255,255,255,0.1);border:2px solid transparent;padding:1rem;border-radius:8px;cursor:pointer;transition:all 0.2s}
+        .quiz-option:hover{background:rgba(255,255,255,0.2);border-color:#D4AF37}
+        .quiz-option.correct{background:#27ae60;border-color:#27ae60}
+        .quiz-option.wrong{background:#e74c3c;border-color:#e74c3c}
+        .quiz-feedback{margin-top:1rem;padding:1rem;border-radius:8px;font-weight:600}
+        .quiz-feedback.correct{background:rgba(39,174,96,0.2);color:#4ade80}
+        .quiz-feedback.wrong{background:rgba(231,76,60,0.2);color:#f87171}
+        
+        .contribution-item{background:rgba(255,255,255,0.05);border-left:3px solid #D4AF37;padding:1rem;margin-bottom:1rem;border-radius:4px}
+        .contribution-author{color:#D4AF37;font-weight:700;font-size:0.9rem;margin-bottom:0.5rem}
+        .contribution-date{color:#999;font-size:0.75rem;margin-left:0.5rem}
+        .contribution-text{color:#fff;line-height:1.6}
+        .contribution-success{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#27ae60;color:#fff;padding:2rem 3rem;border-radius:12px;font-size:1.2rem;font-weight:700;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:fadeInOut 3s}
+        @keyframes fadeInOut{0%{opacity:0;transform:translate(-50%,-50%) scale(0.8)}20%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
+
         /* ==================== NOTIFICATIONS ==================== */
         .toast-container {
             position: fixed;
@@ -2687,6 +2745,118 @@
         </div>
 
         <!-- PROFILE -->
+        <!-- MEMÓRIAS DO BAIRRO -->
+        <div class="screen" id="screen-memories">
+            <div class="memories-header">
+                <div class="memories-title">📸 Memórias do Bairro</div>
+                <div class="memories-subtitle">Explore a história de Presidente Dutra</div>
+                <div class="memories-progress">
+                    <div class="memories-progress-fill" id="memoriesProgressBar" style="width:15%"></div>
+                </div>
+                <div class="memories-stats">
+                    <div><strong id="memoriesCompleted">3</strong>/20 Descobertas</div>
+                    <div>🏆 <strong id="memoriesXP">150</strong> XP</div>
+                </div>
+            </div>
+            
+            <div class="memories-filters">
+                <button class="filter-btn active" onclick="filterMemories('all')">Todas</button>
+                <button class="filter-btn" onclick="filterMemories('1920')">Anos 20</button>
+                <button class="filter-btn" onclick="filterMemories('1940')">Anos 40</button>
+                <button class="filter-btn" onclick="filterMemories('1960')">Anos 60</button>
+                <button class="filter-btn" onclick="filterMemories('1970')">Anos 70</button>
+                <button class="filter-btn" onclick="filterMemories('religiosa')">Igrejas</button>
+                <button class="filter-btn" onclick="filterMemories('comercio')">Comércio</button>
+            </div>
+            
+            <div class="photo-grid" id="photoGrid">
+                <!-- Photos will be loaded by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- MODAL DE FOTO -->
+        <div class="photo-modal" id="photoModal">
+            <div class="photo-modal-content">
+                <div class="photo-modal-header">
+                    <div style="color:#fff">
+                        <div style="font-size:1.5rem;font-weight:700" id="modalTitle"></div>
+                        <div style="opacity:0.8" id="modalLocation"></div>
+                    </div>
+                    <button class="photo-modal-close" onclick="closePhotoModal()">×</button>
+                </div>
+                
+                <div class="photo-modal-tabs">
+                    <button class="photo-tab active" onclick="switchPhotoTab('info')">📷 Foto</button>
+                    <button class="photo-tab" onclick="switchPhotoTab('compare')">⚖️ Comparar</button>
+                    <button class="photo-tab" onclick="switchPhotoTab('quiz')">🧩 Desafio</button>
+                    <button class="photo-tab" onclick="switchPhotoTab('story')">📖 História</button>
+                </div>
+                
+                <div class="photo-tab-content active" id="tab-info">
+                    <div class="photo-modal-image-container">
+                        <img class="photo-modal-image" id="modalImage" src="" alt="">
+                    </div>
+                    <div style="margin-top:1rem">
+                        <div style="color:#D4AF37;font-weight:700;margin-bottom:0.5rem" id="modalYear"></div>
+                        <div style="line-height:1.6" id="modalDescription"></div>
+                    </div>
+                </div>
+                
+                <div class="photo-tab-content" id="tab-compare">
+                    <div class="compare-slider-container">
+                        <div class="compare-slider" id="compareSlider">
+                            <img class="compare-after" id="compareAfter" src="">
+                            <div class="compare-overlay" id="compareOverlay">
+                                <img class="compare-before" id="compareBefore" src="">
+                            </div>
+                            <div class="compare-handle" id="compareHandle">⟷</div>
+                        </div>
+                    </div>
+                    <div style="text-align:center;margin-top:1rem;color:#D4AF37;font-weight:600">
+                        ← Arraste para comparar →
+                    </div>
+                </div>
+                
+                <div class="photo-tab-content" id="tab-quiz">
+                    <div class="quiz-container">
+                        <div class="quiz-question" id="quizQuestion"></div>
+                        <div class="quiz-options" id="quizOptions"></div>
+                        <div class="quiz-feedback" id="quizFeedback" style="display:none"></div>
+                    </div>
+                </div>
+                
+                <div class="photo-tab-content" id="tab-story">
+                    <div style="color:#fff;line-height:1.8">
+                        <h3 style="color:#D4AF37;margin-bottom:1rem">📖 História Original</h3>
+                        <div id="storyOriginal" style="background:rgba(255,255,255,0.05);padding:1rem;border-radius:8px;margin-bottom:2rem">
+                            <p>Carregando história...</p>
+                        </div>
+                        
+                        <h3 style="color:#D4AF37;margin-bottom:1rem">✍️ Contribuições dos Alunos</h3>
+                        <div id="storyContributions" style="margin-bottom:2rem">
+                            <!-- Contributions will be loaded here -->
+                        </div>
+                        
+                        <div style="background:rgba(212,175,55,0.1);border:2px solid #D4AF37;border-radius:12px;padding:1.5rem">
+                            <h4 style="color:#D4AF37;margin-bottom:1rem">💡 Adicione sua contribuição!</h4>
+                            <p style="font-size:0.9rem;opacity:0.8;margin-bottom:1rem">
+                                O que você sabe sobre esta foto? Adicione informações, curiosidades ou histórias que você conhece!
+                            </p>
+                            <textarea id="contributionText" 
+                                      placeholder="Digite aqui sua contribuição sobre esta foto histórica..."
+                                      style="width:100%;min-height:120px;padding:1rem;border-radius:8px;border:2px solid rgba(212,175,55,0.3);background:rgba(0,0,0,0.3);color:#fff;font-size:1rem;font-family:inherit;resize:vertical"></textarea>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem">
+                                <div style="font-size:0.85rem;opacity:0.7" id="contributionCounter">0/500 caracteres</div>
+                                <button onclick="submitContribution()" 
+                                        style="background:#D4AF37;color:#000;border:none;padding:0.75rem 2rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:1rem">
+                                    📤 Enviar Contribuição
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="screen" id="screen-profile">
             <!-- Header do Perfil -->
             <div class="profile-header-new">
@@ -2996,6 +3166,10 @@
         <button class="nav-item" onclick="navigateTo('feed')" id="nav-feed">
             <div class="nav-icon">📰</div>
             <div class="nav-label">Descobertas</div>
+        </button>
+        <button class="nav-item" onclick="navigateTo('memories')" id="nav-memories">
+            <div class="nav-icon">📸</div>
+            <div class="nav-label">Memórias</div>
         </button>
         <button class="nav-item" onclick="navigateTo('profile')" id="nav-profile">
             <div class="nav-icon">👤</div>
@@ -3430,40 +3604,67 @@ function showHistoricalPhoto(photo,dist){
     const img=document.getElementById('arHistoricalPhoto');
     const info=document.getElementById('arInfo');
     
-    // SOLUÇÃO: Usar proxy CORS para contornar bloqueio do Google Drive
+    // Mostrar loading
+    const loadingMsg = document.createElement('div');
+    loadingMsg.id = 'photoLoading';
+    loadingMsg.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.8);color:white;padding:20px;border-radius:12px;font-size:18px;z-index:999;';
+    loadingMsg.textContent = '⏳ Carregando foto...';
+    overlay.appendChild(loadingMsg);
+    
+    // SOLUÇÃO: Usar proxy CORS com timeout maior para mobile
     const proxies = [
         'https://corsproxy.io/?',
-        'https://api.allorigins.win/raw?url=',
-        'https://cors-anywhere.herokuapp.com/'
+        'https://api.allorigins.win/raw?url='
     ];
     
     let currentProxyIndex = 0;
+    let loadTimeout;
     
     function tryLoadImage() {
+        // Limpar timeout anterior
+        if (loadTimeout) clearTimeout(loadTimeout);
+        
         img.crossOrigin = "anonymous";
         
         // Tentar com proxy
         const proxyUrl = proxies[currentProxyIndex];
         const finalUrl = proxyUrl + encodeURIComponent(photo.photo_url);
         
-        console.log(`Tentando carregar com proxy ${currentProxyIndex + 1}:`, finalUrl);
+        console.log(`📱 Tentando carregar (mobile) com proxy ${currentProxyIndex + 1}:`, finalUrl);
         
-        img.onload = function() {
-            console.log('✅ Foto carregada com sucesso:', photo.title);
-        };
-        
-        img.onerror = function() {
-            console.error(`❌ Falha com proxy ${currentProxyIndex + 1}`);
+        // Timeout de 10 segundos para mobile
+        loadTimeout = setTimeout(() => {
+            console.error(`⏱️ Timeout com proxy ${currentProxyIndex + 1}`);
             currentProxyIndex++;
             
             if (currentProxyIndex < proxies.length) {
-                // Tentar próximo proxy
-                setTimeout(tryLoadImage, 500);
+                tryLoadImage();
             } else {
-                // Tentar sem proxy como último recurso
-                console.log('Tentando URL direta (sem proxy)...');
-                img.src = photo.photo_url;
-                showToast('⚠️', 'Foto pode não carregar', 'Problema com Google Drive');
+                // Remover loading
+                const loading = document.getElementById('photoLoading');
+                if (loading) loading.remove();
+                showToast('❌', 'Foto não carregou', 'Verifique sua conexão');
+            }
+        }, 10000);
+        
+        img.onload = function() {
+            clearTimeout(loadTimeout);
+            const loading = document.getElementById('photoLoading');
+            if (loading) loading.remove();
+            console.log('✅ Foto carregada:', photo.title);
+        };
+        
+        img.onerror = function() {
+            clearTimeout(loadTimeout);
+            console.error(`❌ Erro com proxy ${currentProxyIndex + 1}`);
+            currentProxyIndex++;
+            
+            if (currentProxyIndex < proxies.length) {
+                setTimeout(tryLoadImage, 1000);
+            } else {
+                const loading = document.getElementById('photoLoading');
+                if (loading) loading.remove();
+                showToast('❌', 'Erro ao carregar', 'Tente novamente');
             }
         };
         
@@ -3832,6 +4033,374 @@ function formatTurma(t) {
 // Navigation history
 let navigationHistory = [];
 
+// =================================================================
+// MEMÓRIAS DO BAIRRO - JAVASCRIPT
+// =================================================================
+
+let currentPhotoData = null;
+let memoriesDiscovered = [];
+let currentFilter = 'all';
+
+function loadMemoriesFromLocalStorage() {
+    const saved = localStorage.getItem('pk_memories_discovered');
+    if (saved) {
+        memoriesDiscovered = JSON.parse(saved);
+    }
+    updateMemoriesProgress();
+}
+
+function saveMemoriesToLocalStorage() {
+    localStorage.setItem('pk_memories_discovered', JSON.stringify(memoriesDiscovered));
+}
+
+function markPhotoAsDiscovered(photoId) {
+    if (!memoriesDiscovered.includes(photoId)) {
+        memoriesDiscovered.push(photoId);
+        saveMemoriesToLocalStorage();
+        updateMemoriesProgress();
+        return true;
+    }
+    return false;
+}
+
+function updateMemoriesProgress() {
+    const total = HISTORICAL_PHOTOS.length;
+    const completed = memoriesDiscovered.length;
+    const percentage = (completed / total) * 100;
+    
+    const progressBar = document.getElementById('memoriesProgressBar');
+    const completedEl = document.getElementById('memoriesCompleted');
+    const xpEl = document.getElementById('memoriesXP');
+    
+    if (progressBar) progressBar.style.width = percentage + '%';
+    if (completedEl) completedEl.textContent = completed;
+    if (xpEl) xpEl.textContent = completed * 50;
+}
+
+function renderPhotoGrid() {
+    const grid = document.getElementById('photoGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    
+    HISTORICAL_PHOTOS.forEach((photo, index) => {
+        // Apply filter
+        if (currentFilter !== 'all') {
+            if (currentFilter.startsWith('19') || currentFilter.startsWith('20')) {
+                if (!photo.decade || !photo.decade.includes(currentFilter.substring(2,4))) return;
+            } else {
+                if (photo.category !== currentFilter) return;
+            }
+        }
+        
+        const isLocked = false; // Todas as fotos desbloqueadas!
+        const isCompleted = memoriesDiscovered.includes(photo.id);
+        
+        const card = document.createElement('div');
+        card.className = 'photo-card' + (isLocked ? ' photo-locked' : '');
+        card.onclick = () => {
+            if (!isLocked) openPhotoModal(photo);
+        };
+        
+        card.innerHTML = `
+            ${isLocked ? '<div class="photo-lock-icon">🔒</div>' : ''}
+            ${isCompleted ? '<div class="photo-badge">✓ Completo</div>' : ''}
+            <img src="${photo.photo_url}" alt="${photo.title}" loading="lazy">
+            <div class="photo-card-info">
+                <div class="photo-card-year">${photo.year}</div>
+                <div class="photo-card-title">${photo.title}</div>
+                <div class="photo-card-location">${photo.description.substring(0,50)}...</div>
+            </div>
+        `;
+        
+        grid.appendChild(card);
+    });
+}
+
+function filterMemories(filter) {
+    currentFilter = filter;
+    
+    // Update active button
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    renderPhotoGrid();
+}
+
+function openPhotoModal(photo) {
+    currentPhotoData = photo;
+    
+    // Mark as discovered
+    const isNew = markPhotoAsDiscovered(photo.id);
+    if (isNew && AppState.user) {
+        AppState.user.xp = (AppState.user.xp || 0) + 50;
+        Auth.setCurrent(AppState.user);
+        const topbarXP = document.getElementById('topbarXP');
+        if (topbarXP) topbarXP.textContent = `⭐ ${AppState.user.xp} XP`;
+        showToast('🎉', '+50 XP', 'Nova memória descoberta!');
+    }
+    
+    // Populate modal
+    document.getElementById('modalTitle').textContent = photo.title;
+    document.getElementById('modalLocation').textContent = photo.description;
+    document.getElementById('modalYear').textContent = photo.year + ' - ' + photo.decade;
+    document.getElementById('modalDescription').textContent = photo.description;
+    document.getElementById('modalImage').src = photo.photo_url;
+    
+    // Setup compare slider
+    document.getElementById('compareBefore').src = photo.photo_url;
+    document.getElementById('compareAfter').src = photo.photo_url; // Would be current photo
+    
+    // Setup quiz if available
+    setupQuiz(photo);
+    
+    // Load story and contributions
+    document.getElementById('storyOriginal').innerHTML = `<p>${photo.description}</p>`;
+    renderContributions(photo.id);
+    
+    // Show modal
+    document.getElementById('photoModal').style.display = 'block';
+    
+    // Switch to first tab
+    switchPhotoTab('info');
+}
+
+function closePhotoModal() {
+    document.getElementById('photoModal').style.display = 'none';
+    currentPhotoData = null;
+}
+
+function switchPhotoTab(tabName) {
+    // Update tab buttons
+    document.querySelectorAll('.photo-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Update tab content
+    document.querySelectorAll('.photo-tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById('tab-' + tabName).classList.add('active');
+    
+    // Initialize compare slider if switching to compare tab
+    if (tabName === 'compare') {
+        initCompareSlider();
+    }
+}
+
+function initCompareSlider() {
+    const slider = document.getElementById('compareSlider');
+    const overlay = document.getElementById('compareOverlay');
+    const handle = document.getElementById('compareHandle');
+    
+    let isDragging = false;
+    
+    function updateSlider(clientX) {
+        const rect = slider.getBoundingClientRect();
+        const x = clientX - rect.left;
+        const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+        
+        overlay.style.width = percentage + '%';
+        handle.style.left = percentage + '%';
+    }
+    
+    handle.addEventListener('mousedown', () => isDragging = true);
+    handle.addEventListener('touchstart', () => isDragging = true);
+    
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) updateSlider(e.clientX);
+    });
+    
+    document.addEventListener('touchmove', (e) => {
+        if (isDragging) updateSlider(e.touches[0].clientX);
+    });
+    
+    document.addEventListener('mouseup', () => isDragging = false);
+    document.addEventListener('touchend', () => isDragging = false);
+    
+    slider.addEventListener('click', (e) => updateSlider(e.clientX));
+}
+
+function loadContributions(photoId) {
+    const contributionsKey = 'pk_contributions_' + photoId;
+    const saved = localStorage.getItem(contributionsKey);
+    return saved ? JSON.parse(saved) : [];
+}
+
+function saveContribution(photoId, contribution) {
+    const contributionsKey = 'pk_contributions_' + photoId;
+    const contributions = loadContributions(photoId);
+    contributions.push(contribution);
+    localStorage.setItem(contributionsKey, JSON.stringify(contributions));
+}
+
+function renderContributions(photoId) {
+    const container = document.getElementById('storyContributions');
+    if (!container) return;
+    
+    const contributions = loadContributions(photoId);
+    
+    if (contributions.length === 0) {
+        container.innerHTML = '<div style="color:#999;font-style:italic;padding:1rem;text-align:center">Nenhuma contribuição ainda. Seja o primeiro a adicionar!</div>';
+        return;
+    }
+    
+    container.innerHTML = '';
+    contributions.forEach(contrib => {
+        const div = document.createElement('div');
+        div.className = 'contribution-item';
+        div.innerHTML = `
+            <div class="contribution-author">
+                👤 ${contrib.author}
+                <span class="contribution-date">${contrib.date}</span>
+            </div>
+            <div class="contribution-text">${contrib.text}</div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function submitContribution() {
+    if (!currentPhotoData) return;
+    
+    const textarea = document.getElementById('contributionText');
+    const text = textarea.value.trim();
+    
+    if (!text) {
+        showToast('⚠️', 'Campo vazio', 'Digite algo antes de enviar!');
+        return;
+    }
+    
+    if (text.length > 500) {
+        showToast('⚠️', 'Texto muito longo', 'Máximo 500 caracteres!');
+        return;
+    }
+    
+    const userName = AppState.user ? AppState.user.name : 'Aluno';
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('pt-BR') + ' às ' + now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+    
+    const contribution = {
+        author: userName,
+        text: text,
+        date: dateStr,
+        timestamp: now.getTime()
+    };
+    
+    saveContribution(currentPhotoData.id, contribution);
+    
+    // Clear textarea
+    textarea.value = '';
+    document.getElementById('contributionCounter').textContent = '0/500 caracteres';
+    
+    // Show success message
+    const successMsg = document.createElement('div');
+    successMsg.className = 'contribution-success';
+    successMsg.textContent = '✅ Sua contribuição foi aceita!';
+    document.body.appendChild(successMsg);
+    setTimeout(() => successMsg.remove(), 3000);
+    
+    // Reload contributions
+    renderContributions(currentPhotoData.id);
+    
+    // Add XP
+    if (AppState.user) {
+        AppState.user.xp = (AppState.user.xp || 0) + 30;
+        Auth.setCurrent(AppState.user);
+        const topbarXP = document.getElementById('topbarXP');
+        if (topbarXP) topbarXP.textContent = `⭐ ${AppState.user.xp} XP`;
+    }
+    
+    showToast('🎉', '+30 XP', 'Obrigado pela contribuição!');
+}
+
+// Character counter for contribution textarea
+document.addEventListener('DOMContentLoaded', function() {
+    const checkTextarea = setInterval(() => {
+        const textarea = document.getElementById('contributionText');
+        if (textarea) {
+            textarea.addEventListener('input', function() {
+                const counter = document.getElementById('contributionCounter');
+                const length = this.value.length;
+                counter.textContent = length + '/500 caracteres';
+                if (length > 500) {
+                    counter.style.color = '#e74c3c';
+                } else {
+                    counter.style.color = '';
+                }
+            });
+            clearInterval(checkTextarea);
+        }
+    }, 100);
+});
+
+function setupQuiz(photo) {
+    // Simple quiz example - can be enhanced
+    const questions = [
+        {
+            question: `Em que ano foi registrada esta foto de ${photo.title}?`,
+            options: [
+                String(photo.year),
+                String(photo.year - 10),
+                String(photo.year + 10),
+                String(photo.year + 20)
+            ],
+            correct: 0
+        }
+    ];
+    
+    const quiz = questions[0];
+    
+    document.getElementById('quizQuestion').textContent = quiz.question;
+    
+    const optionsContainer = document.getElementById('quizOptions');
+    optionsContainer.innerHTML = '';
+    
+    quiz.options.forEach((option, index) => {
+        const btn = document.createElement('div');
+        btn.className = 'quiz-option';
+        btn.textContent = option;
+        btn.onclick = () => checkQuizAnswer(index, quiz.correct);
+        optionsContainer.appendChild(btn);
+    });
+    
+    document.getElementById('quizFeedback').style.display = 'none';
+}
+
+function checkQuizAnswer(selected, correct) {
+    const options = document.querySelectorAll('.quiz-option');
+    const feedback = document.getElementById('quizFeedback');
+    
+    options.forEach((opt, idx) => {
+        opt.onclick = null;
+        if (idx === correct) {
+            opt.classList.add('correct');
+        } else if (idx === selected && idx !== correct) {
+            opt.classList.add('wrong');
+        }
+    });
+    
+    if (selected === correct) {
+        feedback.className = 'quiz-feedback correct';
+        feedback.textContent = '✅ Correto! +20 XP';
+        
+        if (AppState.user) {
+            AppState.user.xp = (AppState.user.xp || 0) + 20;
+            Auth.setCurrent(AppState.user);
+            const topbarXP = document.getElementById('topbarXP');
+            if (topbarXP) topbarXP.textContent = `⭐ ${AppState.user.xp} XP`;
+        }
+    } else {
+        feedback.className = 'quiz-feedback wrong';
+        feedback.textContent = '❌ Ops! A resposta correta é: ' + options[correct].textContent;
+    }
+    
+    feedback.style.display = 'block';
+}
+
 function navigateTo(screen) {
     const currentScreen = AppState.currentScreen;
     
@@ -3858,6 +4427,11 @@ function navigateTo(screen) {
     // Update profile display when navigating to profile
     if (screen === 'profile') {
         updateProfileDisplay();
+    }
+    
+    // Render memories grid when navigating to memories
+    if (screen === 'memories') {
+        renderPhotoGrid();
     }
     
     // Show/hide back button
@@ -5216,6 +5790,10 @@ function showToast(icon, title, body) {
         setTimeout(() => toast.remove(), 300);
     }, 3500);
 }
+
+// Initialize memories when app loads
+loadMemoriesFromLocalStorage();
+
 </script>
 </body>
 </html>
