@@ -22,6 +22,7 @@
     <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
     <style>
         /* ==================== RESET & VARS ==================== */
@@ -3281,7 +3282,7 @@
         </div>
     </div>
 
-<div id="authScreen">
+<div id="authScreen" style="display:none;">
     <div class="screen-content" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem;">
         <div class="auth-card">
             <div class="auth-logo">
@@ -3296,34 +3297,34 @@
             </div>
 
             <!-- LOGIN -->
-            <div id="loginForm">
+            <form id="loginForm" onsubmit="login(event)">
                 <div class="form-group">
                     <label class="form-label">E-mail</label>
-                    <input type="email" class="form-input" id="loginEmail" placeholder="seu@email.com">
+                    <input type="email" class="form-input" id="loginEmail" placeholder="seu@email.com" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Senha</label>
-                    <input type="password" class="form-input" id="loginPassword" placeholder="••••••">
+                    <input type="password" class="form-input" id="loginPassword" placeholder="••••••" required>
                 </div>
                 <div id="loginError" class="form-error hidden"></div>
-                <button class="btn-full" onclick="login()">Entrar →</button>
+                <button type="submit" class="btn-full">Entrar →</button>
                 <div class="auth-divider">ou</div>
-                <button class="btn-full btn-gold" onclick="quickLogin()">⚡ Acesso Rápido (Demo)</button>
-            </div>
+                <button type="button" class="btn-full btn-gold" onclick="quickLogin()">⚡ Acesso Rápido (Demo)</button>
+            </form>
 
             <!-- REGISTER -->
-            <div id="registerForm" style="display:none;">
+            <form id="registerForm" style="display:none;" onsubmit="register(event)">
                 <div class="form-group">
                     <label class="form-label">Nome Completo</label>
-                    <input type="text" class="form-input" id="regName" placeholder="Seu nome">
+                    <input type="text" class="form-input" id="regName" placeholder="Seu nome" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">E-mail</label>
-                    <input type="email" class="form-input" id="regEmail" placeholder="seu@email.com">
+                    <input type="email" class="form-input" id="regEmail" placeholder="seu@email.com" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Senha</label>
-                    <input type="password" class="form-input" id="regPassword" placeholder="Mínimo 6 caracteres">
+                    <input type="password" class="form-input" id="regPassword" placeholder="Mínimo 6 caracteres" required minlength="6">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Você é:</label>
@@ -3345,14 +3346,13 @@
                     </select>
                 </div>
                 <div id="regError" class="form-error hidden"></div>
-                <button class="btn-full" onclick="register()">Criar Conta →</button>
-            </div>
+                <button type="submit" class="btn-full">Criar Conta →</button>
+            </form>
         </div>
     </div>
 </div>
 
-<script>
-'use strict';
+<script>'use strict';
 
 // =================================================================
 // BANCO DE DADOS DE FOTOS HISTÓRICAS
@@ -3381,6 +3381,7 @@ const HISTORICAL_PHOTOS = [
     {id:'hist_021',title:'Rua com Gado',description:'Cotidiano rural - Documento único da vida urbana com gado nas ruas de Presidente Dutra.',year:'1960',decade:'Anos 60',category:'historia_rural',sector:'setor_03',coordinates:{lat:-5.2902343,lng:-44.4895682},photo_url:'https://drive.google.com/thumbnail?id=1HVRTmjbfpaZJu9Q1Uep43XRgUkRJwgNq&sz=w2000-h2000',radius:100}
 ];
 
+
 function calculateDistance(lat1,lon1,lat2,lon2){const R=6371e3;const φ1=lat1*Math.PI/180;const φ2=lat2*Math.PI/180;const Δφ=(lat2-lat1)*Math.PI/180;const Δλ=(lon2-lon1)*Math.PI/180;const a=Math.sin(Δφ/2)*Math.sin(Δφ/2)+Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)*Math.sin(Δλ/2);const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));return R*c;}
 function getNearbyHistoricalPhotos(lat,lng,max=100){return HISTORICAL_PHOTOS.filter(p=>p.coordinates&&calculateDistance(lat,lng,p.coordinates.lat,p.coordinates.lng)<=(p.radius||max)).sort((a,b)=>calculateDistance(lat,lng,a.coordinates.lat,a.coordinates.lng)-calculateDistance(lat,lng,b.coordinates.lat,b.coordinates.lng));}
 function getClosestHistoricalPhoto(lat,lng){const n=getNearbyHistoricalPhotos(lat,lng,200);return n.length>0?n[0]:null;}
@@ -3388,49 +3389,9 @@ function countDiscoveredPhotos(){const d=localStorage.getItem('ar_discovered');r
 function markPhotoAsDiscovered(id){let d=localStorage.getItem('ar_discovered');d=d?JSON.parse(d):[];if(!d.includes(id)){d.push(id);localStorage.setItem('ar_discovered',JSON.stringify(d));return true;}return false;}
 
 // =================================================================
-// AUTH SYSTEM
-// =================================================================
-const Auth = {
-    getUsers: () => JSON.parse(localStorage.getItem('pk_users') || '[]'),
-    saveUsers: (u) => localStorage.setItem('pk_users', JSON.stringify(u)),
-    getCurrent: () => JSON.parse(localStorage.getItem('pk_current_user') || 'null'),
-    setCurrent: (u) => localStorage.setItem('pk_current_user', JSON.stringify(u)),
-    clear: () => localStorage.removeItem('pk_current_user'),
-
-    login(email, password) {
-        const users = this.getUsers();
-        const user = users.find(u => u.email === email && u.password === password);
-        if (!user) return { error: 'E-mail ou senha incorretos' };
-        this.setCurrent(user);
-        return { user };
-    },
-
-    register(data) {
-        const users = this.getUsers();
-        if (users.find(u => u.email === data.email)) return { error: 'E-mail já cadastrado' };
-        
-        // Criar usuário com role explícito
-        const user = { 
-            id: Date.now().toString(),
-            name: data.name,
-            email: data.email,
-            password: data.password,
-            role: data.role,
-            turma: data.turma,
-            xp: 0, 
-            points: 0, 
-            badges: [] 
-        };
-        
-        users.push(user);
-        this.saveUsers(users);
-        this.setCurrent(user);
-        return { user };
-    }
-};
 
 // =================================================================
-// STATE
+// STATE (declarado antes do Auth e Supabase)
 // =================================================================
 let AppState = {
     user: null,
@@ -3444,16 +3405,173 @@ let AppState = {
 };
 
 // =================================================================
+// SUPABASE CONFIG
+// =================================================================
+const SUPABASE_URL = 'https://vpalewpfxptaqdgfdcmf.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwYWxld3BmeHB0YXFkZ2ZkY21mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1NjU0NzQsImV4cCI6MjA4NzE0MTQ3NH0.vlFaabYUfLs02H9dNsJuUEo1XEXOV02QQRXJRDFkJx4';
+
+// Usar nome _sb para não conflitar com window.supabase do SDK
+const _mockQuery = () => {
+    const chain = {
+        select: () => chain, insert: () => Promise.resolve({ data: [], error: null }),
+        update: () => chain, upsert: () => Promise.resolve({ data: [], error: null }),
+        delete: () => Promise.resolve({ data: [], error: null }),
+        eq: () => chain, is: () => chain, neq: () => chain,
+        order: () => chain, limit: () => chain,
+        single: () => Promise.resolve({ data: null, error: null }),
+        then: (fn) => Promise.resolve({ data: [], error: null }).then(fn)
+    };
+    return chain;
+};
+const _sbMock = {
+    auth: {
+        signInWithPassword: async () => ({ data: null, error: { message: 'Servidor indisponível. Verifique sua conexão com a internet.' } }),
+        signUp: async () => ({ data: null, error: { message: 'Servidor indisponível. Verifique sua conexão com a internet.' } }),
+        signOut: async () => ({}),
+        getSession: async () => ({ data: { session: null }, error: null }),
+        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+    },
+    from: () => _mockQuery(),
+    storage: { from: () => ({ upload: async () => ({ error: null }), getPublicUrl: () => ({ data: { publicUrl: '' } }) }) },
+    channel: () => ({ on: function() { return this; }, subscribe: () => {} })
+};
+
+const _sb = (typeof window !== 'undefined' && window.supabase && window.supabase.createClient)
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : _sbMock;
+
+if (_sb === _sbMock) {
+    console.warn('⚠️ Supabase SDK não encontrado, usando mock. Verifique sua conexão.');
+} else {
+    console.log('✅ Supabase inicializado');
+}
+
+window.addEventListener('error', function(e) {
+    console.error('Erro JS global:', e.message, 'linha', e.lineno);
+});
+
+
+// =================================================================
+// AUTH SYSTEM (Supabase)
+// =================================================================
+const Auth = {
+    getCurrent: () => AppState.user || null,
+
+    async login(email, password) {
+        try {
+            const { data, error } = await _sb.auth.signInWithPassword({ email, password });
+            if (error) {
+                console.error('Erro login Supabase:', error);
+                // Erros comuns do Supabase Auth
+                if (error.message.includes('Invalid login') || error.message.includes('invalid_credentials')) {
+                    return { error: 'E-mail ou senha incorretos' };
+                }
+                if (error.message.includes('Email not confirmed')) {
+                    return { error: 'Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.' };
+                }
+                return { error: error.message };
+            }
+            
+            // Buscar perfil
+            const { data: profile, error: profileError } = await _sb
+                .from('profiles')
+                .select('*')
+                .eq('id', data.user.id)
+                .single();
+
+            if (profileError || !profile) {
+                console.warn('Perfil não encontrado, usando dados básicos:', profileError);
+                // Fallback: usar dados do auth diretamente
+                const basicUser = {
+                    id: data.user.id,
+                    email: data.user.email,
+                    name: data.user.user_metadata?.name || data.user.email,
+                    role: data.user.user_metadata?.role || 'aluno',
+                    xp: 0, points: 0, badges: []
+                };
+                AppState.user = basicUser;
+                return { user: basicUser };
+            }
+
+            const user = { ...profile, email: data.user.email };
+            AppState.user = user;
+            return { user };
+        } catch(e) {
+            console.error('Exceção no login:', e);
+            return { error: 'Erro: ' + e.message + ' | ' + (e.stack || '') };
+        }
+    },
+
+    async register(userData) {
+        try {
+            const { data, error } = await _sb.auth.signUp({
+                email: userData.email,
+                password: userData.password,
+                options: { data: { name: userData.name } }
+            });
+            if (error) {
+                if (error.message.includes('already registered')) return { error: 'E-mail já cadastrado' };
+                return { error: error.message };
+            }
+
+            // Criar perfil na tabela profiles
+            const profile = {
+                id: data.user.id,
+                name: userData.name,
+                email: userData.email,
+                role: userData.role || 'aluno',
+                turma: userData.turma || null,
+                xp: userData.xp || 0,
+                points: userData.points || 0,
+                badges: userData.badges || []
+            };
+
+            const { error: profileError } = await _sb.from('profiles').upsert(profile);
+            if (profileError) console.warn('Erro ao criar perfil:', profileError);
+
+            AppState.user = profile;
+            return { user: profile };
+        } catch(e) {
+            return { error: 'Erro ao criar conta. Tente novamente.' };
+        }
+    },
+
+    async clear() {
+        await _sb.auth.signOut();
+        AppState.user = null;
+    }
+};
+
+
+// =================================================================
 // INIT
 // =================================================================
-window.addEventListener('load', () => {
-    const user = Auth.getCurrent();
-    if (user) {
-        AppState.user = user;
-        showApp();
+window.addEventListener('load', async () => {
+    // Verificar sessão ativa no Supabase
+    const { data: { session } } = await _sb.auth.getSession();
+    if (session) {
+        const { data: profile } = await _sb
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+        if (profile) {
+            AppState.user = { ...profile, email: session.user.email };
+            showApp();
+        } else {
+            document.getElementById('authScreen').style.display = 'block';
+        }
     } else {
         document.getElementById('authScreen').style.display = 'block';
     }
+
+    // Escutar mudanças de autenticação
+    _sb.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'SIGNED_OUT') {
+            AppState.user = null;
+            location.reload();
+        }
+    });
 
     // Online/offline
     window.addEventListener('offline', () => {
@@ -3481,10 +3599,13 @@ function toggleTurma() {
     document.getElementById('turmaGroup').style.display = role === 'aluno' ? 'block' : 'none';
 }
 
-function login() {
+async function login(event) {
+    if (event) event.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
     const errEl = document.getElementById('loginError');
+
+    errEl.classList.add('hidden');
 
     if (!email || !password) {
         errEl.textContent = 'Preencha e-mail e senha';
@@ -3492,25 +3613,41 @@ function login() {
         return;
     }
 
-    const result = Auth.login(email, password);
-    if (result.error) {
-        errEl.textContent = result.error;
-        errEl.classList.remove('hidden');
-        return;
-    }
+    const btn = document.querySelector('#loginForm button');
+    if (btn) { btn.textContent = '⏳ Entrando...'; btn.disabled = true; }
 
-    AppState.user = result.user;
-    document.getElementById('authScreen').style.display = 'none';
-    showApp();
+    try {
+        const result = await Auth.login(email, password);
+
+        if (btn) { btn.textContent = 'Entrar →'; btn.disabled = false; }
+
+        if (result.error) {
+            errEl.textContent = result.error;
+            errEl.classList.remove('hidden');
+            return;
+        }
+
+        AppState.user = result.user;
+        document.getElementById('authScreen').style.display = 'none';
+        showApp();
+    } catch(e) {
+        if (btn) { btn.textContent = 'Entrar →'; btn.disabled = false; }
+        errEl.textContent = 'Erro inesperado: ' + e.message;
+        errEl.classList.remove('hidden');
+        console.error('Erro no login:', e);
+    }
 }
 
-function register() {
+async function register(event) {
+    if (event) event.preventDefault();
     const name = document.getElementById('regName').value.trim();
     const email = document.getElementById('regEmail').value.trim();
     const password = document.getElementById('regPassword').value;
     const role = document.getElementById('regRole').value;
     const turma = role === 'aluno' ? document.getElementById('regTurma').value : null;
     const errEl = document.getElementById('regError');
+
+    errEl.classList.add('hidden');
 
     if (!name || !email || !password) {
         errEl.textContent = 'Preencha todos os campos';
@@ -3524,37 +3661,53 @@ function register() {
         return;
     }
 
-    const result = Auth.register({ name, email, password, role, turma });
-    if (result.error) {
-        errEl.textContent = result.error;
-        errEl.classList.remove('hidden');
-        return;
-    }
+    const btn = document.querySelector('#registerForm button');
+    if (btn) { btn.textContent = '⏳ Criando conta...'; btn.disabled = true; }
 
-    AppState.user = result.user;
-    document.getElementById('authScreen').style.display = 'none';
-    showApp();
-    showToast('🎉', 'Conta criada!', `Bem-vindo ao PK Explorer, ${name}!`);
+    try {
+        const result = await Auth.register({ name, email, password, role, turma });
+
+        if (btn) { btn.textContent = 'Criar Conta →'; btn.disabled = false; }
+
+        if (result.error) {
+            errEl.textContent = result.error;
+            errEl.classList.remove('hidden');
+            return;
+        }
+
+        AppState.user = result.user;
+        document.getElementById('authScreen').style.display = 'none';
+        showApp();
+        showToast('🎉', 'Conta criada!', `Bem-vindo ao PK Explorer, ${name}!`);
+    } catch(e) {
+        if (btn) { btn.textContent = 'Criar Conta →'; btn.disabled = false; }
+        errEl.textContent = 'Erro inesperado: ' + e.message;
+        errEl.classList.remove('hidden');
+        console.error('Erro no register:', e);
+    }
 }
 
-function quickLogin() {
-    const users = Auth.getUsers();
-    let demo = users.find(u => u.email === 'demo@pkexplorer.com');
-    if (!demo) {
-        Auth.register({ name: 'Maria Santos', email: 'demo@pkexplorer.com', password: '123456', role: 'aluno', turma: '6ANOA', xp: 350, points: 7 });
-        demo = Auth.getCurrent();
-    } else {
-        Auth.setCurrent(demo);
+async function quickLogin() {
+    const email = 'demo@pkexplorer.com';
+    const password = '123456';
+    let result = await Auth.login(email, password);
+    if (result.error) {
+        // Criar conta demo se não existir
+        result = await Auth.register({ 
+            name: 'Maria Santos', email, password, 
+            role: 'aluno', turma: '6ANOA', xp: 350, points: 7 
+        });
     }
-    AppState.user = demo;
+    if (result.error) { showToast('❌', 'Erro', result.error); return; }
+    AppState.user = result.user;
     document.getElementById('authScreen').style.display = 'none';
     showApp();
     showToast('⚡', 'Acesso rápido!', 'Bem-vindo, Maria Santos');
 }
 
-function logout() {
+async function logout() {
     if (!confirm('Deseja sair da sua conta?')) return;
-    Auth.clear();
+    await Auth.clear();
     AppState.user = null;
     AppState.map = null;
     location.reload();
@@ -3566,38 +3719,70 @@ async function updateProfilePhoto(input) {
     if (!file) return;
     
     try {
-        // Compress image
         const options = { maxSizeMB: 0.5, maxWidthOrHeight: 400, useWebWorker: true };
         const compressed = await imageCompression(file, options);
         
-        // Convert to base64
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const photoUrl = e.target.result;
-            
-            // Update avatar displays
-            document.getElementById('profileAvatarBig').style.backgroundImage = `url(${photoUrl})`;
-            document.getElementById('profileAvatarBig').style.backgroundSize = 'cover';
-            document.getElementById('profileAvatarBig').style.backgroundPosition = 'center';
-            document.getElementById('profileAvatarBig').textContent = '';
-            
-            document.getElementById('topbarAvatar').style.backgroundImage = `url(${photoUrl})`;
-            document.getElementById('topbarAvatar').style.backgroundSize = 'cover';
-            document.getElementById('topbarAvatar').style.backgroundPosition = 'center';
-            document.getElementById('topbarAvatar').textContent = '';
-            
-            // Save to localStorage
-            if (AppState.user) {
-                AppState.user.photo = photoUrl;
-                Auth.setCurrent(AppState.user);
+        let photoUrl = null;
+
+        // Tentar upload no Supabase Storage
+        if (AppState.user) {
+            try {
+                const ext = file.name.split('.').pop() || 'jpg';
+                const fileName = `avatars/${AppState.user.id}.${ext}`;
+                const { error: uploadError } = await _sb.storage
+                    .from('profile-photos')
+                    .upload(fileName, compressed, { upsert: true, contentType: compressed.type });
+                
+                if (!uploadError) {
+                    const { data: urlData } = _sb.storage.from('profile-photos').getPublicUrl(fileName);
+                    photoUrl = urlData.publicUrl + '?t=' + Date.now();
+                    // Salvar URL no perfil
+                    await _sb.from('profiles').update({ photo_url: photoUrl }).eq('id', AppState.user.id);
+                    AppState.user.photo_url = photoUrl;
+                }
+            } catch(storageError) {
+                console.warn('Storage indisponível, usando base64:', storageError);
             }
-            
-            showToast('✅', 'Foto atualizada!', 'Sua foto de perfil foi alterada');
-        };
-        reader.readAsDataURL(compressed);
+        }
+        
+        // Fallback: base64 no localStorage
+        if (!photoUrl) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                photoUrl = e.target.result;
+                applyProfilePhoto(photoUrl);
+                if (AppState.user) {
+                    AppState.user.photo = photoUrl;
+                    localStorage.setItem('pk_current_user', JSON.stringify(AppState.user));
+                }
+            };
+            reader.readAsDataURL(compressed);
+            return;
+        }
+
+        applyProfilePhoto(photoUrl);
+        showToast('✅', 'Foto atualizada!', 'Sua foto de perfil foi alterada');
     } catch (e) {
         showToast('❌', 'Erro', 'Não foi possível processar a foto');
     }
+}
+
+function applyProfilePhoto(photoUrl) {
+    const bigAvatar = document.getElementById('profileAvatarBig');
+    const topbarAvatar = document.getElementById('topbarAvatar');
+    if (bigAvatar) {
+        bigAvatar.style.backgroundImage = `url(${photoUrl})`;
+        bigAvatar.style.backgroundSize = 'cover';
+        bigAvatar.style.backgroundPosition = 'center';
+        bigAvatar.textContent = '';
+    }
+    if (topbarAvatar) {
+        topbarAvatar.style.backgroundImage = `url(${photoUrl})`;
+        topbarAvatar.style.backgroundSize = 'cover';
+        topbarAvatar.style.backgroundPosition = 'center';
+        topbarAvatar.textContent = '';
+    }
+    showToast('✅', 'Foto atualizada!', 'Sua foto de perfil foi alterada');
 }
 
 // =================================================================
@@ -3741,7 +3926,7 @@ function showHistoricalPhoto(photo,dist){
     if(isNew){
         if(AppState.user){
             AppState.user.xp=(AppState.user.xp||0)+50;
-            Auth.setCurrent(AppState.user);
+            if (AppState.user?.id) _sb.from("profiles").update({ xp: AppState.user.xp, points: AppState.user.points }).eq("id", AppState.user.id);
             document.getElementById('topbarXP').textContent=`⭐ ${AppState.user.xp} XP`;
         }
         updateARCounter();
@@ -3928,7 +4113,7 @@ function submitFeedback(){
     
     if(AppState.user){
         AppState.user.xp=(AppState.user.xp||0)+10;
-        Auth.setCurrent(AppState.user);
+        if (AppState.user?.id) _sb.from("profiles").update({ xp: AppState.user.xp, points: AppState.user.points }).eq("id", AppState.user.id);
         document.getElementById('topbarXP').textContent=`⭐ ${AppState.user.xp} XP`;
     }
 }
@@ -4195,7 +4380,7 @@ function openPhotoModal(photo) {
     const isNew = markPhotoAsDiscovered(photo.id);
     if (isNew && AppState.user) {
         AppState.user.xp = (AppState.user.xp || 0) + 50;
-        Auth.setCurrent(AppState.user);
+        if (AppState.user?.id) _sb.from("profiles").update({ xp: AppState.user.xp, points: AppState.user.points }).eq("id", AppState.user.id);
         const topbarXP = document.getElementById('topbarXP');
         if (topbarXP) topbarXP.textContent = `⭐ ${AppState.user.xp} XP`;
         showToast('🎉', '+50 XP', 'Nova memória descoberta!');
@@ -4283,24 +4468,57 @@ function initCompareSlider() {
     slider.addEventListener('click', (e) => updateSlider(e.clientX));
 }
 
-function loadContributions(photoId) {
-    const contributionsKey = 'pk_contributions_' + photoId;
-    const saved = localStorage.getItem(contributionsKey);
-    return saved ? JSON.parse(saved) : [];
+async function loadContributions(photoId) {
+    try {
+        const { data, error } = await _sb
+            .from('contributions')
+            .select('*')
+            .eq('photo_id', String(photoId))
+            .order('created_at', { ascending: true });
+        if (error) throw error;
+        return (data || []).map(c => ({
+            id: c.id,
+            author: c.author_name,
+            text: c.text,
+            date: new Date(c.created_at).toLocaleDateString('pt-BR'),
+            approved: c.approved,
+            approvedAt: c.approved_at,
+            approvedBy: c.approved_by,
+            rejectedAt: c.rejected_at,
+            userId: c.user_id
+        }));
+    } catch(e) {
+        const key = 'pk_contributions_' + photoId;
+        const saved = localStorage.getItem(key);
+        return saved ? JSON.parse(saved) : [];
+    }
 }
 
-function saveContribution(photoId, contribution) {
-    const contributionsKey = 'pk_contributions_' + photoId;
-    const contributions = loadContributions(photoId);
-    contributions.push(contribution);
-    localStorage.setItem(contributionsKey, JSON.stringify(contributions));
+async function saveContribution(photoId, contribution) {
+    try {
+        const user = AppState.user;
+        const { error } = await _sb.from('contributions').insert({
+            photo_id: String(photoId),
+            user_id: user ? user.id : null,
+            author_name: contribution.author,
+            text: contribution.text,
+            approved: null
+        });
+        if (error) throw error;
+    } catch(e) {
+        const key = 'pk_contributions_' + photoId;
+        const contributions = JSON.parse(localStorage.getItem(key) || '[]');
+        contributions.push(contribution);
+        localStorage.setItem(key, JSON.stringify(contributions));
+    }
 }
 
-function renderContributions(photoId) {
+async function renderContributions(photoId) {
     const container = document.getElementById('storyContributions');
     if (!container) return;
     
-    const contributions = loadContributions(photoId);
+    container.innerHTML = '<div style="color:#999;font-style:italic;padding:1rem;text-align:center">⏳ Carregando...</div>';
+    const contributions = await loadContributions(photoId);
     
     if (contributions.length === 0) {
         container.innerHTML = '<div style="color:#999;font-style:italic;padding:1rem;text-align:center">Nenhuma contribuição ainda. Seja o primeiro a adicionar!</div>';
@@ -4322,7 +4540,7 @@ function renderContributions(photoId) {
     });
 }
 
-function submitContribution() {
+async function submitContribution() {
     if (!currentPhotoData) return;
     
     const textarea = document.getElementById('contributionText');
@@ -4339,36 +4557,25 @@ function submitContribution() {
     }
     
     const userName = AppState.user ? AppState.user.name : 'Aluno';
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('pt-BR') + ' às ' + now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+    const contribution = { author: userName, text: text };
     
-    const contribution = {
-        author: userName,
-        text: text,
-        date: dateStr,
-        timestamp: now.getTime()
-    };
+    await saveContribution(currentPhotoData.id, contribution);
     
-    saveContribution(currentPhotoData.id, contribution);
-    
-    // Clear textarea
     textarea.value = '';
     document.getElementById('contributionCounter').textContent = '0/500 caracteres';
     
-    // Show success message
     const successMsg = document.createElement('div');
     successMsg.className = 'contribution-success';
     successMsg.textContent = '✅ Sua contribuição foi aceita!';
     document.body.appendChild(successMsg);
     setTimeout(() => successMsg.remove(), 3000);
     
-    // Reload contributions
-    renderContributions(currentPhotoData.id);
+    await renderContributions(currentPhotoData.id);
     
-    // Add XP
+    // Add XP e salvar no Supabase
     if (AppState.user) {
         AppState.user.xp = (AppState.user.xp || 0) + 30;
-        Auth.setCurrent(AppState.user);
+        await _sb.from('profiles').update({ xp: AppState.user.xp }).eq('id', AppState.user.id);
         const topbarXP = document.getElementById('topbarXP');
         if (topbarXP) topbarXP.textContent = `⭐ ${AppState.user.xp} XP`;
     }
@@ -4448,7 +4655,7 @@ function checkQuizAnswer(selected, correct) {
         
         if (AppState.user) {
             AppState.user.xp = (AppState.user.xp || 0) + 20;
-            Auth.setCurrent(AppState.user);
+            if (AppState.user?.id) _sb.from("profiles").update({ xp: AppState.user.xp, points: AppState.user.points }).eq("id", AppState.user.id);
             const topbarXP = document.getElementById('topbarXP');
             if (topbarXP) topbarXP.textContent = `⭐ ${AppState.user.xp} XP`;
         }
@@ -4942,13 +5149,38 @@ async function submitPoint() {
         lat: AppState.location?.lat || -5.291234,
         lng: AppState.location?.lng || -44.493456,
         authorId: AppState.user?.id,
+        author_name: AppState.user?.name || 'Aluno',
         turma: AppState.user?.turma,
         status: 'pending',
         createdAt: new Date().toISOString()
     };
 
-    // Save to IndexedDB
-    await savePointToDB(point);
+    // Salvar no Supabase
+    try {
+        const { error } = await _sb.from('points').insert({
+            title: point.name,
+            category: point.category,
+            description: point.description,
+            era: point.era,
+            sources: point.sources,
+            interviewee: point.interviewee,
+            latitude: point.lat,
+            longitude: point.lng,
+            user_id: point.authorId,
+            author_name: point.author_name,
+            turma: point.turma,
+            status: 'pending'
+        });
+        if (error) {
+            console.error('Erro Supabase ao salvar ponto:', error);
+            showToast('⚠️', 'Aviso', 'Ponto salvo localmente. Erro: ' + error.message);
+            await savePointToDB(point);
+        }
+    } catch(e) {
+        console.error('Exceção ao salvar ponto:', e);
+        showToast('⚠️', 'Aviso', 'Ponto salvo localmente: ' + e.message);
+        await savePointToDB(point);
+    }
 
     // Add to map
     addMapMarker({ ...point, name: point.name });
@@ -4957,7 +5189,7 @@ async function submitPoint() {
     if (AppState.user) {
         AppState.user.xp = (AppState.user.xp || 0) + 75;
         AppState.user.points = (AppState.user.points || 0) + 1;
-        Auth.setCurrent(AppState.user);
+        if (AppState.user?.id) _sb.from('profiles').update({ xp: AppState.user.xp, points: AppState.user.points }).eq('id', AppState.user.id);
         document.getElementById('topbarXP').textContent = `⭐ ${AppState.user.xp} XP`;
     }
 
@@ -5156,7 +5388,7 @@ function renderMissions() {
 function completeMission(name, xp) {
     if (AppState.user) {
         AppState.user.xp = (AppState.user.xp || 0) + xp;
-        Auth.setCurrent(AppState.user);
+        if (AppState.user?.id) _sb.from("profiles").update({ xp: AppState.user.xp, points: AppState.user.points }).eq("id", AppState.user.id);
         document.getElementById('topbarXP').textContent = `⭐ ${AppState.user.xp} XP`;
     }
     showToast('🎉', 'Missão iniciada!', `${name} — Boa sorte! +${xp} XP ao completar`);
@@ -6091,7 +6323,7 @@ function saveGeoAnalysis(layerId) {
     
     if (AppState.user) {
         AppState.user.xp = (AppState.user.xp || 0) + xp;
-        Auth.setCurrent(AppState.user);
+        if (AppState.user?.id) _sb.from("profiles").update({ xp: AppState.user.xp, points: AppState.user.points }).eq("id", AppState.user.id);
         const topbarXP = document.getElementById('topbarXP');
         if (topbarXP) topbarXP.textContent = `⭐ ${AppState.user.xp} XP`;
     }
@@ -6108,54 +6340,108 @@ function saveGeoAnalysis(layerId) {
 }
 
 // =================================================================
-// PROFESSOR - PAINEL SIMPLIFICADO
+// PROFESSOR - PAINEL (Supabase)
 // =================================================================
 
-function loadTeacherData() {
-    const pending = getAllPendingContributions();
-    const approved = getAllApprovedContributions();
-    
-    // Count students
-    const usersKey = 'pk_users';
-    const savedUsers = localStorage.getItem(usersKey);
-    const totalStudents = savedUsers ? JSON.parse(savedUsers).filter(u => u.role !== 'professor').length : 0;
-    
-    // Count geography analyses
-    let totalGeoAnalyses = 0;
-    Object.keys(geoAnalyses).forEach(photoId => {
-        const analysis = geoAnalyses[photoId];
-        if (analysis.usoSolo?.complete) totalGeoAnalyses++;
-        if (analysis.paisagem?.complete) totalGeoAnalyses++;
-        if (analysis.percepcao?.complete) totalGeoAnalyses++;
-    });
-    
-    document.getElementById('teacherPendingCount').textContent = pending.length;
-    document.getElementById('teacherApprovedCount').textContent = approved;
-    document.getElementById('teacherPendingBadge').textContent = pending.length;
-    document.getElementById('teacherTotalStudents').textContent = totalStudents;
-    document.getElementById('teacherTotalGeo').textContent = totalGeoAnalyses;
-    
-    renderTeacherPending(pending);
-    renderTeacherRanking();
+async function loadTeacherData() {
+    try {
+        // Buscar pontos pendentes de aprovação
+        const { data: pendingPoints } = await _sb
+            .from('points')
+            .select('*')
+            .eq('status', 'pending')
+            .order('created_at', { ascending: false });
+
+        // Buscar contribuições pendentes (textos nas fotos históricas)
+        const { data: pendingContribs } = await _sb
+            .from('contributions')
+            .select('*')
+            .is('approved', null)
+            .order('created_at', { ascending: false });
+
+        // Totais aprovados
+        const { count: approvedPoints } = await _sb
+            .from('points')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'approved');
+
+        const { count: approvedContribs } = await _sb
+            .from('contributions')
+            .select('*', { count: 'exact', head: true })
+            .eq('approved', true);
+
+        // Total de alunos
+        const { count: studentCount } = await _sb
+            .from('profiles')
+            .select('*', { count: 'exact', head: true })
+            .neq('role', 'professor');
+
+        const totalPending = (pendingPoints || []).length + (pendingContribs || []).length;
+        const totalApproved = (approvedPoints || 0) + (approvedContribs || 0);
+
+        document.getElementById('teacherPendingCount').textContent = totalPending;
+        document.getElementById('teacherApprovedCount').textContent = totalApproved;
+        const badge = document.getElementById('teacherPendingBadge');
+        if (badge) badge.textContent = totalPending;
+        document.getElementById('teacherTotalStudents').textContent = studentCount || 0;
+
+        const geoEl = document.getElementById('teacherTotalGeo');
+        if (geoEl) {
+            let totalGeo = 0;
+            Object.keys(geoAnalyses).forEach(id => {
+                const a = geoAnalyses[id];
+                if (a.usoSolo?.complete) totalGeo++;
+                if (a.paisagem?.complete) totalGeo++;
+                if (a.percepcao?.complete) totalGeo++;
+            });
+            geoEl.textContent = totalGeo;
+        }
+
+        // Renderizar pendentes (pontos + contribuições juntos)
+        const allPending = [
+            ...(pendingPoints || []).map(p => ({ ...p, _type: 'point' })),
+            ...(pendingContribs || []).map(c => ({ ...c, _type: 'contribution' }))
+        ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+        renderTeacherPending(allPending);
+        await renderTeacherRanking();
+
+        // Realtime
+        _sb.channel('teacher-changes')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'points' }, () => loadTeacherData())
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'contributions' }, () => loadTeacherData())
+            .subscribe();
+
+    } catch(e) {
+        console.error('Erro ao carregar dados do professor:', e);
+        loadTeacherDataLocalStorage();
+    }
 }
 
-function getAllPendingContributions() {
+
+
+function loadTeacherDataLocalStorage() {
+    const pending = getAllPendingContributionsLocal();
+    const approved = getAllApprovedContributionsLocal();
+    const savedUsers = localStorage.getItem('pk_users');
+    const totalStudents = savedUsers ? JSON.parse(savedUsers).filter(u => u.role !== 'professor').length : 0;
+    document.getElementById('teacherPendingCount').textContent = pending.length;
+    document.getElementById('teacherApprovedCount').textContent = approved;
+    const badge = document.getElementById('teacherPendingBadge');
+    if (badge) badge.textContent = pending.length;
+    document.getElementById('teacherTotalStudents').textContent = totalStudents;
+    renderTeacherPending(pending);
+}
+
+function getAllPendingContributionsLocal() {
     const pending = [];
     HISTORICAL_PHOTOS.forEach(photo => {
         const key = 'pk_contributions_' + photo.id;
         const saved = localStorage.getItem(key);
         if (saved) {
-            const contribs = JSON.parse(saved);
-            contribs.forEach((contrib, index) => {
-                if (!contrib.approved && contrib.approved !== false) {
-                    pending.push({
-                        photoId: photo.id,
-                        photoTitle: photo.title,
-                        contribIndex: index,
-                        author: contrib.author,
-                        text: contrib.text,
-                        date: contrib.date
-                    });
+            JSON.parse(saved).forEach((contrib, index) => {
+                if (contrib.approved === undefined || contrib.approved === null) {
+                    pending.push({ photoId: photo.id, photoTitle: photo.title, contribIndex: index, ...contrib });
                 }
             });
         }
@@ -6163,17 +6449,11 @@ function getAllPendingContributions() {
     return pending;
 }
 
-function getAllApprovedContributions() {
+function getAllApprovedContributionsLocal() {
     let count = 0;
     HISTORICAL_PHOTOS.forEach(photo => {
-        const key = 'pk_contributions_' + photo.id;
-        const saved = localStorage.getItem(key);
-        if (saved) {
-            const contribs = JSON.parse(saved);
-            contribs.forEach(contrib => {
-                if (contrib.approved === true) count++;
-            });
-        }
+        const saved = localStorage.getItem('pk_contributions_' + photo.id);
+        if (saved) JSON.parse(saved).forEach(c => { if (c.approved === true) count++; });
     });
     return count;
 }
@@ -6183,100 +6463,172 @@ function renderTeacherPending(pending) {
     if (!container) return;
     
     if (pending.length === 0) {
-        container.innerHTML = '<div class="teacher-empty">✅ Nenhuma contribuição pendente!</div>';
+        container.innerHTML = '<div class="teacher-empty">✅ Nenhum item pendente!</div>';
         return;
     }
     
     container.innerHTML = '';
     pending.forEach(item => {
+        const isPoint = item._type === 'point';
+        const author = item.author_name || item.author || 'Aluno';
+        const date = item.created_at ? new Date(item.created_at).toLocaleDateString('pt-BR') : '';
+        const turma = item.turma ? ` • ${item.turma}` : '';
+
         const div = document.createElement('div');
         div.className = 'teacher-pending-item';
-        div.innerHTML = `
-            <div class="teacher-pending-photo">📸 ${item.photoTitle}</div>
-            <div class="teacher-pending-author">👤 ${item.author} • ${item.date}</div>
-            <div class="teacher-pending-text">${item.text}</div>
-            <div class="teacher-actions">
-                <button class="teacher-btn teacher-btn-approve" onclick="approveContribution(${item.photoId}, ${item.contribIndex})">
-                    ✓ Aprovar
-                </button>
-                <button class="teacher-btn teacher-btn-reject" onclick="rejectContribution(${item.photoId}, ${item.contribIndex})">
-                    ✗ Rejeitar
-                </button>
-            </div>
-        `;
+
+        if (isPoint) {
+            // Ponto histórico cadastrado pelo aluno
+            div.innerHTML = `
+                <div class="teacher-pending-photo">📍 Novo Ponto: <strong>${item.title || item.name}</strong></div>
+                <div class="teacher-pending-author">👤 ${author}${turma} • ${date}</div>
+                <div class="teacher-pending-text">
+                    <b>Categoria:</b> ${item.category || '-'}<br>
+                    <b>Período:</b> ${item.era || '-'}<br>
+                    ${item.description || ''}
+                </div>
+                <div class="teacher-actions">
+                    <button class="teacher-btn teacher-btn-approve" onclick="approvePoint('${item.id}')">✓ Aprovar</button>
+                    <button class="teacher-btn teacher-btn-reject" onclick="rejectPoint('${item.id}')">✗ Rejeitar</button>
+                </div>
+            `;
+        } else {
+            // Contribuição de texto em foto histórica
+            const photoTitle = HISTORICAL_PHOTOS.find(p => String(p.id) === String(item.photo_id))?.title || item.photo_id;
+            div.innerHTML = `
+                <div class="teacher-pending-photo">📸 ${photoTitle}</div>
+                <div class="teacher-pending-author">👤 ${author}${turma} • ${date}</div>
+                <div class="teacher-pending-text">${item.text || ''}</div>
+                <div class="teacher-actions">
+                    <button class="teacher-btn teacher-btn-approve" onclick="approveContribution('${item.id}', null, true)">✓ Aprovar</button>
+                    <button class="teacher-btn teacher-btn-reject" onclick="rejectContribution('${item.id}', null, true)">✗ Rejeitar</button>
+                </div>
+            `;
+        }
         container.appendChild(div);
     });
 }
 
-function approveContribution(photoId, contribIndex) {
-    const key = 'pk_contributions_' + photoId;
-    const saved = localStorage.getItem(key);
-    if (!saved) return;
-    
-    const contribs = JSON.parse(saved);
-    contribs[contribIndex].approved = true;
-    contribs[contribIndex].approvedAt = new Date().toISOString();
-    contribs[contribIndex].approvedBy = AppState.user ? AppState.user.name : 'Professor';
-    localStorage.setItem(key, JSON.stringify(contribs));
-    
+async function approvePoint(id) {
+    const { error } = await _sb.from('points').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', id);
+    if (error) { showToast('❌', 'Erro', 'Não foi possível aprovar'); return; }
+    // Dar XP ao autor
+    const { data: point } = await _sb.from('points').select('user_id').eq('id', id).single();
+    if (point?.user_id) {
+        const { data: profile } = await _sb.from('profiles').select('xp').eq('id', point.user_id).single();
+        if (profile) await _sb.from('profiles').update({ xp: (profile.xp || 0) + 75 }).eq('id', point.user_id);
+    }
+    showToast('✅', 'Aprovado!', 'Ponto aprovado e publicado no mapa!');
+    loadTeacherData();
+}
+
+async function rejectPoint(id) {
+    if (!confirm('Rejeitar este ponto?')) return;
+    const { error } = await _sb.from('points').update({ status: 'rejected', rejected_at: new Date().toISOString() }).eq('id', id);
+    if (error) { showToast('❌', 'Erro', 'Não foi possível rejeitar'); return; }
+    showToast('⚠️', 'Rejeitado', 'Ponto rejeitado');
+    loadTeacherData();
+}
+
+async function approveContribution(id, contribIndex, useSupabase = false) {
+    if (useSupabase || (typeof id === 'string' && id.includes('-'))) {
+        // UUID do Supabase
+        const { error } = await _sb
+            .from('contributions')
+            .update({ approved: true, approved_at: new Date().toISOString(), approved_by: AppState.user?.name || 'Professor' })
+            .eq('id', id);
+        if (error) { showToast('❌', 'Erro', 'Não foi possível aprovar'); return; }
+        
+        // Dar XP ao autor
+        const { data: contrib } = await _sb.from('contributions').select('user_id').eq('id', id).single();
+        if (contrib?.user_id) {
+            const { data: profile } = await _sb.from('profiles').select('xp').eq('id', contrib.user_id).single();
+            if (profile) await _sb.from('profiles').update({ xp: (profile.xp || 0) + 30 }).eq('id', contrib.user_id);
+        }
+    } else {
+        // Fallback localStorage
+        const key = 'pk_contributions_' + id;
+        const saved = localStorage.getItem(key);
+        if (!saved) return;
+        const contribs = JSON.parse(saved);
+        contribs[contribIndex].approved = true;
+        contribs[contribIndex].approvedAt = new Date().toISOString();
+        localStorage.setItem(key, JSON.stringify(contribs));
+    }
     showToast('✅', 'Aprovado!', 'Contribuição aprovada com sucesso');
     loadTeacherData();
 }
 
-function rejectContribution(photoId, contribIndex) {
+async function rejectContribution(id, contribIndex, useSupabase = false) {
     if (!confirm('Rejeitar esta contribuição?')) return;
     
-    const key = 'pk_contributions_' + photoId;
-    const saved = localStorage.getItem(key);
-    if (!saved) return;
-    
-    const contribs = JSON.parse(saved);
-    contribs[contribIndex].approved = false;
-    contribs[contribIndex].rejectedAt = new Date().toISOString();
-    localStorage.setItem(key, JSON.stringify(contribs));
-    
+    if (useSupabase || (typeof id === 'string' && id.includes('-'))) {
+        const { error } = await _sb
+            .from('contributions')
+            .update({ approved: false, rejected_at: new Date().toISOString() })
+            .eq('id', id);
+        if (error) { showToast('❌', 'Erro', 'Não foi possível rejeitar'); return; }
+    } else {
+        const key = 'pk_contributions_' + id;
+        const saved = localStorage.getItem(key);
+        if (!saved) return;
+        const contribs = JSON.parse(saved);
+        contribs[contribIndex].approved = false;
+        contribs[contribIndex].rejectedAt = new Date().toISOString();
+        localStorage.setItem(key, JSON.stringify(contribs));
+    }
     showToast('⚠️', 'Rejeitado', 'Contribuição rejeitada');
     loadTeacherData();
 }
 
-function renderTeacherRanking() {
+async function renderTeacherRanking() {
     const container = document.getElementById('teacherRankingList');
     if (!container) return;
     
-    // Get all users from localStorage
-    const usersKey = 'pk_users';
-    const savedUsers = localStorage.getItem(usersKey);
-    if (!savedUsers) {
-        container.innerHTML = '<div class="teacher-empty">Nenhum aluno cadastrado ainda</div>';
-        return;
+    try {
+        const { data: students } = await _sb
+            .from('profiles')
+            .select('name, email, xp')
+            .neq('role', 'professor')
+            .order('xp', { ascending: false })
+            .limit(10);
+        
+        if (!students || students.length === 0) {
+            container.innerHTML = '<div class="teacher-empty">Nenhum aluno cadastrado ainda</div>';
+            return;
+        }
+        
+        container.innerHTML = '';
+        students.forEach((student, index) => {
+            const div = document.createElement('div');
+            div.className = 'teacher-ranking-item';
+            const posClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : 'other';
+            div.innerHTML = `
+                <div class="teacher-ranking-pos ${posClass}">${index + 1}</div>
+                <div class="teacher-ranking-info">
+                    <div class="teacher-ranking-name">${student.name}</div>
+                    <div style="font-size:0.8rem;color:#999">${student.email}</div>
+                </div>
+                <div class="teacher-ranking-xp">${student.xp || 0} XP</div>
+            `;
+            container.appendChild(div);
+        });
+    } catch(e) {
+        // Fallback localStorage
+        const savedUsers = localStorage.getItem('pk_users');
+        if (!savedUsers) { container.innerHTML = '<div class="teacher-empty">Nenhum aluno cadastrado ainda</div>'; return; }
+        const students = JSON.parse(savedUsers).filter(u => u.role !== 'professor').sort((a,b) => (b.xp||0)-(a.xp||0)).slice(0,10);
+        container.innerHTML = '';
+        students.forEach((student, index) => {
+            const div = document.createElement('div');
+            div.className = 'teacher-ranking-item';
+            const posClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : 'other';
+            div.innerHTML = `<div class="teacher-ranking-pos ${posClass}">${index + 1}</div><div class="teacher-ranking-info"><div class="teacher-ranking-name">${student.name}</div></div><div class="teacher-ranking-xp">${student.xp || 0} XP</div>`;
+            container.appendChild(div);
+        });
     }
-    
-    const users = JSON.parse(savedUsers);
-    const students = users.filter(u => u.role !== 'professor').sort((a, b) => (b.xp || 0) - (a.xp || 0)).slice(0, 10);
-    
-    if (students.length === 0) {
-        container.innerHTML = '<div class="teacher-empty">Nenhum aluno cadastrado ainda</div>';
-        return;
-    }
-    
-    container.innerHTML = '';
-    students.forEach((student, index) => {
-        const div = document.createElement('div');
-        div.className = 'teacher-ranking-item';
-        const posClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : 'other';
-        div.innerHTML = `
-            <div class="teacher-ranking-pos ${posClass}">${index + 1}</div>
-            <div class="teacher-ranking-info">
-                <div class="teacher-ranking-name">${student.name}</div>
-                <div style="font-size:0.8rem;color:#999">${student.email}</div>
-            </div>
-            <div class="teacher-ranking-xp">${student.xp || 0} XP</div>
-        `;
-        container.appendChild(div);
-    });
 }
 
-// =================================================================
 // GERAÇÃO DE RELATÓRIOS EM PDF
 // =================================================================
 
@@ -6483,6 +6835,42 @@ document.addEventListener('input', function(e) {
     }
 });
 
+</script>
+
+<!-- Script de emergência: garante auth screen e switchAuthTab sempre funcionem -->
+<script>
+(function() {
+    function mostrarAuth() {
+        var el = document.getElementById('authScreen');
+        var app = document.getElementById('app');
+        // Só mostra auth se o app não estiver visível
+        if (el && el.style.display === 'none' && (!app || app.style.display === 'none')) {
+            el.style.display = 'block';
+        }
+    }
+    setTimeout(mostrarAuth, 300);
+    setTimeout(mostrarAuth, 1500);
+
+    // Fallback para switchAuthTab caso o script principal tenha falhado
+    window.switchAuthTab = window.switchAuthTab || function(tab, el) {
+        document.querySelectorAll('.auth-tab').forEach(function(t) { t.classList.remove('active'); });
+        if (el) el.classList.add('active');
+        var lf = document.getElementById('loginForm');
+        var rf = document.getElementById('registerForm');
+        if (lf) lf.style.display = tab === 'login' ? 'block' : 'none';
+        if (rf) rf.style.display = tab === 'register' ? 'block' : 'none';
+    };
+
+    // Fallback para login/register
+    window.login = window.login || function(e) {
+        if (e) e.preventDefault();
+        alert('Erro: funções de autenticação não carregaram.\nAbra o Console (F12) e verifique os erros.');
+    };
+    window.register = window.register || function(e) {
+        if (e) e.preventDefault();
+        alert('Erro: funções de autenticação não carregaram.\nAbra o Console (F12) e verifique os erros.');
+    };
+})();
 </script>
 </body>
 </html>
