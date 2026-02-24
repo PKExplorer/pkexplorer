@@ -1956,6 +1956,36 @@
         .geo-analysis-saved{background:rgba(39,174,96,0.2);border:2px solid #27ae60;padding:1rem;border-radius:8px;margin-top:1rem}
         .geo-analysis-saved-title{color:#4ade80;font-weight:700;margin-bottom:0.5rem}
         .geo-success-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#27ae60;color:#fff;padding:2rem 3rem;border-radius:12px;font-size:1.2rem;font-weight:700;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:fadeInOut 3s}
+        
+        /* ==================== PROFESSOR ==================== */
+        .teacher-header{background:linear-gradient(135deg,#8e44ad,#6c3483);color:#fff;padding:1.5rem 1rem;text-align:center}
+        .teacher-title{font-size:1.5rem;font-weight:700;margin-bottom:0.5rem}
+        .teacher-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;padding:1rem;margin-bottom:1rem}
+        .teacher-stat{background:#fff;padding:1rem;border-radius:8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+        .teacher-stat-value{font-size:2rem;font-weight:700;color:#8e44ad}
+        .teacher-stat-label{font-size:0.85rem;color:#666;margin-top:0.25rem}
+        .teacher-section{background:#fff;margin:1rem;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+        .teacher-section-header{padding:1rem;background:#f8f9fa;border-bottom:1px solid #dee2e6;font-weight:700;color:#6c3483;display:flex;justify-content:space-between;align-items:center}
+        .teacher-pending-item{padding:1rem;border-bottom:1px solid #eee}
+        .teacher-pending-item:last-child{border-bottom:none}
+        .teacher-pending-photo{font-weight:600;color:#2c3e50;margin-bottom:0.25rem;font-size:0.95rem}
+        .teacher-pending-author{font-size:0.85rem;color:#666;margin-bottom:0.5rem}
+        .teacher-pending-text{background:#f8f9fa;padding:0.75rem;border-radius:6px;font-size:0.9rem;color:#555;margin-bottom:0.75rem;line-height:1.4}
+        .teacher-actions{display:flex;gap:0.5rem}
+        .teacher-btn{flex:1;padding:0.5rem;border:none;border-radius:6px;font-weight:600;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;gap:0.5rem}
+        .teacher-btn-approve{background:#27ae60;color:#fff}
+        .teacher-btn-reject{background:#e74c3c;color:#fff}
+        .teacher-ranking-item{padding:1rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid #eee}
+        .teacher-ranking-item:last-child{border-bottom:none}
+        .teacher-ranking-pos{width:35px;height:35px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem}
+        .teacher-ranking-pos.gold{background:gold;color:#333}
+        .teacher-ranking-pos.silver{background:silver;color:#333}
+        .teacher-ranking-pos.bronze{background:#cd7f32;color:#fff}
+        .teacher-ranking-pos.other{background:#e9ecef;color:#6c757d}
+        .teacher-ranking-info{flex:1}
+        .teacher-ranking-name{font-weight:600;color:#2c3e50;font-size:0.95rem}
+        .teacher-ranking-xp{color:#8e44ad;font-size:1.1rem;font-weight:700}
+        .teacher-empty{padding:2rem;text-align:center;color:#999}
 
         /* ==================== NOTIFICATIONS ==================== */
         .toast-container {
@@ -2274,6 +2304,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -2620,120 +2651,6 @@
             </div>
             
             <!-- VERSÃO PROFESSOR -->
-            <div class="screen-content" id="teacherPanel" style="display:none;">
-                <div class="teacher-header">
-                    <div class="teacher-top-row">
-                        <div class="teacher-logo">
-                            <div class="teacher-logo-icon">🗺️</div>
-                            <div class="teacher-logo-text">
-                                <h1>PK Explorer</h1>
-                                <p>— Painel do Professor</p>
-                            </div>
-                        </div>
-                        <div class="teacher-actions">
-                            <button class="teacher-notif-btn">🔔<span class="notif-badge">3</span></button>
-                            <button class="teacher-notif-btn" onclick="navigateTo('profile')">⚙️</button>
-                        </div>
-                    </div>
-                    <div class="teacher-welcome">
-                        <h3>Olá, Professor <span id="teacherName"></span>! 👋</h3>
-                        <p>Acompanhe as produções dos seus alunos</p>
-                    </div>
-                </div>
-                <div class="teacher-stats-row">
-                    <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value">12</div><div class="stat-label">Pendentes</div></div>
-                    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value">83</div><div class="stat-label">Alunos</div></div>
-                    <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-value">1.200</div><div class="stat-label">XP Total</div></div>
-                    <div class="stat-card"><div class="stat-icon">🏫</div><div class="stat-value">4</div><div class="stat-label">Turmas</div></div>
-                </div>
-                <div class="section-header">
-                    <div class="section-title"><div class="section-title-icon">🌟</div><span>Pontos para Aprovação</span></div>
-                </div>
-                <div class="approval-list">
-                    <div class="approval-card">
-                        <img src="https://ui-avatars.com/api/?name=Maria+Santos&background=D4AF37&color=fff" class="student-avatar">
-                        <div class="approval-info">
-                            <div class="approval-student-name">Maria Santos</div>
-                            <div class="approval-details">6º Ano A</div>
-                            <div class="approval-location">Praça Central</div>
-                        </div>
-                        <div class="approval-actions">
-                            <button class="btn-approve" onclick="approvePointSimple(1,event)">✓ Aprovar</button>
-                        </div>
-                    </div>
-                    <div class="approval-card">
-                        <img src="https://ui-avatars.com/api/?name=Joao+Pereira&background=D4AF37&color=fff" class="student-avatar">
-                        <div class="approval-info">
-                            <div class="approval-student-name">João Pereira</div>
-                            <div class="approval-details">7º Ano B</div>
-                            <div class="approval-location">Museu Histórico</div>
-                        </div>
-                        <div class="approval-actions">
-                            <button class="btn-approve" onclick="approvePointSimple(2,event)">✓ Aprovar</button>
-                        </div>
-                    </div>
-                    <div class="approval-card">
-                        <img src="https://ui-avatars.com/api/?name=Ana+Clara&background=D4AF37&color=fff" class="student-avatar">
-                        <div class="approval-info">
-                            <div class="approval-student-name">Ana Clara</div>
-                            <div class="approval-details">6º Ano A</div>
-                            <div class="approval-location">Igreja Antiga</div>
-                        </div>
-                        <div class="approval-actions">
-                            <button class="btn-approve" onclick="approvePointSimple(3,event)">✓ Aprovar</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="section-header">
-                    <div class="section-title"><div class="section-title-icon">🏫</div><span>Minhas Turmas</span></div>
-                </div>
-                <div class="turma-list">
-                    <div class="turma-card">
-                        <div class="turma-icon">🏫</div>
-                        <div class="turma-info">
-                            <div class="turma-name">6º Ano A</div>
-                            <div class="turma-stats">25 Alunos • 47 Pontos</div>
-                            <div class="turma-progress"><div class="turma-progress-fill" style="width:75%"></div></div>
-                            <div class="turma-xp">320 XP</div>
-                        </div>
-                        <div class="turma-arrow">›</div>
-                    </div>
-                    <div class="turma-card">
-                        <div class="turma-icon">🏫</div>
-                        <div class="turma-info">
-                            <div class="turma-name">7º Ano B</div>
-                            <div class="turma-stats">28 Alunos • 62 Pontos</div>
-                            <div class="turma-progress"><div class="turma-progress-fill" style="width:60%"></div></div>
-                            <div class="turma-xp">280 XP</div>
-                        </div>
-                        <div class="turma-arrow">›</div>
-                    </div>
-                </div>
-                <div class="section-header">
-                    <div class="section-title"><div class="section-title-icon">📋</div><span>Gestão Pedagógica</span></div>
-                </div>
-                <div class="management-grid">
-                    <div class="management-btn"><div class="management-icon">📝</div><div class="management-label">Produções</div></div>
-                    <div class="management-btn"><div class="management-icon">🏫</div><div class="management-label">Turmas</div></div>
-                    <div class="management-btn"><div class="management-icon">🏆</div><div class="management-label">Recompensas</div></div>
-                    <div class="management-btn"><div class="management-icon">📊</div><div class="management-label">Relatórios</div></div>
-                    <div class="management-btn" onclick="navigateTo('feedback')"><div class="management-icon">💡</div><div class="management-label">Feedback</div></div>
-                    <div class="management-btn"><div class="management-icon">🎯</div><div class="management-label">Missões</div></div>
-                </div>
-                <div class="section-header">
-                    <div class="section-title"><div class="section-title-icon">🏆</div><span>Ranking</span></div>
-                </div>
-                <div class="ranking-list">
-                    <div class="ranking-item"><div class="ranking-medal">🥇</div><div class="ranking-info"><div class="ranking-turma">6º Ano A</div></div><div class="ranking-xp">320 XP</div></div>
-                    <div class="ranking-item"><div class="ranking-medal">🥈</div><div class="ranking-info"><div class="ranking-turma">7º Ano B</div></div><div class="ranking-xp">280 XP</div></div>
-                    <div class="ranking-item"><div class="ranking-medal">🥉</div><div class="ranking-info"><div class="ranking-turma">8º Ano A</div></div><div class="ranking-xp">190 XP</div></div>
-                </div>
-                <div class="motivational-footer">
-                    <div class="footer-icon">🚀</div>
-                    <div><strong>Juntos construindo o conhecimento!</strong></div>
-                    <div class="footer-icon">📚</div>
-                </div>
-            </div>
         </div>
 
         <!-- FEED -->
@@ -2931,6 +2848,62 @@
                 </div>
                 <div style="margin-bottom:1rem"><img id="geoModalImage" src="" style="width:100%;border-radius:12px"></div>
                 <div class="geo-layers" id="geoLayers"></div>
+            </div>
+        </div>
+        <!-- PROFESSOR -->
+        <div class="screen" id="screen-teacher">
+            <div class="teacher-header">
+                <div class="teacher-title">👨‍🏫 Painel do Professor</div>
+                <div style="font-size:0.9rem;opacity:0.9">Gestão Pedagógica Completa</div>
+            </div>
+            
+            <div class="teacher-stats">
+                <div class="teacher-stat">
+                    <div class="teacher-stat-value" id="teacherPendingCount">0</div>
+                    <div class="teacher-stat-label">Pendentes</div>
+                </div>
+                <div class="teacher-stat">
+                    <div class="teacher-stat-value" id="teacherApprovedCount">0</div>
+                    <div class="teacher-stat-label">Aprovadas</div>
+                </div>
+                <div class="teacher-stat">
+                    <div class="teacher-stat-value" id="teacherTotalStudents">0</div>
+                    <div class="teacher-stat-label">Alunos</div>
+                </div>
+                <div class="teacher-stat">
+                    <div class="teacher-stat-value" id="teacherTotalGeo">0</div>
+                    <div class="teacher-stat-label">Análises Geo</div>
+                </div>
+            </div>
+            
+            <div class="teacher-section">
+                <div class="teacher-section-header">
+                    <span>⏳ Pendentes de Aprovação</span>
+                    <span id="teacherPendingBadge" style="background:#e74c3c;color:#fff;padding:0.25rem 0.5rem;border-radius:12px;font-size:0.8rem">0</span>
+                </div>
+                <div id="teacherPendingList"></div>
+            </div>
+            
+            <div class="teacher-section">
+                <div class="teacher-section-header">
+                    <span>📄 Relatórios em PDF</span>
+                </div>
+                <div style="padding:1rem;display:flex;flex-direction:column;gap:0.75rem">
+                    <button onclick="generateCompletePDF()" style="background:#8e44ad;color:#fff;border:none;padding:1rem;border-radius:8px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem">
+                        📥 Relatório Completo (Todas Contribuições)
+                    </button>
+                    <button onclick="generateStudentsPDF()" style="background:#2563eb;color:#fff;border:none;padding:1rem;border-radius:8px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem">
+                        👥 Relatório de Alunos (Ranking)
+                    </button>
+                    <button onclick="generateGeoPDF()" style="background:#16a34a;color:#fff;border:none;padding:1rem;border-radius:8px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem">
+                        🌍 Relatório Geografia (Análises)
+                    </button>
+                </div>
+            </div>
+            
+            <div class="teacher-section">
+                <div class="teacher-section-header">🏆 Ranking de Alunos por XP</div>
+                <div id="teacherRankingList"></div>
             </div>
         </div>
         <div class="screen" id="screen-profile">
@@ -3242,6 +3215,10 @@
         <button class="nav-item" onclick="navigateTo('feed')" id="nav-feed">
             <div class="nav-icon">📰</div>
             <div class="nav-label">Descobertas</div>
+        </button>
+        <button class="nav-item" onclick="navigateTo('teacher')" id="nav-teacher" style="display:none;">
+            <div class="nav-icon">👨‍🏫</div>
+            <div class="nav-label">Professor</div>
         </button>
         <button class="nav-item" onclick="navigateTo('memories')" id="nav-memories">
             <div class="nav-icon">📸</div>
@@ -4065,16 +4042,13 @@ function showApp() {
         const studentProgress = document.getElementById('studentProgress');
         if (studentProgress) studentProgress.style.display = 'none';
         
-        const teacherPanel = document.getElementById('teacherPanel');
-        if (teacherPanel) teacherPanel.style.display = 'block';
-        
+        // Hide missions/progresso nav for professor
         const navMissions = document.getElementById('nav-missions');
-        if (navMissions) {
-            const navLabel = navMissions.querySelector('.nav-label');
-            const navIcon = navMissions.querySelector('.nav-icon');
-            if (navLabel) navLabel.textContent = 'Painel';
-            if (navIcon) navIcon.textContent = '👨‍🏫';
-        }
+        if (navMissions) navMissions.style.display = 'none';
+        
+        // Show teacher nav button
+        const navTeacher = document.getElementById('nav-teacher');
+        if (navTeacher) navTeacher.style.display = 'block';
         
         setTimeout(function() {
             var nameEl = document.getElementById('teacherName');
@@ -4086,8 +4060,13 @@ function showApp() {
         const studentProgress = document.getElementById('studentProgress');
         if (studentProgress) studentProgress.style.display = 'block';
         
-        const teacherPanel = document.getElementById('teacherPanel');
-        if (teacherPanel) teacherPanel.style.display = 'none';
+        // Show missions/progresso nav for students
+        const navMissions = document.getElementById('nav-missions');
+        if (navMissions) navMissions.style.display = 'block';
+        
+        // Hide teacher nav button
+        const navTeacher = document.getElementById('nav-teacher');
+        if (navTeacher) navTeacher.style.display = 'none';
     }
     
     // Update notification badge
@@ -4499,7 +4478,7 @@ function navigateTo(screen) {
     
     // Render progress content based on user role when navigating to missions
     if (screen === 'missions') {
-        // Panels are already in HTML (studentProgress and teacherPanel)
+        // Panel is already in HTML (studentProgress for students)
         // showApp() already handles visibility based on role
         // No need to render anything here
     }
@@ -4517,6 +4496,11 @@ function navigateTo(screen) {
     // Render geography grid when navigating to geography
     if (screen === 'geography') {
         renderGeoGrid();
+    }
+    
+    // Render teacher panel when navigating to teacher
+    if (screen === 'teacher') {
+        loadTeacherData();
     }
     
     // Show/hide back button
@@ -5600,74 +5584,6 @@ function createConfetti() {
 }
 
 // Simple teacher panel functions
-function approvePointSimple(pointId, event) {
-    if (!confirm('Aprovar este ponto?')) return;
-    createConfetti();
-    showToast('✅', 'Ponto Aprovado!', 'Aluno será notificado');
-    
-    // Find and remove the card
-    const button = event.target;
-    const card = button.closest('.card');
-    
-    if (card) {
-        card.style.transition = 'all 0.5s';
-        card.style.opacity = '0';
-        card.style.transform = 'translateX(100px)';
-        setTimeout(() => {
-            card.remove();
-            // Check if no more cards
-            const remainingCards = document.querySelectorAll('#teacherPanel .card').length;
-            if (remainingCards <= 1) { // Only header card left
-                document.querySelector('#teacherPanel').innerHTML = `
-                    <div class="screen-header">
-                        <span style="font-size:1.5rem">👨‍🏫</span>
-                        <div class="screen-title">Painel do Professor</div>
-                    </div>
-                    <div class="card" style="background:rgba(16,185,129,0.1);border:2px solid var(--green);text-align:center;padding:3rem 2rem;">
-                        <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
-                        <div style="font-size:1.3rem;font-weight:700;color:var(--green);margin-bottom:0.5rem;">Tudo aprovado!</div>
-                        <div style="font-size:0.95rem;color:var(--gray);">Não há pontos pendentes no momento</div>
-                    </div>
-                `;
-            }
-        }, 500);
-    }
-}
-
-function rejectPointSimple(pointId, event) {
-    const reason = prompt('Motivo da rejeição (será enviado ao aluno):');
-    if (!reason || reason.trim() === '') return;
-    showToast('❌', 'Ponto Rejeitado', 'Aluno receberá o feedback');
-    
-    // Find and remove the card
-    const button = event.target;
-    const card = button.closest('.card');
-    
-    if (card) {
-        card.style.transition = 'all 0.5s';
-        card.style.opacity = '0';
-        card.style.transform = 'translateX(-100px)';
-        setTimeout(() => {
-            card.remove();
-            // Check if no more cards
-            const remainingCards = document.querySelectorAll('#teacherPanel .card').length;
-            if (remainingCards <= 1) { // Only header card left
-                document.querySelector('#teacherPanel').innerHTML = `
-                    <div class="screen-header">
-                        <span style="font-size:1.5rem">👨‍🏫</span>
-                        <div class="screen-title">Painel do Professor</div>
-                    </div>
-                    <div class="card" style="background:rgba(16,185,129,0.1);border:2px solid var(--green);text-align:center;padding:3rem 2rem;">
-                        <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
-                        <div style="font-size:1.3rem;font-weight:700;color:var(--green);margin-bottom:0.5rem;">Tudo em dia!</div>
-                        <div style="font-size:0.95rem;color:var(--gray);">Todos os pontos foram revisados</div>
-                    </div>
-                `;
-            }
-        }, 500);
-    }
-}
-
 function viewPointLocation(pointId) {
     // Sample coordinates for the 3 points
     const coords = {
@@ -6189,6 +6105,360 @@ function saveGeoAnalysis(layerId) {
     closeGeoModal();
     renderGeoGrid();
     updateGeoStats();
+}
+
+// =================================================================
+// PROFESSOR - PAINEL SIMPLIFICADO
+// =================================================================
+
+function loadTeacherData() {
+    const pending = getAllPendingContributions();
+    const approved = getAllApprovedContributions();
+    
+    // Count students
+    const usersKey = 'pk_users';
+    const savedUsers = localStorage.getItem(usersKey);
+    const totalStudents = savedUsers ? JSON.parse(savedUsers).filter(u => u.role !== 'professor').length : 0;
+    
+    // Count geography analyses
+    let totalGeoAnalyses = 0;
+    Object.keys(geoAnalyses).forEach(photoId => {
+        const analysis = geoAnalyses[photoId];
+        if (analysis.usoSolo?.complete) totalGeoAnalyses++;
+        if (analysis.paisagem?.complete) totalGeoAnalyses++;
+        if (analysis.percepcao?.complete) totalGeoAnalyses++;
+    });
+    
+    document.getElementById('teacherPendingCount').textContent = pending.length;
+    document.getElementById('teacherApprovedCount').textContent = approved;
+    document.getElementById('teacherPendingBadge').textContent = pending.length;
+    document.getElementById('teacherTotalStudents').textContent = totalStudents;
+    document.getElementById('teacherTotalGeo').textContent = totalGeoAnalyses;
+    
+    renderTeacherPending(pending);
+    renderTeacherRanking();
+}
+
+function getAllPendingContributions() {
+    const pending = [];
+    HISTORICAL_PHOTOS.forEach(photo => {
+        const key = 'pk_contributions_' + photo.id;
+        const saved = localStorage.getItem(key);
+        if (saved) {
+            const contribs = JSON.parse(saved);
+            contribs.forEach((contrib, index) => {
+                if (!contrib.approved && contrib.approved !== false) {
+                    pending.push({
+                        photoId: photo.id,
+                        photoTitle: photo.title,
+                        contribIndex: index,
+                        author: contrib.author,
+                        text: contrib.text,
+                        date: contrib.date
+                    });
+                }
+            });
+        }
+    });
+    return pending;
+}
+
+function getAllApprovedContributions() {
+    let count = 0;
+    HISTORICAL_PHOTOS.forEach(photo => {
+        const key = 'pk_contributions_' + photo.id;
+        const saved = localStorage.getItem(key);
+        if (saved) {
+            const contribs = JSON.parse(saved);
+            contribs.forEach(contrib => {
+                if (contrib.approved === true) count++;
+            });
+        }
+    });
+    return count;
+}
+
+function renderTeacherPending(pending) {
+    const container = document.getElementById('teacherPendingList');
+    if (!container) return;
+    
+    if (pending.length === 0) {
+        container.innerHTML = '<div class="teacher-empty">✅ Nenhuma contribuição pendente!</div>';
+        return;
+    }
+    
+    container.innerHTML = '';
+    pending.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'teacher-pending-item';
+        div.innerHTML = `
+            <div class="teacher-pending-photo">📸 ${item.photoTitle}</div>
+            <div class="teacher-pending-author">👤 ${item.author} • ${item.date}</div>
+            <div class="teacher-pending-text">${item.text}</div>
+            <div class="teacher-actions">
+                <button class="teacher-btn teacher-btn-approve" onclick="approveContribution(${item.photoId}, ${item.contribIndex})">
+                    ✓ Aprovar
+                </button>
+                <button class="teacher-btn teacher-btn-reject" onclick="rejectContribution(${item.photoId}, ${item.contribIndex})">
+                    ✗ Rejeitar
+                </button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function approveContribution(photoId, contribIndex) {
+    const key = 'pk_contributions_' + photoId;
+    const saved = localStorage.getItem(key);
+    if (!saved) return;
+    
+    const contribs = JSON.parse(saved);
+    contribs[contribIndex].approved = true;
+    contribs[contribIndex].approvedAt = new Date().toISOString();
+    contribs[contribIndex].approvedBy = AppState.user ? AppState.user.name : 'Professor';
+    localStorage.setItem(key, JSON.stringify(contribs));
+    
+    showToast('✅', 'Aprovado!', 'Contribuição aprovada com sucesso');
+    loadTeacherData();
+}
+
+function rejectContribution(photoId, contribIndex) {
+    if (!confirm('Rejeitar esta contribuição?')) return;
+    
+    const key = 'pk_contributions_' + photoId;
+    const saved = localStorage.getItem(key);
+    if (!saved) return;
+    
+    const contribs = JSON.parse(saved);
+    contribs[contribIndex].approved = false;
+    contribs[contribIndex].rejectedAt = new Date().toISOString();
+    localStorage.setItem(key, JSON.stringify(contribs));
+    
+    showToast('⚠️', 'Rejeitado', 'Contribuição rejeitada');
+    loadTeacherData();
+}
+
+function renderTeacherRanking() {
+    const container = document.getElementById('teacherRankingList');
+    if (!container) return;
+    
+    // Get all users from localStorage
+    const usersKey = 'pk_users';
+    const savedUsers = localStorage.getItem(usersKey);
+    if (!savedUsers) {
+        container.innerHTML = '<div class="teacher-empty">Nenhum aluno cadastrado ainda</div>';
+        return;
+    }
+    
+    const users = JSON.parse(savedUsers);
+    const students = users.filter(u => u.role !== 'professor').sort((a, b) => (b.xp || 0) - (a.xp || 0)).slice(0, 10);
+    
+    if (students.length === 0) {
+        container.innerHTML = '<div class="teacher-empty">Nenhum aluno cadastrado ainda</div>';
+        return;
+    }
+    
+    container.innerHTML = '';
+    students.forEach((student, index) => {
+        const div = document.createElement('div');
+        div.className = 'teacher-ranking-item';
+        const posClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : 'other';
+        div.innerHTML = `
+            <div class="teacher-ranking-pos ${posClass}">${index + 1}</div>
+            <div class="teacher-ranking-info">
+                <div class="teacher-ranking-name">${student.name}</div>
+                <div style="font-size:0.8rem;color:#999">${student.email}</div>
+            </div>
+            <div class="teacher-ranking-xp">${student.xp || 0} XP</div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// =================================================================
+// GERAÇÃO DE RELATÓRIOS EM PDF
+// =================================================================
+
+function generateCompletePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.setFontSize(20);
+    doc.text('Relatório Completo - PK Explorer', 20, 20);
+    doc.setFontSize(12);
+    doc.text('Todas as Contribuições dos Alunos', 20, 30);
+    doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 20, 38);
+    
+    let yPos = 50;
+    let contributionsAdded = 0;
+    
+    HISTORICAL_PHOTOS.forEach(photo => {
+        const key = 'pk_contributions_' + photo.id;
+        const saved = localStorage.getItem(key);
+        if (saved) {
+            const contribs = JSON.parse(saved);
+            contribs.forEach(contrib => {
+                if (yPos > 270) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                doc.setFontSize(11);
+                doc.setFont(undefined, 'bold');
+                doc.text(`Foto: ${photo.title}`, 20, yPos);
+                yPos += 7;
+                
+                doc.setFont(undefined, 'normal');
+                doc.setFontSize(10);
+                doc.text(`Aluno: ${contrib.author}`, 20, yPos);
+                yPos += 5;
+                doc.text(`Data: ${contrib.date}`, 20, yPos);
+                yPos += 5;
+                doc.text(`Status: ${contrib.approved === true ? 'Aprovado' : contrib.approved === false ? 'Rejeitado' : 'Pendente'}`, 20, yPos);
+                yPos += 5;
+                
+                const textLines = doc.splitTextToSize(contrib.text, 170);
+                doc.text(textLines, 20, yPos);
+                yPos += (textLines.length * 5) + 5;
+                
+                doc.line(20, yPos, 190, yPos);
+                yPos += 8;
+                contributionsAdded++;
+            });
+        }
+    });
+    
+    if (contributionsAdded === 0) {
+        doc.text('Nenhuma contribuição encontrada.', 20, yPos);
+    }
+    
+    doc.save(`pk-explorer-completo-${new Date().getTime()}.pdf`);
+    showToast('📥', 'PDF Gerado!', 'Relatório completo baixado');
+}
+
+function generateStudentsPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.setFontSize(20);
+    doc.text('Ranking de Alunos - PK Explorer', 20, 20);
+    doc.setFontSize(12);
+    doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 20, 30);
+    
+    const usersKey = 'pk_users';
+    const savedUsers = localStorage.getItem(usersKey);
+    if (!savedUsers) {
+        doc.text('Nenhum aluno cadastrado.', 20, 50);
+        doc.save(`pk-explorer-alunos-${new Date().getTime()}.pdf`);
+        showToast('📥', 'PDF Gerado!', 'Relatório de alunos baixado');
+        return;
+    }
+    
+    const users = JSON.parse(savedUsers);
+    const students = users.filter(u => u.role !== 'professor').sort((a, b) => (b.xp || 0) - (a.xp || 0));
+    
+    let yPos = 50;
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'bold');
+    doc.text('Pos.', 20, yPos);
+    doc.text('Nome', 40, yPos);
+    doc.text('Email', 100, yPos);
+    doc.text('XP', 170, yPos);
+    yPos += 5;
+    doc.line(20, yPos, 190, yPos);
+    yPos += 10;
+    
+    doc.setFont(undefined, 'normal');
+    students.forEach((student, index) => {
+        if (yPos > 270) {
+            doc.addPage();
+            yPos = 20;
+        }
+        
+        doc.text(`${index + 1}`, 20, yPos);
+        doc.text(student.name, 40, yPos);
+        doc.text(student.email, 100, yPos);
+        doc.text(String(student.xp || 0), 170, yPos);
+        yPos += 8;
+    });
+    
+    doc.save(`pk-explorer-alunos-${new Date().getTime()}.pdf`);
+    showToast('📥', 'PDF Gerado!', 'Relatório de alunos baixado');
+}
+
+function generateGeoPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.setFontSize(20);
+    doc.text('Análises Geográficas - PK Explorer', 20, 20);
+    doc.setFontSize(12);
+    doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 20, 30);
+    
+    let yPos = 50;
+    let analysesAdded = 0;
+    
+    Object.keys(geoAnalyses).forEach(photoId => {
+        const photo = HISTORICAL_PHOTOS.find(p => p.id == photoId);
+        if (!photo) return;
+        
+        const analysis = geoAnalyses[photoId];
+        
+        if (yPos > 250) {
+            doc.addPage();
+            yPos = 20;
+        }
+        
+        doc.setFontSize(11);
+        doc.setFont(undefined, 'bold');
+        doc.text(`Foto: ${photo.title}`, 20, yPos);
+        yPos += 8;
+        
+        doc.setFont(undefined, 'normal');
+        doc.setFontSize(10);
+        
+        if (analysis.usoSolo?.complete) {
+            doc.text('Uso do Solo:', 25, yPos);
+            yPos += 5;
+            doc.text(`Tipo: ${analysis.usoSolo.data.tipo}`, 30, yPos);
+            yPos += 5;
+            doc.text(`Mudança: ${analysis.usoSolo.data.mudanca}`, 30, yPos);
+            yPos += 5;
+            const descLines = doc.splitTextToSize(analysis.usoSolo.data.descricao, 160);
+            doc.text(descLines, 30, yPos);
+            yPos += (descLines.length * 5) + 3;
+            analysesAdded++;
+        }
+        
+        if (analysis.paisagem?.complete) {
+            doc.text('Paisagem:', 25, yPos);
+            yPos += 5;
+            const mudLines = doc.splitTextToSize(analysis.paisagem.data.mudancas, 160);
+            doc.text(mudLines, 30, yPos);
+            yPos += (mudLines.length * 5) + 3;
+            analysesAdded++;
+        }
+        
+        if (analysis.percepcao?.complete) {
+            doc.text('Percepção:', 25, yPos);
+            yPos += 5;
+            const impLines = doc.splitTextToSize(analysis.percepcao.data.impressoes, 160);
+            doc.text(impLines, 30, yPos);
+            yPos += (impLines.length * 5) + 3;
+            analysesAdded++;
+        }
+        
+        doc.line(20, yPos, 190, yPos);
+        yPos += 10;
+    });
+    
+    if (analysesAdded === 0) {
+        doc.text('Nenhuma análise geográfica encontrada.', 20, yPos);
+    }
+    
+    doc.save(`pk-explorer-geografia-${new Date().getTime()}.pdf`);
+    showToast('📥', 'PDF Gerado!', 'Relatório geográfico baixado');
 }
 
 // Initialize memories when app loads
